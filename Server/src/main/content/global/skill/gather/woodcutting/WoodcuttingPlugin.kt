@@ -142,10 +142,10 @@ class WoodcuttingPlugin : InteractionListener {
 
                 val chance = 282
                 if (RandomFunction.random(chance) == chance / 2) {
-                    if (!player.inventory.add(BirdNestDropTable.getRandomNest(false)!!.nest)) {
+
                         BirdNestDropTable.drop(player)
                     }
-                }
+
             }
 
             delayClock(player, Clocks.SKILLING, 3)
