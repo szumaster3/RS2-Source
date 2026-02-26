@@ -173,8 +173,8 @@ class Diary(
             val npcName = NPCDefinition.forId(type.getNpc(level)).name
             val msg =
                 "Congratulations! You have completed all of the ${getLevel(level).lowercase()} tasks in the ${type.displayName} area."
-            sendMessages(player, msg, "Speak to $npcName to claim your reward.")
-            sendDialogueLines(player, msg, "Speak to $npcName to claim your reward.")
+            sendMessage(player, "$msg Speak to $npcName to claim your reward.")
+            sendDialogue(player, "$msg Speak to $npcName to claim your reward.")
         }
 
         drawStatus(player)
@@ -237,25 +237,6 @@ class Diary(
      */
     private fun sendString(player: Player, string: String, child: Int) {
         sendString(player, string.replace("<blue>", BLUE).replace("<red>", RED), DIARY_COMPONENT, child)
-    }
-
-    /**
-     * Sets the specified level as started.
-     *
-     * @param level The level index to mark as started.
-     */
-    fun setLevelStarted(level: Int) {
-        levelStarted[level] = true
-    }
-
-    /**
-     * Marks a specific task as completed.
-     *
-     * @param level The level index.
-     * @param index The task index within the level.
-     */
-    fun setCompleted(level: Int, index: Int) {
-        taskCompleted[level][index] = true
     }
 
     /**

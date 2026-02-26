@@ -69,20 +69,6 @@ class DiaryManager(val player: Player) {
         getDiary(type)?.isComplete(level, index) ?: false
 
     /**
-     * Sets a diary level as started.
-     */
-    fun setStarted(type: DiaryType?, level: Int) {
-        getDiary(type)?.setLevelStarted(level)
-    }
-
-    /**
-     * Marks a task as completed.
-     */
-    fun setCompleted(type: DiaryType?, level: Int, index: Int) {
-        getDiary(type)?.setCompleted(level, index)
-    }
-
-    /**
      * Retrieves the diary for a given type.
      */
     fun getDiary(type: DiaryType?): Diary? =
@@ -107,21 +93,6 @@ class DiaryManager(val player: Player) {
         get() = getRewardIndex(DiaryType.SEERS_VILLAGE, EquipmentContainer.SLOT_HAT)
 
     /**
-     * Checks mining reward eligibility.
-     */
-    fun checkMiningReward(reward: Int): Boolean {
-        val level = player.achievementDiaryManager.armour
-        if (level == -1) return false
-        if (reward == Items.COAL_453) return true
-        return when (level) {
-            0 -> reward <= Items.SILVER_ORE_442
-            1 -> reward <= Items.MITHRIL_ORE_447
-            2 -> reward <= Items.ADAMANTITE_ORE_449
-            else -> false
-        }
-    }
-
-    /**
      * Checks smithing reward eligibility.
      */
     fun checkSmithReward(type: Bar): Boolean {
@@ -140,12 +111,6 @@ class DiaryManager(val player: Player) {
      */
     fun hasGlove(): Boolean =
         hasEquipment(DiaryType.KARAMJA, EquipmentContainer.SLOT_HANDS)
-
-    /**
-     * Checks if player has Varrock armour equipped.
-     */
-    fun hasArmour(): Boolean =
-        hasEquipment(DiaryType.VARROCK, EquipmentContainer.SLOT_CHEST)
 
     /**
      * Checks if player has Seer's headband equipped.
