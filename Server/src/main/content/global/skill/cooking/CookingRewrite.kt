@@ -10,30 +10,29 @@ import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.node.scenery.Scenery
 import shared.consts.Items
+import shared.consts.Scenery as Objects
 
 class CookingRewrite : InteractionListener {
-    val RAW_FOODS: IntArray
 
-    init {
-        RAW_FOODS =
-            intArrayOf(
-                *CookableItems.values().map { it.raw }.toIntArray(),
-                Items.COOKED_MEAT_2142,
-                Items.RAW_BEEF_2132,
-                Items.RAW_BEAR_MEAT_2136,
-                Items.SEAWEED_401,
-            )
-    }
+    private val RAW_FOODS: IntArray = intArrayOf(
+        *CookableItems.values().map { it.raw }.toIntArray(),
+        Items.COOKED_MEAT_2142,
+        Items.RAW_BEEF_2132,
+        Items.RAW_BEAR_MEAT_2136,
+        Items.SEAWEED_401,
+        Items.BOWL_OF_WATER_1921,
+        Items.CUP_OF_WATER_4458
+    )
 
     override fun defineListeners() {
-        onUseWith(IntType.SCENERY, RAW_FOODS, *COOKING_OBJs) { player, used, with ->
+        onUseWith(IntType.SCENERY, RAW_FOODS, *COOKING_OBJS) { player, used, with ->
             val item = used.asItem()
             val obj = with.asScenery()
-            val range = obj.name.lowercase().contains("range")
+            val isRange = obj.id in RANGE_OBJS
 
             when (item.id) {
                 Items.RAW_BEEF_2132, Items.RAW_BEAR_MEAT_2136 -> {
-                    if (range) {
+                    if (isRange) {
                         player.dialogueInterpreter.open(CookingDialogue(item.id, 9436, true, obj, item.id))
                     } else {
                         sendMessage(player, "You need to cook this on a range.")
@@ -42,10 +41,18 @@ class CookingRewrite : InteractionListener {
                 }
 
                 Items.BREAD_DOUGH_2307, Items.UNCOOKED_CAKE_1889 -> {
-                    if (!range) {
+                    if (!isRange) {
                         sendMessage(player, "You need to cook this on a range.")
                         return@onUseWith false
                     }
+                }
+                Items.BOWL_OF_WATER_1921 -> {
+                    cook(player, obj, Items.BOWL_OF_WATER_1921, Items.BOWL_OF_HOT_WATER_4456, 1)
+                    return@onUseWith true
+                }
+                Items.CUP_OF_WATER_4458 -> {
+                    cook(player, obj, Items.CUP_OF_WATER_4458, Items.CUP_OF_HOT_WATER_4460, 1)
+                    return@onUseWith true
                 }
             }
 
@@ -68,127 +75,157 @@ class CookingRewrite : InteractionListener {
     }
 
     companion object {
-        val COOKING_OBJs =
-            intArrayOf(
-                114,
-                2724,
-                2725,
-                2726,
-                2728,
-                2729,
-                2730,
-                2731,
-                2732,
-                2859,
-                3038,
-                3039,
-                3769,
-                3775,
-                4172,
-                4265,
-                4266,
-                4618,
-                4650,
-                5165,
-                5249,
-                5275,
-                5499,
-                5631,
-                5632,
-                5981,
-                6093,
-                6094,
-                6095,
-                6096,
-                8712,
-                8750,
-                9085,
-                9086,
-                9087,
-                9374,
-                9439,
-                9440,
-                9441,
-                9682,
-                10377,
-                10433,
-                10824,
-                11404,
-                11405,
-                11406,
-                12102,
-                12269,
-                12796,
-                13337,
-                13528,
-                13529,
-                13531,
-                13533,
-                13536,
-                13539,
-                13542,
-                13881,
-                14169,
-                14919,
-                15156,
-                15398,
-                16893,
-                17640,
-                17641,
-                17642,
-                17643,
-                18039,
-                20000,
-                20001,
-                21302,
-                21620,
-                21792,
-                21795,
-                22154,
-                22713,
-                22714,
-                23046,
-                24283,
-                24284,
-                24285,
-                24313,
-                24329,
-                25155,
-                25156,
-                25440,
-                25441,
-                25465,
-                25730,
-                27251,
-                27297,
-                29139,
-                30017,
-                32099,
-                33498,
-                33500,
-                34410,
-                34495,
-                34546,
-                34565,
-                35449,
-                36815,
-                36816,
-                36973,
-                37426,
-                37597,
-                37629,
-                37726,
-                40110,
-            )
+        val COOKING_OBJS = intArrayOf(
+            // FIRES
+            Objects.FIRE_2732,
+            Objects.FIRE_3038,
+            Objects.FIRE_3769,
+            Objects.FIRE_3775,
+            Objects.FIRE_4265,
+            Objects.FIRE_4266,
+            Objects.FIRE_5249,
+            Objects.FIRE_5499,
+            Objects.FIRE_5631,
+            Objects.FIRE_5632,
+            Objects.FIRE_5981,
+            Objects.FIRE_10433,
+            Objects.FIRE_11404,
+            Objects.FIRE_11405,
+            Objects.FIRE_11406,
+            Objects.FIRE_12796,
+            Objects.FIRE_13337,
+            Objects.FIRE_13881,
+            Objects.FIRE_14169,
+            Objects.FIRE_15156,
+            Objects.FIRE_20000,
+            Objects.FIRE_20001,
+            Objects.FIRE_21620,
+            Objects.FIRE_23046,
+            Objects.FIRE_25155,
+            Objects.FIRE_25156,
+            Objects.FIRE_25465,
+            Objects.FIRE_27297,
+            Objects.FIRE_29139,
+            Objects.FIRE_30017,
+            Objects.FIRE_32099,
+            Objects.FIRE_37597,
+            Objects.FIRE_37726,
+
+            // FIREPLACES
+            Objects.FIREPLACE_2724,
+            Objects.FIREPLACE_2725,
+            Objects.FIREPLACE_2726,
+            Objects.FIREPLACE_4618,
+            Objects.FIREPLACE_4650,
+            Objects.FIREPLACE_5165,
+            Objects.FIREPLACE_6093,
+            Objects.FIREPLACE_6094,
+            Objects.FIREPLACE_6095,
+            Objects.FIREPLACE_6096,
+            Objects.FIREPLACE_8712,
+            Objects.FIREPLACE_9439,
+            Objects.FIREPLACE_9440,
+            Objects.FIREPLACE_9441,
+            Objects.FIREPLACE_10824,
+            Objects.FIREPLACE_17640,
+            Objects.FIREPLACE_17641,
+            Objects.FIREPLACE_17642,
+            Objects.FIREPLACE_17643,
+            Objects.FIREPLACE_18039,
+            Objects.FIREPLACE_21795,
+            Objects.FIREPLACE_24285,
+            Objects.FIREPLACE_24329,
+            Objects.FIREPLACE_27251,
+            Objects.FIREPLACE_33498,
+            Objects.FIREPLACE_35449,
+            Objects.FIREPLACE_36815,
+            Objects.FIREPLACE_36816,
+            Objects.FIREPLACE_37426,
+
+            // RANGES
+            Objects.RANGE_2728,
+            Objects.RANGE_2729,
+            Objects.RANGE_2730,
+            Objects.RANGE_2731,
+            Objects.RANGE_3039,
+            Objects.RANGE_9682,
+            Objects.RANGE_12102,
+            Objects.RANGE_14919,
+            Objects.RANGE_21792,
+            Objects.RANGE_22713,
+            Objects.RANGE_22714,
+            Objects.RANGE_24283,
+            Objects.RANGE_24284,
+            Objects.RANGE_25730,
+            Objects.RANGE_33500,
+            Objects.RANGE_34495,
+            Objects.RANGE_34546,
+            Objects.RANGE_36973,
+            Objects.RANGE_37629,
+            Objects.RANGE_40110,
+
+            // COOKING RANGES
+            Objects.COOKING_RANGE_114,
+            Objects.COOKING_RANGE_2859,
+            Objects.COOKING_RANGE_4172,
+            Objects.COOKING_RANGE_5275,
+            Objects.COOKING_RANGE_8750,
+            Objects.COOKING_RANGE_16893,
+            Objects.COOKING_RANGE_22154,
+            Objects.COOKING_RANGE_34410,
+            Objects.COOKING_RANGE_34565,
+
+            // STOVES
+            Objects.STOVE_9085,
+            Objects.STOVE_9086,
+            Objects.STOVE_9087,
+            Objects.STOVE_12269,
+            Objects.GOBLIN_STOVE_25440,
+            Objects.GOBLIN_STOVE_25441,
+
+            // OVENS
+            Objects.CLAY_OVEN_10377,
+            Objects.CLAY_OVEN_21302,
+            Objects.OVEN_24313,
+            Objects.SMALL_OVEN_13533,
+            Objects.LARGE_OVEN_13536,
+            Objects.STEEL_RANGE_13539,
+            Objects.FANCY_RANGE_13542,
+
+            // FIREPITS
+            Objects.FIREPIT_13528,
+            Objects.FIREPIT_WITH_HOOK_13529,
+            Objects.FIREPIT_WITH_POT_13531,
+
+            // SPECIAL
+            Objects.SULPHUR_VENT_9374,
+        )
+
+        private val RANGE_OBJS = setOf(
+            Objects.RANGE_2728,
+            Objects.RANGE_2729,
+            Objects.RANGE_2730,
+            Objects.RANGE_2731,
+            Objects.RANGE_3039,
+            Objects.RANGE_9682,
+            Objects.RANGE_12102,
+            Objects.RANGE_14919,
+            Objects.RANGE_21792,
+            Objects.RANGE_22713,
+            Objects.RANGE_22714,
+            Objects.RANGE_24283,
+            Objects.RANGE_24284,
+            Objects.RANGE_25730,
+            Objects.RANGE_33500,
+            Objects.RANGE_34495,
+            Objects.RANGE_34546,
+            Objects.RANGE_36973,
+            Objects.RANGE_37629,
+            Objects.RANGE_40110
+        )
 
         @JvmStatic
-        fun cook(
-            player: Player,
-            scenery: Scenery?,
-            initial: Int,
-            product: Int,
-            amount: Int,
-        ) {
+        fun cook(player: Player, scenery: Scenery?, initial: Int, product: Int, amount: Int) {
             val food = Item(initial)
             val foodName = food.name.lowercase()
 
