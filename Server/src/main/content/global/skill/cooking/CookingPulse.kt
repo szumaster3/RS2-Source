@@ -210,38 +210,48 @@ open class CookingPulse(
      * @param burned Whether the food was burned.
      * @return The message to be sent to the player.
      */
-    open fun getMessage(
-        food: Item,
-        product: Item,
-        burned: Boolean,
-    ): String? =
-        when {
-            food.id == Items.RAW_OOMLIE_2337 -> "The meat is far too delicate to cook like this. Perhaps you should wrap something around it to protect it from the heat."
-            product.id == Items.SODA_ASH_1781 && (food.id == Items.SEAWEED_401 || food.id == Items.SWAMP_WEED_10978) -> "You burn the ${food.name.lowercase()} into soda ash."
-            food.id == Items.RAW_SWAMP_PASTE_1940 -> "You warm the paste over the fire. It thickens into a sticky goo."
-            product.id == Items.BURNT_PIE_2329 && burned -> "You accidentally burn the pie."
-            product.id == Items.BURNT_CHOMPY_7226 && burned -> "You accidentally burn the skewered chompy."
-            product.id == Items.RUINED_CHOMPY_2880 && burned -> "You accidentally burn the chompy."
-            product.id == Items.BURNT_OOMLIE_WRAP_2345 && burned -> "The meat is far too delicate to cook like this. Perhaps you should wrap something around it to protect it from the heat."
-            product.id == Items.NETTLE_TEA_4239 && !burned -> "You boil the water and make nettle tea."
-            product.id == Items.COOKED_CHICKEN_2140 && !burned -> "You cook some chicken."
-            product.id == Items.BAKED_POTATO_6701 && !burned -> "You successfully bake a potato."
-            product.id == Items.REDBERRY_PIE_2325 && !burned -> "You successfully bake a delicious redberry pie."
-            product.id == Items.MEAT_PIE_2327 && !burned -> "You successfully bake a tasty meat pie."
-            product.id == Items.APPLE_PIE_2323 && !burned -> "You successfully bake a traditional apple pie."
-            product.id == Items.MUD_PIE_7170 && !burned -> "You successfully bake a mucky mud pie."
-            product.id == Items.SCRAMBLED_EGG_7078 && !burned -> "You successfully scramble the egg."
-            product.id in listOf(Items.BOWL_OF_HOT_WATER_4456, Items.CUP_OF_HOT_WATER_4460) -> if (burned) "You accidentally let the water boil over." else "You boil the water."
+    open fun getMessage(food: Item, product: Item, burned: Boolean): String {
+        // Handle by product id
+        val specialMessages = mapOf(
+            Items.RAW_OOMLIE_2337 to "The meat is far too delicate to cook like this. Perhaps you should wrap something around it to protect it from the heat.",
+            Items.BURNT_OOMLIE_WRAP_2345 to "The meat is far too delicate to cook like this. Perhaps you should wrap something around it to protect it from the heat.",
+            Items.BURNT_PIE_2329 to "You accidentally burn the pie.",
+            Items.BURNT_CHOMPY_7226 to "You accidentally burn the skewered chompy.",
+            Items.RUINED_CHOMPY_2880 to "You accidentally burn the chompy.",
+            Items.NETTLE_TEA_4239 to "You boil the water and make nettle tea.",
+            Items.COOKED_CHICKEN_2140 to "You cook some chicken.",
+            Items.BAKED_POTATO_6701 to "You successfully bake a potato.",
+            Items.REDBERRY_PIE_2325 to "You successfully bake a delicious redberry pie.",
+            Items.MEAT_PIE_2327 to "You successfully bake a tasty meat pie.",
+            Items.APPLE_PIE_2323 to "You successfully bake a traditional apple pie.",
+            Items.MUD_PIE_7170 to "You successfully bake a mucky mud pie.",
+            Items.SCRAMBLED_EGG_7078 to "You successfully scramble the egg."
+        )
 
-            CookableItems.intentionalBurn(food.id) -> "You deliberately burn the perfectly good piece of meat."
-
-            else ->
-                if (!burned) {
-                    "You manage to cook some ${food.name.replace("Raw ", "").lowercase()}."
-                } else {
-                    "You accidentally burn some ${food.name.replace("Raw ", "").lowercase()}."
-                }
+        // Handle soda ash special case
+        if (product.id == Items.SODA_ASH_1781 && food.id in listOf(Items.SEAWEED_401, Items.SWAMP_WEED_10978)) {
+            return "You burn the ${food.name.lowercase()} into soda ash."
         }
+
+        // Handle boiling water
+        if (product.id in listOf(Items.BOWL_OF_HOT_WATER_4456, Items.CUP_OF_HOT_WATER_4460)) {
+            return if (burned) "You accidentally let the water boil over." else "You boil the water."
+        }
+
+        // Handle intentional burn
+        if (CookableItems.intentionalBurn(food.id)) {
+            return "You deliberately burn the perfectly good piece of meat."
+        }
+
+        // Check the special messages map
+        specialMessages[product.id]?.let {
+            return it
+        }
+
+        // Default message
+        val foodName = food.name.replace("Raw ", "").lowercase()
+        return if (burned) "You accidentally burn some $foodName." else "You manage to cook some $foodName."
+    }
 
     /**
      * Returns the animation to be used during the cooking process.

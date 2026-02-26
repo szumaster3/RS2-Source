@@ -7,6 +7,7 @@ import content.data.skill.SkillingTool
 import content.global.plugins.iface.ge.StockMarket
 import content.global.skill.slayer.SlayerManager
 import content.global.skill.slayer.Tasks
+import content.global.skill.summoning.familiar.BurdenBeast
 import core.ServerConstants
 import core.api.utils.PlayerCamera
 import core.api.utils.PlayerStatsCounter
@@ -39,6 +40,7 @@ import core.game.node.entity.player.info.LogType
 import core.game.node.entity.player.info.PlayerMonitor
 import core.game.node.entity.player.link.HintIconManager
 import core.game.node.entity.player.link.TeleportManager
+import core.game.node.entity.player.link.appearance.BodyPart
 import core.game.node.entity.player.link.audio.Audio
 import core.game.node.entity.player.link.diary.DiaryType
 import core.game.node.entity.player.link.emote.Emotes
@@ -136,36 +138,26 @@ fun amountInInventory(
 ): Int = player.inventory.getAmount(id)
 
 /**
- * Returns the total amount of a specific item in the player's bank, including the secondary bank if requested.
+ * Returns the total amount of a specific item in the player's bank.
  *
  * @param player The player whose bank is being checked.
  * @param id The ID of the item to check.
- * @param includeSecondary Whether or not to include the secondary bank in the check. Defaults to true.
  * @return The total amount of the specified item in the player's bank.
  */
 fun amountInBank(
     player: Player,
     id: Int,
-    includeSecondary: Boolean = true,
-): Int = getAmountInBank(player, id) + if (includeSecondary) getAmountInBank(player, id, true) else 0
+): Int = player.bank.getAmount(id)
 
 /**
- * Returns the amount of a specific item in the player's bank, from either the primary or secondary bank.
+ * Returns the total amount of the item in the player bank.
  *
- * @param player The player whose bank is being checked.
- * @param id The ID of the item to check.
- * @param secondary Whether to check the secondary bank (default is false for the primary bank).
- * @return The amount of the specified item in the player's bank.
+ * @param player the player whose bank to check.
+ * @param id the item id to look for.
+ * @return the amount of the item in the bank, or 0 if not found.
  */
-private fun getAmountInBank(
-    player: Player,
-    id: Int,
-    secondary: Boolean = false,
-): Int {
-    val bank = if (secondary) player.bankSecondary.toArray() else player.bankPrimary.toArray()
-    bank.forEach { if (it?.id == id) return it.amount }
-    return 0
-}
+private fun getAmountInBank(player: Player, id: Int): Int =
+    player.bank.getAmount(Item(id))
 
 /**
  * Returns the amount of a specific item in the player's equipment.
@@ -323,7 +315,7 @@ fun hasAnItem(
     player: Player,
     vararg ids: Int,
 ): ContainerisedItem {
-    for (searchSpace in arrayOf(player.inventory, player.equipment, player.bankPrimary, player.bankSecondary)) {
+    for (searchSpace in arrayOf(player.inventory, player.equipment, player.bank)) {
         for (id in ids) {
             if (searchSpace.containItems(id)) {
                 return ContainerisedItem(searchSpace, id)
@@ -382,8 +374,9 @@ fun <T> removeItem(
 
     return when (container) {
         Container.INVENTORY -> player.inventory.remove(it)
-        Container.BANK -> player.bank.remove(it) || player.bankSecondary.remove(it)
+        Container.BANK -> player.bank.remove(it)
         Container.EQUIPMENT -> player.equipment.remove(it)
+        Container.BoB -> (player.familiarManager.familiar as? BurdenBeast)?.container?.remove(it) ?: false
     }
 }
 
@@ -407,6 +400,7 @@ fun addItem(
             Container.INVENTORY -> player.inventory
             Container.BANK -> player.bank
             Container.EQUIPMENT -> player.equipment
+            Container.BoB -> (player.familiarManager.familiar as BurdenBeast).container
         }
 
     return cont.add(Item(id, amount))
@@ -426,16 +420,14 @@ fun addItemOrBank(
 ) {
     val item = Item(id, amount)
     if (!player.inventory.add(item)) {
-        if (player.bankPrimary.add(item)) {
+        if (player.bank.add(item)) {
             sendMessage(player, colorize("%RThe ${item.name} has been sent to your bank."))
-        } else if (player.bankSecondary.add(item)) {
-            sendMessage(player, colorize("%RThe ${item.name} has been sent to your secondary bank."))
         } else {
             GroundItemManager.create(item, player)
             sendMessage(
                 player,
                 colorize(
-                    "%RAs your inventory and bank account(s) are all full, the ${item.name} has been placed on the ground under your feet. Don't forget to grab it. (Also consider cleaning out some stuff, maybe? I mean, Jesus!)",
+                    "%RAs your inventory and bank account(s) are all full, the ${item.name} has been placed on the ground under your feet. Don't forget to grab it.",
                 ),
             )
         }
@@ -464,6 +456,10 @@ fun replaceSlot(
             Container.INVENTORY -> player.inventory
             Container.EQUIPMENT -> player.equipment
             Container.BANK -> player.bank
+            Container.BoB -> {
+                val beast = player.familiarManager.familiar as? BurdenBeast ?: return null
+                beast.container
+            }
         }
 
     if (item.id == 65535 || item.amount <= 0) {
@@ -483,12 +479,18 @@ fun replaceSlot(
         LogType.DUPE_ALERT,
         "Potential slot-replacement-based dupe attempt, slot: $slot, item: $item",
     )
-    val other =
-        when (container) {
-            Container.INVENTORY -> Container.EQUIPMENT
-            else -> Container.INVENTORY
-        }
-    if (removeItem(player, currentItem, other)) return cont.replace(item, slot)
+
+    val other = when (container) {
+        Container.INVENTORY -> Container.EQUIPMENT
+        Container.EQUIPMENT -> Container.INVENTORY
+        Container.BANK      -> return null
+        Container.BoB       -> Container.INVENTORY
+    }
+
+    if (removeItem(player, currentItem, other)) {
+        return cont.replace(item, slot)
+    }
+
     return null
 }
 
@@ -2310,22 +2312,24 @@ fun <T> removeAll(
     container: Container = Container.INVENTORY,
 ): Boolean {
     item ?: return false
-    val it =
-        when (item) {
-            is Item -> item.id
-            is Int -> item
-            else -> throw IllegalStateException("Invalid value passed as item")
-        }
+
+    val id = when (item) {
+        is Item -> item.id
+        is Int -> item
+        else -> throw IllegalStateException("Invalid value passed as item")
+    }
 
     return when (container) {
-        Container.EQUIPMENT -> player.equipment.remove(Item(it, amountInEquipment(player, it)))
-        Container.BANK -> {
-            val amountInPrimary = amountInBank(player, it, false)
-            val amountInSecondary = amountInBank(player, it, true) - amountInPrimary
-            player.bank.remove(Item(it, amountInPrimary)) && player.bankSecondary.remove(Item(it, amountInSecondary))
-        }
+        Container.EQUIPMENT ->
+            player.equipment.remove(Item(id, amountInEquipment(player, id)))
 
-        Container.INVENTORY -> player.inventory.remove(Item(it, amountInInventory(player, it)))
+        Container.BANK ->
+            player.bank.remove(Item(id, amountInBank(player, id)))
+
+        Container.INVENTORY ->
+            player.inventory.remove(Item(id, amountInInventory(player, id)))
+
+        Container.BoB -> TODO()
     }
 }
 
@@ -4925,65 +4929,144 @@ fun displayQuestItem(
     )
 }
 
-fun updateTorsoLook(player : Player, lookId : Int){
+/**
+ * Updates the torso's appearance for the given player.
+ *
+ * @param player The player whose torso look is being updated.
+ * @param lookId The id of the new torso look.
+ */
+fun updateTorsoLook(player: Player, lookId: Int) {
     player.appearance.torso.changeLook(lookId)
 }
 
-fun updateTorsoColor(player : Player, colorId : Int){
+/**
+ * Updates the torso's color for the given player.
+ *
+ * @param player The player whose torso color is being updated.
+ * @param colorId The id of the new torso color.
+ */
+fun updateTorsoColor(player: Player, colorId: Int) {
     player.appearance.torso.changeColor(colorId)
 }
 
-fun updateArmsLook(player : Player, lookId : Int){
+/**
+ * Updates the arms' appearance for the given player.
+ *
+ * @param player The player whose arms look is being updated.
+ * @param lookId The id of the new arms look.
+ */
+fun updateArmsLook(player: Player, lookId: Int) {
     player.appearance.arms.changeLook(lookId)
 }
 
-fun updateArmsColor(player : Player, colorId : Int){
+/**
+ * Updates the arms' color for the given player.
+ *
+ * @param player The player whose arms color is being updated.
+ * @param colorId The id of the new arms color.
+ */
+fun updateArmsColor(player: Player, colorId: Int) {
     player.appearance.arms.changeColor(colorId)
 }
 
-fun updateLegsLook(player : Player, lookId : Int){
+/**
+ * Updates the legs' appearance for the given player.
+ *
+ * @param player The player whose legs look is being updated.
+ * @param lookId The id of the new legs look.
+ */
+fun updateLegsLook(player: Player, lookId: Int) {
     player.appearance.legs.changeLook(lookId)
 }
 
-fun updateLegsColor(player : Player, colorId : Int){
+/**
+ * Updates the legs' color for the given player.
+ *
+ * @param player The player whose legs color is being updated.
+ * @param colorId The id of the new legs color.
+ */
+fun updateLegsColor(player: Player, colorId: Int) {
     player.appearance.legs.changeColor(colorId)
 }
 
-fun updateWristsLook(player : Player, lookId : Int){
+/**
+ * Updates the wrists' appearance for the given player.
+ *
+ * @param player The player whose wrists look is being updated.
+ * @param lookId The id of the new wrists look.
+ */
+fun updateWristsLook(player: Player, lookId: Int) {
     player.appearance.wrists.changeLook(lookId)
 }
 
-fun updateHairLook(player : Player, lookId : Int){
+/**
+ * Updates the hair's appearance for the given player.
+ *
+ * @param player The player whose hair look is being updated.
+ * @param lookId The id of the new hair look.
+ */
+fun updateHairLook(player: Player, lookId: Int) {
     player.appearance.hair.changeLook(lookId)
 }
 
-fun updateHairColor(player : Player, colorId : Int){
+/**
+ * Updates the hair's color for the given player.
+ *
+ * @param player The player whose hair color is being updated.
+ * @param colorId The id of the new hair color.
+ */
+fun updateHairColor(player: Player, colorId: Int) {
     player.appearance.hair.changeColor(colorId)
 }
 
-fun updateBeardLook(player : Player, lookId : Int){
+/**
+ * Updates the beard's appearance for the given player.
+ *
+ * @param player The player whose beard look is being updated.
+ * @param lookId The id of the new beard look.
+ */
+fun updateBeardLook(player: Player, lookId: Int) {
     player.appearance.beard.changeLook(lookId)
 }
 
-fun updateBeardColor(player : Player, colorId : Int){
-    player.appearance.beard.changeColor(colorId)
-}
-
-fun updateFeetLook(player : Player, lookId : Int){
-    player.appearance.feet.changeLook(lookId)
-}
-
-fun updateFeetColor(player : Player, colorId : Int){
+/**
+ * Updates the feet's color for the given player.
+ *
+ * @param player The player whose feet color is being updated.
+ * @param colorId The id of the new feet color.
+ */
+fun updateFeetColor(player: Player, colorId: Int) {
     player.appearance.feet.changeColor(colorId)
 }
 
-fun updateSkinColor(player : Player, colorId : Int){
+/**
+ * Updates the skin color for the given player.
+ *
+ * @param player The player whose skin color is being updated.
+ * @param colorId The id of the new skin color.
+ */
+fun updateSkinColor(player: Player, colorId: Int) {
     player.appearance.skin.changeColor(colorId)
 }
 
-fun updateHeadIcon(player : Player, iconId : Int){
-    player.appearance.headIcon = iconId
+/**
+ * Updates the look appearance of a player's body part.
+ *
+ * @param part The body part instance to update (e.g., player.appearance.torso).
+ * @param lookId The id of the new look.
+ */
+fun updateLook(part: BodyPart, lookId: Int) {
+    part.changeLook(lookId)
 }
 
+/**
+ * Updates the color of a player's body part.
+ *
+ * @param part The body part instance to update (e.g., player.appearance.hair).
+ * @param colorId The id of the new color.
+ */
+fun updateColor(part: BodyPart, colorId: Int) {
+    part.changeColor(colorId)
+}
 
 private class ContentAPI

@@ -121,11 +121,6 @@ public class Player extends Entity {
     public Location startLocation = null;
 
     /**
-     * Flag indicating if the player is new (total level below 50).
-     */
-    public boolean newPlayer = getSkills().getTotalLevel() < 50;
-
-    /**
      * The player's drop log.
      */
     public BankContainer dropLog = new BankContainer(this);
@@ -189,12 +184,6 @@ public class Player extends Entity {
      * The player's primary and secondary banks.
      */
     private final BankContainer bank = new BankContainer(this);
-    private final BankContainer bankSecondary = new BankContainer(this);
-
-    /**
-     * Flag to determine if the secondary bank is in use.
-     */
-    public boolean useSecondaryBank = false;
 
     /**
      * Containers for Blast Furnace resources.
@@ -575,10 +564,6 @@ public class Player extends Entity {
                 if (i == null) break;
                 totalWealth += (long) i.getDefinition().getValue() * i.getAmount();
             }
-            for (Item i : bankSecondary.toArray()) {
-                if (i == null) break;
-                totalWealth += (long) i.getDefinition().getValue() * i.getAmount();
-            }
             ExchangeHistory ge = ExchangeHistory.getInstance(this);
             for (int i = 0; i < 6; i++) {
                 GrandExchangeOffer offer = ge.getOffer(i);
@@ -936,11 +921,7 @@ public class Player extends Entity {
      * @param messages the messages
      */
     public void sendMessages(String... messages) {
-        //if (!getAttribute(GameAttributes.TUTORIAL_COMPLETE, false)) {
-        //    packetDispatch.sendRunScript(102, "s", messages[0]);
-        //} else {
-            packetDispatch.sendMessages(messages);
-        //}
+        packetDispatch.sendMessages(messages);
     }
 
     /**
@@ -960,24 +941,6 @@ public class Player extends Entity {
      */
     public void sendMessage(String message) {
         sendMessages(message);
-    }
-
-    /**
-     * Send notification message.
-     *
-     * @param message the message
-     */
-    public void sendNotificationMessage(String message) {
-        sendMessages("<col=ff0000>" + message + "</col>");
-    }
-
-    /**
-     * Spawn zone boolean.
-     *
-     * @return the boolean
-     */
-    public boolean spawnZone() {
-        return (getLocation().getX() > 3090 && getLocation().getY() < 3500 && getLocation().getX() < 3099 && getLocation().getY() > 3487);
     }
 
     /**
@@ -1122,30 +1085,12 @@ public class Player extends Entity {
     }
 
     /**
-     * Gets bank.
-     *
-     * @return the bank
-     */
-    public BankContainer getBank() {
-        return useSecondaryBank ? bankSecondary : bank;
-    }
-
-    /**
      * Gets bank primary.
      *
      * @return the bank primary
      */
-    public BankContainer getBankPrimary() {
+    public BankContainer getBank() {
         return bank;
-    }
-
-    /**
-     * Gets bank secondary.
-     *
-     * @return the bank secondary
-     */
-    public BankContainer getBankSecondary() {
-        return bankSecondary;
     }
 
     /**

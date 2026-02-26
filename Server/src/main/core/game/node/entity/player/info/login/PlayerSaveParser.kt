@@ -337,7 +337,6 @@ class PlayerSaveParser(val player: Player) {
 
         val inventory = coreData.getAsJsonArray("inventory")
         val bank = coreData.getAsJsonArray("bank")
-        val bankSecondary = coreData.getAsJsonArray("bankSecondary") ?: JsonArray()
         val equipment = coreData.getAsJsonArray("equipment")
         val bBars = coreData.getAsJsonArray("blastBars")
         val bOre = coreData.getAsJsonArray("blastOre")
@@ -352,25 +351,12 @@ class PlayerSaveParser(val player: Player) {
                 val tab = i.asJsonObject
                 val index = tab.get("index")?.asString?.toIntOrNull() ?: continue
                 val startSlot = tab.get("startSlot")?.asString?.toIntOrNull() ?: continue
-                player.bankPrimary.tabStartSlot[index] = startSlot
+                player.bank.tabStartSlot[index] = startSlot
             }
         }
-
-        val bankTabSecondaryData = coreData.getAsJsonArray("bankTabsSecondary")
-        if (bankTabSecondaryData != null) {
-            for (i in bankTabSecondaryData) {
-                val tab = i.asJsonObject
-                val index = tab.get("index")?.asString?.toIntOrNull() ?: continue
-                val startSlot = tab.get("startSlot")?.asString?.toIntOrNull() ?: continue
-                player.bankSecondary.tabStartSlot[index] = startSlot
-            }
-        }
-
-        player.useSecondaryBank = coreData.get("useSecondaryBank")?.asBoolean ?: false
 
         player.inventory.parse(inventory)
-        player.bankPrimary.parse(bank)
-        player.bankSecondary.parse(bankSecondary)
+        player.bank.parse(bank)
         player.equipment.parse(equipment)
         bBars?.let { player.blastBars.parse(it) }
         bOre?.let { player.blastOre.parse(it) }

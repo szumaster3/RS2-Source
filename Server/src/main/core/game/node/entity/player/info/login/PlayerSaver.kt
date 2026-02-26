@@ -610,32 +610,19 @@ class PlayerSaver(val player: Player) {
     fun saveCoreData(root: JsonObject) {
         val coreData = JsonObject()
         coreData.add("inventory", saveContainer(player.inventory))
-        coreData.add("bank", saveContainer(player.bankPrimary))
-        coreData.add("bankSecondary", saveContainer(player.bankSecondary))
+        coreData.add("bank", saveContainer(player.bank))
         coreData.add("blastBars", saveContainer(player.blastBars))
         coreData.add("blastOre", saveContainer(player.blastOre))
         coreData.add("blastCoal", saveContainer(player.blastCoal))
 
         val bankTabs = JsonArray()
-        player.bankPrimary.tabStartSlot.forEachIndexed { i, startSlot ->
+        player.bank.tabStartSlot.forEachIndexed { i, startSlot ->
             val tab = JsonObject()
             tab.addProperty("index", i.toString())
             tab.addProperty("startSlot", startSlot.toString())
             bankTabs.add(tab)
         }
         coreData.add("bankTabs", bankTabs)
-
-        val bankTabsSecondary = JsonArray()
-        player.bankSecondary.tabStartSlot.forEachIndexed { i, startSlot ->
-            val tab = JsonObject()
-            tab.addProperty("index", i.toString())
-            tab.addProperty("startSlot", startSlot.toString())
-            bankTabsSecondary.add(tab)
-        }
-        coreData.add("bankTabsSecondary", bankTabsSecondary)
-
-        coreData.addProperty("useSecondaryBank", player.useSecondaryBank)
-
         coreData.add("equipment", saveContainer(player.equipment))
 
         val locTemp = player.location
