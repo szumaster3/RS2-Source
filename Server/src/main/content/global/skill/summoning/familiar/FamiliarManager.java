@@ -228,7 +228,7 @@ public final class FamiliarManager {
         }
 
         ArrayList<Integer> taken = new ArrayList<Integer>();
-        Container[] searchSpace = {player.getInventory(), player.getBankPrimary(), player.getBankSecondary()};
+        Container[] searchSpace = {player.getInventory(), player.getBank()};
         for (int checkId = pets.babyItemId; checkId != -1; checkId = pets.getNextStageItemId(checkId)) {
             Item check = new Item(checkId, 1);
             for (Container container : searchSpace) {

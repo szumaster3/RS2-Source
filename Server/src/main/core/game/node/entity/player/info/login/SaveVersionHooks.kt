@@ -16,7 +16,7 @@ class SaveVersionHooks : LoginListener {
             if (player.version < 1) {
                 var hasHoods = 0
                 var hasCapes = 0
-                val searchSpace = arrayOf(player.inventory, player.bankPrimary, player.bankSecondary)
+                val searchSpace = arrayOf(player.inventory, player.bank)
                 for (container in searchSpace) {
                     for (hood in container.getAll(Item(Items.CRAFTING_HOOD_9782))) {
                         hasHoods += hood.amount

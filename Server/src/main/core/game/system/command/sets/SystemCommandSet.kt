@@ -403,7 +403,7 @@ class SystemCommandSet : CommandSet(Privilege.ADMIN) {
         id: Int,
     ): Pair<Item, core.game.container.Container>? {
         if (id !in 0 until ItemDefinition.getDefinitions().size) return null
-        arrayOf(player.inventory, player.equipment, player.bankPrimary, player.bankSecondary).forEach { container ->
+        arrayOf(player.inventory, player.equipment, player.bank).forEach { container ->
             container.toArray().firstOrNull { it?.id == id }?.let { return Pair(it, container) }
         }
         return null

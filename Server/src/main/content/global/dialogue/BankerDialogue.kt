@@ -21,13 +21,14 @@ class BankerDialogue(player: Player? = null) : Dialogue(player) {
     override fun handle(interfaceId: Int, buttonId: Int): Boolean {
         val oldModels = intArrayOf(NPCs.GNOME_BANKER_166, NPCs.BANKER_498, NPCs.BANKER_2163, NPCs.BANKER_2164, NPCs.BANKER_5776)
         val incompatibleModels = intArrayOf(NPCs.TZHAAR_KET_ZUH_2619, NPCs.OGRESS_BANKER_7049, NPCs.OGRESS_BANKER_7050)
-        val checkRestriction = (amountInInventory(player, Items.STARDUST_13727) > 1 && amountInBank(player, Items.STARDUST_13727, true) >= 200)
+        val checkRestriction = player?.let { amountInInventory(it, Items.STARDUST_13727) > 1 && amountInBank(it, Items.STARDUST_13727) >= 200 } ?: false
 
         val checkFaceAnim = when (npc.id) {
             in oldModels -> FaceAnim.OLD_NORMAL
             in incompatibleModels -> FaceAnim.CHILD_NORMAL
             else -> FaceAnim.FRIENDLY
-        }
+        } ?: FaceAnim.FRIENDLY
+
 
         when (stage) {
             START_DIALOGUE -> npcl(checkFaceAnim, "Good day, how may I help you?").also {
