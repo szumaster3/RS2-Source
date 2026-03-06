@@ -125,9 +125,9 @@ class ElementalWorkshop :
         player: Player?,
         stage: Int,
     ): IntArray {
-        if (stage >= 100) return intArrayOf(Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_299, 1048576)
+        if (stage >= 100) return intArrayOf(Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_PROGRESS_299, 1048576)
         if (stage > 0) {
-            return intArrayOf(Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_299, 3)
+            return intArrayOf(Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_PROGRESS_299, 3)
         } else {
             return intArrayOf(Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_PROGRESS_299, 0)
         }
@@ -139,7 +139,7 @@ class ElementalWorkshop :
             setAttribute(player, "/save:ew1:got_leather", false)
             setAttribute(player, "/save:ew1:bellows_fixed", false)
             player.questRepository.setStageNonmonotonic(player.questRepository.forIndex(52), 0)
-            setVarp(player, Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_299, 0)
+            setVarp(player, Vars.VARP_QUEST_ELEMENTAL_WORKSHOP_PROGRESS_299, 0)
             player.teleport(Location.create(2715, 3481, 0))
             player.inventory.clear()
             addItem(player, Items.KNIFE_946)
