@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import core.ServerConstants
+import core.api.sendItemOnInterface
 import core.api.sendString
 import core.cache.Cache
 import core.cache.def.impl.*
@@ -29,6 +30,40 @@ import kotlin.reflect.jvm.isAccessible
 class CacheCommandSet : CommandSet(Privilege.ADMIN) {
 
     override fun defineCommands() {
+
+        /*
+         * Command for send item to interface.
+         */
+
+        define(
+            name = "iitem",
+            privilege = Privilege.ADMIN,
+            usage = "::iitem <interface_id> <component_id> <item_id> [amount]",
+            description = "Send an item onto an Iface component."
+        ) { player, args ->
+            if (args.size < 3) {
+                reject(player, "Usage: ::iitem <interface_id> <component_id> [item_id] [amount]")
+                return@define
+            }
+
+            val iface     = args[1].toIntOrNull()
+            val component = args[2].toIntOrNull()
+            val itemId    = args.getOrNull(3)?.toIntOrNull() ?: 1
+            val amount    = args.getOrNull(4)?.toIntOrNull() ?: 1
+
+            if (iface == null || component == null || itemId <= 0 || amount <= 0)
+            {
+                reject(player, "Iface, component, item Id and amount must be valid int!")
+                return@define
+            }
+
+            sendItemOnInterface(player, iface, component, itemId, amount)
+        }
+
+        /*
+         * Command for send string to interface.
+         */
+
         define(
             name = "istring",
             privilege = Privilege.ADMIN,
