@@ -5,6 +5,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import core.ServerConstants
 import core.api.sendItemOnInterface
+import core.api.sendModelOnInterface
 import core.api.sendString
 import core.cache.Cache
 import core.cache.def.impl.*
@@ -30,6 +31,34 @@ import kotlin.reflect.jvm.isAccessible
 class CacheCommandSet : CommandSet(Privilege.ADMIN) {
 
     override fun defineCommands() {
+
+        /*
+         * Command for send model to interface.
+         */
+
+        define(
+            name = "imodel",
+            privilege = Privilege.ADMIN,
+            usage = "::imodel <interface_id> <component_id> <model_id> [zoom]",
+            description = "Send a model onto an iface component."
+        ) { player, args ->
+            if (args.size < 3) {
+                reject(player, "Usage: ::imodel <interface_id> <component_id> <model_id> [zoom]")
+                return@define
+            }
+
+            val iface     = args[1].toIntOrNull()
+            val component = args[2].toIntOrNull()
+            val modelId   = args[3].toIntOrNull() ?: -1
+            val zoom      = args.getOrNull(4)?.toIntOrNull() ?: 170
+
+            if (iface == null || component == null || modelId < 0) {
+                reject(player, "Iface, component and model Id must be valid ints!")
+                return@define
+            }
+
+            sendModelOnInterface(player, iface, component, modelId, zoom)
+        }
 
         /*
          * Command for send item to interface.
