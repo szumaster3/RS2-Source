@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import core.ServerConstants
+import core.api.sendString
 import core.cache.Cache
 import core.cache.def.impl.*
 import core.game.system.command.Privilege
@@ -28,6 +29,28 @@ import kotlin.reflect.jvm.isAccessible
 class CacheCommandSet : CommandSet(Privilege.ADMIN) {
 
     override fun defineCommands() {
+        define(
+            name = "istring",
+            privilege = Privilege.ADMIN,
+            usage = "::istring <interface_id> <component_id> <text>",
+            description = "Send string on to iface component."
+        ) { player, args ->
+            if (args.size < 3) {
+                reject(player, "Usage: ::istring <interface_id> <component_id> <text>")
+                return@define
+            }
+
+            val iface = args[1].toIntOrNull()
+            val component = args[2].toIntOrNull()
+            val text = args.drop(3).joinToString(" ")
+
+            if (iface == null || component == null) {
+                reject(player, "Iface and component must be ints!")
+                return@define
+            }
+
+            sendString(player, text, iface, component)
+        }
 
         /*
          * Command for finding all object with given name.
