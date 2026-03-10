@@ -190,12 +190,12 @@ class EnchantedHeadgearManager(private val player: Player) {
         val arr = JsonArray()
         enchantedGear.forEach { (_, chargedGear) ->
             val obj = JsonObject().apply {
-                addProperty("item", chargedGear.chargedItemId.toString())
+                addProperty("id", chargedGear.chargedItemId.toString())
                 val scrollArray = JsonArray()
                 chargedGear.container.toArray().forEach { item ->
                     if (item != null) {
                         val itemObj = JsonObject().apply {
-                            addProperty("id", item.id.toString())
+                            addProperty("itemId", item.id.toString())
                             addProperty("amount", item.amount.toString())
                         }
                         scrollArray.add(itemObj)
@@ -205,17 +205,16 @@ class EnchantedHeadgearManager(private val player: Player) {
             }
             arr.add(obj)
         }
-        root.add("summon_ench_helm", arr)
+        root.add("enchantedHeadgear", arr)
     }
 
     /**
      * Parses enchanted headgear scroll data from JSON array.
      */
     fun parse(data: JsonArray) {
-        enchantedGear.clear()
         data.forEach { element ->
             val obj = element.asJsonObject
-            val chargedItemId = obj.get("item").asInt
+            val chargedItemId = obj.get("id").asInt
             val scrollsArr = obj.getAsJsonArray("scroll")
 
             val headgear = EnchantedHeadgear.forItem(chargedItemId.asItem())
@@ -226,7 +225,7 @@ class EnchantedHeadgearManager(private val player: Player) {
 
             scrollsArr.forEach { s ->
                 val scrollObj = s.asJsonObject
-                val id = scrollObj.get("id").asInt
+                val id = scrollObj.get("itemId").asInt
                 val amount = scrollObj.get("amount").asInt
                 container.add(Item(id, amount))
             }

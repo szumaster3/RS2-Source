@@ -11,6 +11,7 @@ import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.world.update.flag.context.Animation
 import core.game.world.update.flag.context.Graphics
+import core.tools.colorize
 import shared.consts.Animations
 import shared.consts.Items
 import shared.consts.Sounds
@@ -43,6 +44,13 @@ class AlchemySpell : SpellListener("modern") {
             sendMessage(player, "You can't cast this spell on something like that.")
             return false
         }
+
+        if(item.id == Items.BOLT_POUCH_9433)
+        {
+            sendMessage(player, colorize("%RThe dwarven pouch resists your magic."))
+            return false
+        }
+
         if (player.zoneMonitor.isInZone("Alchemists' Playground")) {
             sendMessage(player, "You can only alch items from the cupboards!")
             return false

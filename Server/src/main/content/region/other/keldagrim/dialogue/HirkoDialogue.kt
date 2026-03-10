@@ -29,7 +29,7 @@ class HirkoDialogue(player: Player? = null) : Dialogue(player) {
             0 -> player(FaceAnim.HALF_ASKING, "Hello, what's in those boxes?").also { stage++ }
             1 -> npc(FaceAnim.OLD_NORMAL, "Aha, interested in my crossbows are you?").also { stage++ }
             2 -> player(FaceAnim.HALF_ASKING, "Are they any good?").also { stage++ }
-            3 -> npcl(FaceAnim.OLD_NORMAL, "They're dwarven engineering at its best. If you've got enough skill in crafting, smithing and fletching, you can even make them yourself. You can buy some of the parts here and make the rest yourself").also { stage++ }
+            3 -> npcl(FaceAnim.OLD_NORMAL, "They're dwarven engineering at its best. If you've got enough skill in crafting, smithing and fletching, you can even make them yourself. You can buy some of the parts here and make the rest yourself.").also { stage++ }
             4 -> options("How do I make one for myself?", "What about ammo?", "Thanks for telling me. Bye!").also { stage++ }
             5 -> when (buttonId) {
                 1 -> player(FaceAnim.HALF_ASKING, "How do I make one for myself?").also { stage++ }

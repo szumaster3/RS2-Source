@@ -312,12 +312,12 @@ class PlayerSaveParser(val player: Player) {
     }
 
     fun parseHeadgear() {
-        val headgearData = saveFile?.getAsJsonArray("summon_ench_helm") ?: return
+        val headgearData = saveFile?.getAsJsonArray("enchantedHeadgear") ?: return
         player.enchgearManager.parse(headgearData)
     }
 
     fun parseBoltPouch() {
-        val boltPouchData = saveFile?.getAsJsonArray("bolt_pouch") ?: return
+        val boltPouchData = saveFile?.getAsJsonArray("boltPouch") ?: return
         player.boltPouchManager.parse(boltPouchData)
     }
 
