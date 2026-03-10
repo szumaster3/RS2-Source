@@ -33,21 +33,34 @@ class SawmillInterface : ComponentPlugin() {
         return this
     }
 
-    override fun handle(player: Player, component: Component, opcode: Int, button: Int, slot: Int, itemId: Int): Boolean {
-        val plank = buttonMap.firstOrNull { button in it.first }?.second ?: return true
-        val difference = buttonMap.first { button in it.first }.first.last - button
-        val amount = when (difference) {
+    override fun handle(
+        player: Player,
+        component: Component,
+        opcode: Int,
+        button: Int,
+        slot: Int,
+        itemId: Int
+    ): Boolean {
+
+        val entry = buttonMap.firstOrNull { button in it.first } ?: return true
+        val range = entry.first
+        val plank = entry.second
+
+        val index = button - range.first
+
+        val amount = when (index) {
             0 -> 1
             1 -> 5
             2 -> 10
             3 -> -1
-            4 -> player.inventory.getAmount(plank.log)
-            else -> 0
+            4 -> amountInInventory(player, plank.log)
+            else -> return true
         }
 
         if (amount == -1) {
             sendInputDialogue(player, true, "Enter the amount:") { value ->
-                createPlank(player, plank, value as Int)
+                val input = value as? Int ?: return@sendInputDialogue
+                createPlank(player, plank, input)
             }
         } else if (amount > 0) {
             createPlank(player, plank, amount)
@@ -58,6 +71,7 @@ class SawmillInterface : ComponentPlugin() {
 
     private fun createPlank(player: Player, plank: PlankType, requestedAmount: Int) {
         closeInterface(player)
+
         val availableLogs = amountInInventory(player, plank.log)
         if (availableLogs <= 0) {
             sendMessage(player, "You are not carrying any logs to cut into planks.")
@@ -65,19 +79,23 @@ class SawmillInterface : ComponentPlugin() {
         }
 
         val amount = requestedAmount.coerceAtMost(availableLogs)
+        val cost = plank.price * amount
 
-        if (!inInventory(player, Items.COINS_995, plank.price * amount)) {
+        if (!inInventory(player, Items.COINS_995, cost)) {
             sendDialogue(player, "Sorry, I don't have enough coins to pay for that.")
             return
         }
 
-        removeItem(player, Item(Items.COINS_995, plank.price * amount))
-        removeItem(player, plank.log.asItem().also { it.amount = amount })
-        player.inventory.add(plank.plank.asItem().also { it.amount = amount })
+        removeItem(player, Item(Items.COINS_995, cost))
+        removeItem(player, Item(plank.log, amount))
+        addItem(player, plank.plank, amount)
 
         when {
-            plank == PlankType.WOOD -> finishDiaryTask(player, DiaryType.VARROCK, 0, 3)
-            plank == PlankType.MAHOGANY && amount >= 20 -> finishDiaryTask(player, DiaryType.VARROCK, 1, 15)
+            plank == PlankType.WOOD ->
+                finishDiaryTask(player, DiaryType.VARROCK, 0, 3)
+
+            plank == PlankType.MAHOGANY && amount >= 20 ->
+                finishDiaryTask(player, DiaryType.VARROCK, 1, 15)
         }
     }
 }
