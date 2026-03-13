@@ -34,11 +34,10 @@ class CombatInstructorDialogue(player: Player? = null) : Dialogue(player) {
         when (getAttribute(player, GameAttributes.TUTORIAL_STAGE, 0)) {
             44 -> when (stage++) {
                 0 -> npc(FaceAnim.ANGRY,
-                    "Do I look like I care?",
-                    "To me you're just another newcomer who thinks they're ready to fight."
+                    "Do I look like I care? To me you're just another", "newcomer who thinks they're ready to fight."
                 )
-                1 -> npc(FaceAnim.FRIENDLY, "I'm Vannaka, the greatest swordsman alive.")
-                2 -> npc(FaceAnim.FRIENDLY, "Let's start by teaching you how to wield a weapon.")
+                1 -> npc(FaceAnim.NEUTRAL, "I'm Vannaka, the greatest swordsman alive.")
+                2 -> npc(FaceAnim.NEUTRAL, "Let's start by teaching you how to wield a weapon.")
                 3 -> {
                     end()
                     setAttribute(player, GameAttributes.TUTORIAL_STAGE, 45)
@@ -70,17 +69,17 @@ class CombatInstructorDialogue(player: Player? = null) : Dialogue(player) {
                 2 -> {
                     sendDoubleItemDialogue(
                         player,
+                        897,
                         Items.SHORTBOW_841,
-                        Items.BRONZE_ARROW_882,
-                        "The Combat Guide gives you some bronze arrows and a shortbow!"
+                        "The Combat Guide gives you some <col=08088A>bronze arrows</col> and" + "a <col=08088A>shortbow</col>!"
                     )
 
                     if (!inInventory(player, Items.SHORTBOW_841) && !inEquipment(player, Items.SHORTBOW_841)) {
                         addItem(player, Items.SHORTBOW_841)
                     }
-                    if (amountInInventory(player, Items.BRONZE_ARROW_882) < 30 &&
-                        amountInEquipment(player, Items.BRONZE_ARROW_882) < 30) {
-                        addItem(player, Items.BRONZE_ARROW_882, 30)
+                    if (amountInInventory(player, Items.BRONZE_ARROW_882) < 50 &&
+                        amountInEquipment(player, Items.BRONZE_ARROW_882) < 50) {
+                        addItem(player, Items.BRONZE_ARROW_882, 50)
                     }
                 }
                 3 -> {

@@ -324,9 +324,9 @@ class TutorialPlugin : InteractionListener {
          * Handles restriction with wielding weapons/tools on tutorial island.
          */
 
-        onEquip(intArrayOf(BRONZE_AXE, BRONZE_PICKAXE)) { player, _ ->
+        onEquip(intArrayOf(BRONZE_AXE, BRONZE_PICKAXE, BRONZE_DAGGER)) { player, _ ->
             val restriction = getAttribute(player, GameAttributes.TUTORIAL_STAGE, -1)
-            if (restriction < 45) {
+            if (restriction < 47) {
                 sendDialogue(player, "You'll be told how to equip items later.")
                 return@onEquip false
             }
@@ -353,6 +353,7 @@ class TutorialPlugin : InteractionListener {
         private const val CHURCH_DOOR_EXIT = Scenery.DOOR_3026
         private const val BRONZE_AXE = Items.BRONZE_AXE_1351
         private const val BRONZE_PICKAXE = Items.BRONZE_PICKAXE_1265
+        private const val BRONZE_DAGGER = Items.BRONZE_DAGGER_1205
         private val WOODEN_GATE = intArrayOf(Scenery.GATE_3015, Scenery.GATE_3016)
         private val COMBAT_GATE = intArrayOf(Scenery.GATE_3020, Scenery.GATE_3021)
         private val GIANT_RAT_GATE = intArrayOf(Scenery.GATE_3022, Scenery.GATE_3023)

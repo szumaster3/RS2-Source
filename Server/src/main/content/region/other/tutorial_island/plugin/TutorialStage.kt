@@ -323,7 +323,7 @@ object TutorialStage {
             16 -> {
                 hideTabs(player, login)
                 removeHintIcon(player)
-                registerHintIcon(player, Location(3090, 3091, 0), 50) // FENCE
+                registerHintIcon(player, Location(3090, 3092, 0), 50) // FENCE
                 Component.setUnclosable(
                     player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
                     "Well done, you've just cooked your first " + settings!!.name + " meal.",
@@ -465,7 +465,6 @@ object TutorialStage {
                 hideTabs(player, login)
                 removeHintIcon(player)
                 setVarbit(player, FLASHING_ICON, 0)
-                registerHintIcon(player, Location(3086, 3126, 0), 50) // DOOR (QUEST GUIDE)
                 Component.setUnclosable(
                     player,player.dialogueInterpreter.sendScrollMessageWithBlueTitle(
                     "Run to the next guide",
@@ -511,7 +510,7 @@ object TutorialStage {
                 hideTabs(player, login)
                 removeHintIcon(player)
                 setVarbit(player, FLASHING_ICON, 0)
-                registerHintIcon(player, Location(3088, 3119, 0), 50) // LADDER (QUEST END)
+                registerHintIcon(player, Location(3088, 3120, 0), 75) // LADDER (QUEST END)
                 Component.setUnclosable(
                     player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
                     "",
@@ -562,10 +561,10 @@ object TutorialStage {
                         "should only take a few seconds.",
                         "",
                     ))
-                queueScript(player, 3, QueueStrength.SOFT){
+                runTask(player, 3) {
+                    sendDialogue(player, "This rock contains tin.")
                     setAttribute(player, GameAttributes.TUTORIAL_STAGE, 33)
                     TutorialStage.load(player, 33)
-                    return@queueScript stopExecuting(player)
                 }
             }
 
@@ -573,16 +572,16 @@ object TutorialStage {
                 hideTabs(player, login)
                 removeHintIcon(player)
                 registerHintIcon(player, Location(3086, 9501, 0), 50)
-                queueScript(player, 3, QueueStrength.SOFT){
-                    Component.setUnclosable(
-                        player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
-                            "It's tin.",
-                            "",
-                            "So now you know there's tin in the grey rocks, try prospecting the",
-                            "brown ones next.",
-                            "",
-                        ))
-                    return@queueScript stopExecuting(player)
+                Component.setUnclosable(
+                    player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
+                        "Please wait.",
+                        "",
+                        "Your character is now attempting to prospect the rock. This",
+                        "should only take a few seconds.",
+                        "",
+                    ))
+                runTask(player, 3) {
+                    sendDialogue(player, "This rock contains copper.")
                 }
             }
 
@@ -595,8 +594,7 @@ object TutorialStage {
                     "It's copper.",
                     "",
                     "Talk to the Mining Instructor to find out about these types of",
-                    "ore and how you can mine them.",
-                    "He'll even give you the required tools.",
+                    "ore and how you can mine them. He'll even give you the", "required tools.",
                 ))
             }
 
@@ -727,16 +725,15 @@ object TutorialStage {
             45 -> {
                 hideTabs(player, login)
                 removeHintIcon(player)
-                runTask(player, 10) {
-                    Component.setUnclosable(
-                        player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
+                Component.setUnclosable(
+                    player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
                         "Wielding weapons",
                         "",
                         "You now have access to a new interface. Click on the flashing",
                         "icon of a man, the one to the right of your backpack icon.",
                         "",
                     ))
-                }.also {
+                runTask(player, 10) {
                     hideTabs(player, login)
                     player.interfaceManager.openTab(Component(Components.WORNITEMS_387))
                     setVarbit(player, FLASHING_ICON, 5)
@@ -891,7 +888,7 @@ object TutorialStage {
             55 -> {
                 hideTabs(player, login)
                 removeHintIcon(player)
-                registerHintIcon(player, Location(3111, 9526, 0), 100)
+                registerHintIcon(player, Location(3111, 9528, 0), 100)
                 Component.setUnclosable(
                     player,player.dialogueInterpreter.sendPlaneMessageWithBlueTitle(
                     "Moving on.",
@@ -900,6 +897,8 @@ object TutorialStage {
                     "here, just talk to the Combat Instructor and he'll tell you what",
                     "he can.",
                 ))
+                if(!inBank(player, Items.COINS_995))
+                    player.getBank().add(TutorialStage.STARTER_BANK);
             }
 
             56 -> {

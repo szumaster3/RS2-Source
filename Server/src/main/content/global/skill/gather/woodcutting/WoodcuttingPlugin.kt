@@ -115,7 +115,7 @@ class WoodcuttingPlugin : InteractionListener {
                 if (!getAttribute(player, GameAttributes.TUTORIAL_COMPLETE, false)) {
                     sendItemDialogue(player, Items.LOGS_1511, "You get some logs.")
                 }
-
+                val itemName = ItemDefinition.forId(reward).name.lowercase()
                 if (resource == WoodcuttingNode.DRAMEN_TREE) {
                     sendMessage(player, "You cut a branch from the Dramen tree.")
                 } else if (resource.isJungleTree()) {
@@ -132,8 +132,9 @@ class WoodcuttingPlugin : InteractionListener {
                             sendMessage(player, "You move deeper into the jungle.")
                         }
                     }
+                } else if(!getAttribute(player, GameAttributes.TUTORIAL_COMPLETE, false)) {
+                    sendItemDialogue(player, Items.LOGS_1511, "You get some $itemName.")
                 } else {
-                    val itemName = ItemDefinition.forId(reward).name.lowercase()
                     sendMessage(player, "You get some $itemName.")
                 }
 

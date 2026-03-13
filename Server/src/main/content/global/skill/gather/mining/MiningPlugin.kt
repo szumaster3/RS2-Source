@@ -151,6 +151,7 @@ class MiningPlugin : InteractionListener {
         val isSandstone = resource.identifier == MiningNode.SANDSTONE.identifier
         val isMagicStone = resource.identifier == MiningNode.MAGIC_STONE_0.identifier
         val isObsidian = resource.identifier == MiningNode.OBSIDIAN_0.identifier
+        val isTutorialIsland = getAttribute(player, GameAttributes.TUTORIAL_COMPLETE, false)
 
         if (!finishedMoving(player)) {
             return true
@@ -218,7 +219,9 @@ class MiningPlugin : InteractionListener {
                 getItemName(reward).lowercase()
             }
 
-            if (isGems) {
+            if (!isTutorialIsland) {
+                sendDialogue(player, "You manage to mine some ${rewardName.lowercase()}.")
+            } else if (isGems) {
                 sendMessage(player, "You get ${prependArticle(rewardName)}.")
             } else if (isGranite) {
                 sendMessage(player, "You manage to quarry some granite.")

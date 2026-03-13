@@ -18,7 +18,7 @@ class MiningInstructorDialogue(player: Player? = null) : Dialogue(player) {
     override fun open(vararg args: Any?): Boolean {
         npc = args[0] as NPC
         when (getAttribute(player, GameAttributes.TUTORIAL_STAGE, 0)) {
-            30 -> npc(FaceAnim.FRIENDLY, "Hi there. You must be new around here.", "What do I call you? 'Newcomer' seems so impersonal.")
+            30 -> npc(FaceAnim.FRIENDLY, "Hi there. You must be new around here.", "What do I call you? 'Newcomer' seems so impersonal, and if we're", "going to be working together. I'd rather call you oy", "name." )
             34 -> playerl(FaceAnim.FRIENDLY, "I prospected both types of rock! One has tin and the other copper.")
             40 -> playerl(FaceAnim.ASKING, "How do I make a weapon out of this?")
             in 43..50 -> npc(FaceAnim.HALF_ASKING, "Would you like me to recap anything?")
@@ -30,7 +30,7 @@ class MiningInstructorDialogue(player: Player? = null) : Dialogue(player) {
         when (getAttribute(player, GameAttributes.TUTORIAL_STAGE, 0)) {
             30 -> when (stage++) {
                 0 -> playerl(FaceAnim.FRIENDLY, "You can call me ${player.username}.")
-                1 -> npc(FaceAnim.FRIENDLY, "Nice to meet you, ${player.username}.", "My name is Dezzick. Let's prospect some rocks.")
+                1 -> npc(FaceAnim.FRIENDLY, "Ok then, ${player.username}.", "My name is Dezzick and I'm a", "miner by trade. Let's prospect some rocks.")
                 2 -> {
                     end()
                     setAttribute(player, GameAttributes.TUTORIAL_STAGE, 31)
@@ -39,13 +39,14 @@ class MiningInstructorDialogue(player: Player? = null) : Dialogue(player) {
             }
 
             34 -> when (stage++) {
-                0 -> npc(FaceAnim.FRIENDLY, "Exactly right! Tin and copper can be smelted into bronze.")
-                1 -> npc(FaceAnim.FRIENDLY, "Try mining some tin and copper. You'll need this.")
-                2 -> {
+                0 -> player(FaceAnim.HAPPY, "I prospected both types of rock! One set contains tin,","and the other has copper ore inside.")
+                2 -> npc(FaceAnim.FRIENDLY, "Absolutely right, ${player.username}. These two ore types can", "be smelted together to make bronze.")
+                3 -> npc(FaceAnim.FRIENDLY, "So now you know wht ore is in the rocks over there,", "why don't you have a go at mining some tin and", "copper? Here you'll need this to start with.")
+                4 -> {
                     addItemOrDrop(player, Items.BRONZE_PICKAXE_1265)
-                    sendItemDialogue(player, Items.BRONZE_PICKAXE_1265, "Dezzick gives you a <col=0000FF>bronze pickaxe</col>!")
+                    sendItemDialogue(player, Items.BRONZE_PICKAXE_1265, "Dezzick gives you a <col=0000FF>bronze pickaxe!</col>")
                 }
-                3 -> {
+                5 -> {
                     end()
                     setAttribute(player, GameAttributes.TUTORIAL_STAGE, 35)
                     TutorialStage.load(player, 35)

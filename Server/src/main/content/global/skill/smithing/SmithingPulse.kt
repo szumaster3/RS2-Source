@@ -1,5 +1,6 @@
 package content.global.skill.smithing
 
+import content.data.GameAttributes
 import content.global.skill.smithing.items.Bars
 import core.api.*
 import core.game.event.ResourceProducedEvent
@@ -18,7 +19,7 @@ import java.util.*
 
 class SmithingPulse(
     player: Player?,
-    item: Item?,
+    private val item: Item?,
     private val bar: Bars,
     private var amount: Int,
 ) : SkillPulse<Item?>(player, item) {
@@ -27,6 +28,10 @@ class SmithingPulse(
             amount = amountInInventory(player, bar.barType.barType)
         }
         player.interfaceManager.close()
+        if(item?.id != Items.BRONZE_DAGGER_1205 && !getAttribute(player, GameAttributes.TUTORIAL_COMPLETE, false)) {
+            sendDialogue(player, "You cannot make this on Tutorial Island.")
+            return false
+        }
         if (getStatLevel(player, Skills.SMITHING) < bar.level) {
             sendDialogue(player, "You need a Smithing level of " + bar.level + " to make a " + getItemName(bar.product) + ".")
             return false

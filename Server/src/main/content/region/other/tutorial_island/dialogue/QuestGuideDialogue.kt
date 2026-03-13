@@ -31,16 +31,16 @@ class QuestGuideDialogue(player: Player? = null) : Dialogue(player) {
         when (getAttribute(player, GameAttributes.TUTORIAL_STAGE, 0)) {
             27 -> {
                 setVarbit(player, Vars.VARBIT_FLASHING_TAB_ICON_3756, 3)
-                sendPlainDialogue(player, true, "${core.tools.BLUE}Open the Quest Journal.", "", "Click on the flashing icon next to your inventory.")
+                sendPlainDialogue(player, true, "Open the Quest Journal.", "", "Click on the flashing icon next to your inventory.")
             }
             28 -> when (stage) {
                 0 -> npc("When you start a quest it will change colour to yellow,", "and to green when you've finished. This is so you can", "easily see what's complete, what's started and what's left", "to begin.").also { stage++ }
                 1 -> npc("The start of quests are easy to find. Look out for the", "star icons on the minimap, just like the one you should", "see marking my house.").also { stage++ }
-                2 -> npc("There's not a lot more I can tell you about questing.", "You have to experience the thrill of it yourself to fully", "understand. You may find some adventure in the caves", "under my house.").also { stage++ }
-                3 -> {
+                2 -> npc("There's not a lot more I can tell you about questing.", "You have to experience the thrill of it yourself to fully", "understand. You may find some adventure in the caves", "under my house.").also {
                     end()
                     setAttribute(player, GameAttributes.TUTORIAL_STAGE, 29)
                     TutorialStage.load(player, 29)
+                    stage = END_DIALOGUE
                 }
             }
 

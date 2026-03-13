@@ -182,7 +182,7 @@ public abstract class MapZone implements Zone {
         Entity target = t.getAttribute("combat-attacker", e);
         if (t.getAttribute("combat-time", -1L) > time && target != e && target.isActive()) {
             if (message && e instanceof Player) {
-                ((Player) e).getPacketDispatch().sendMessage("Someone else is already fighting this" + (t instanceof Player ? " player." : "."));
+                ((Player) e).getPacketDispatch().sendMessage("Someone else is fighting that." + (t instanceof Player ? " player." : "."));
             }
             return false;
         }
