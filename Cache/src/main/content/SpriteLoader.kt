@@ -1,6 +1,7 @@
-package com.alex.loaders.sprites
+package content
 
 import com.alex.Cache
+import com.alex.loaders.sprites.SpriteArchive
 import com.alex.loaders.sprites.SpriteArchive.Companion.decode
 import com.alex.store.Index
 import java.awt.image.BufferedImage
@@ -8,7 +9,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
-object SpriteUtils {
+object SpriteLoader {
     private val spriteCache: HashMap<Int, SpriteArchive> = HashMap()
 
     private val numSprites: Int

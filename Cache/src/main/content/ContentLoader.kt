@@ -1,8 +1,6 @@
 package content
 
 import com.alex.Cache
-import com.alex.loaders.sprites.SpriteUtils
-import com.alex.utils.Utils
 
 object ContentLoader {
 
@@ -25,13 +23,19 @@ object ContentLoader {
 
     private fun load()
     {
+        models()
         sprites()
         interfaces()
     }
 
+    private fun models()
+    {
+        ModelLoader.importModels()
+    }
+
     private fun sprites()
     {
-        SpriteUtils.importSprites()
+        SpriteLoader.importSprites()
     }
 
     private fun interfaces()

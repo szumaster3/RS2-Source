@@ -1,8 +1,8 @@
-package content.items
+package content
 
 import com.alex.tools.ItemCopy
 
-object ItemsLoader {
+object ItemLoader {
 
     fun add() {
         val copy = ItemCopy.create().startAt(20000)
