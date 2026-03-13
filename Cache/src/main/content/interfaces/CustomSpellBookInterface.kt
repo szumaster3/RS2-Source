@@ -70,7 +70,7 @@ object CustomSpellBookInterface {
                 comp.optionMask         = OptionMask.CAST_ON_SELF
                 comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
                 comp.hasScripts         = true
-                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_ON, Sprite.INVISIBLE_SPELL_OFF, 50, "Invisible", "Become invisible for 5 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 4, -1, 0, -1, 0)
+                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_ON, Sprite.INVISIBLE_SPELL_OFF, 50, "Lvl-1 Invisible", "Become invisible for 5 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 4, -1, 0, -1, 0)
             }).save()
 
         IfaceCopy.to(834)
@@ -89,7 +89,7 @@ object CustomSpellBookInterface {
                 comp.optionMask         = OptionMask.CAST_ON_SELF
                 comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
                 comp.hasScripts         = true
-                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV2_ON, Sprite.INVISIBLE_SPELL_LV2_OFF, 70, "Invisible", "Become invisible for 10 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 8, -1, 0, -1, 0)
+                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV2_ON, Sprite.INVISIBLE_SPELL_LV2_OFF, 70, "Lvl-2 Invisible", "Become invisible for 10 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 8, -1, 0, -1, 0)
             }).save()
 
         IfaceCopy.to(834)
@@ -108,7 +108,7 @@ object CustomSpellBookInterface {
                 comp.optionMask         = OptionMask.CAST_ON_SELF
                 comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
                 comp.hasScripts         = true
-                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV3_ON, Sprite.INVISIBLE_SPELL_LV3_OFF, 90, "Invisible", "Become invisible for 15 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 12, -1, 0, -1, 0)
+                comp.onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV3_ON, Sprite.INVISIBLE_SPELL_LV3_OFF, 90, "Lvl-3 Invisible", "Become invisible for 15 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 12, -1, 0, -1, 0)
             }).save()
 
         IfaceCopy.to(834)
