@@ -43,7 +43,7 @@ object spellbook_interface {
                 comp.spriteId           = 1707
                 comp.optionCircumfix    = "Cast"
                 comp.optionMask         = OptionMask.COMBAT_SPELL
-                comp.settings           = IComponentSettings(20480, -1)
+                comp.settings           = IComponentSettings(OptionMask.COMBAT_SPELL, -1)
                 comp.hasScripts         = true
                 comp.onLoadScript       = arrayOf(
                     6,
@@ -61,5 +61,113 @@ object spellbook_interface {
                 )
             })
             .save()
+
+        // TODO:
+
+        Copy.to(834)
+            .startAt(2)
+            .addComponents(Consumer { comp ->
+                comp.name               = "invisible_spell"
+                comp.version            = 3
+                comp.parentId           = parentID
+                comp.type               = ComponentType.SPRITE
+                comp.baseX              = 0
+                comp.baseY              = 0
+                comp.baseWidth          = 24
+                comp.baseHeight         = 24
+                comp.spriteId           = -1
+                comp.optionCircumfix    = "Cast"
+                comp.optionMask         = OptionMask.CAST_ON_SELF
+                comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
+                comp.hasScripts         = true
+                comp.onLoadScript       = arrayOf(
+                    6,
+                    -2147483645,
+                    (parentID shl 16) or 0,
+                    1710,
+                    1709,
+                    50,
+                    "Invisible",
+                    "Become invisible for 5 seconds, avoiding opponent's attacks",
+                    Items.GHOSTLY_GLOVES_6110,
+                    1,
+                    Items.STEAM_RUNE_4694,
+                    4,
+                    -1,
+                    0
+                )
+            })
+            .save()
+
+        Copy.to(834)
+            .startAt(2)
+            .addComponents(Consumer { comp ->
+                comp.name               = "invisible_spell_v2"
+                comp.version            = 3
+                comp.parentId           = parentID
+                comp.type               = ComponentType.SPRITE
+                comp.baseX              = 0
+                comp.baseY              = 0
+                comp.baseWidth          = 24
+                comp.baseHeight         = 24
+                comp.spriteId           = -1
+                comp.optionCircumfix    = "Cast"
+                comp.optionMask         = OptionMask.CAST_ON_SELF
+                comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
+                comp.hasScripts         = true
+                comp.onLoadScript       = arrayOf(
+                    6,
+                    -2147483645,
+                    (parentID shl 16) or 0,
+                    -1,
+                    -1,
+                    70,
+                    "Invisible",
+                    "Become invisible for 10 seconds, avoiding opponent's attacks",
+                    Items.GHOSTLY_GLOVES_6110,
+                    1,
+                    Items.STEAM_RUNE_4694,
+                    8,
+                    -1,
+                    0
+                )
+            })
+            .save()
+
+        Copy.to(834)
+            .startAt(2)
+            .addComponents(Consumer { comp ->
+                comp.name               = "invisible_spell_v3"
+                comp.version            = 3
+                comp.parentId           = parentID
+                comp.type               = ComponentType.SPRITE
+                comp.baseX              = 0
+                comp.baseY              = 0
+                comp.baseWidth          = 24
+                comp.baseHeight         = 24
+                comp.spriteId           = -1
+                comp.optionCircumfix    = "Cast"
+                comp.optionMask         = OptionMask.CAST_ON_SELF
+                comp.settings           = IComponentSettings(OptionMask.CAST_ON_SELF, -1)
+                comp.hasScripts         = true
+                comp.onLoadScript       = arrayOf(
+                    6,
+                    -2147483645,
+                    (parentID shl 16) or 0,
+                    -1,
+                    -1,
+                    90,
+                    "Invisible",
+                    "Become invisible for 15 seconds, avoiding opponent's attacks", // Gain invisibility and avoid attacks for 15 seconds
+                    Items.GHOSTLY_GLOVES_6110,
+                    1,
+                    Items.STEAM_RUNE_4694,
+                    12,
+                    -1,
+                    0
+                )
+            })
+            .save()
+
     }
 }
