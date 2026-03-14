@@ -1,9 +1,9 @@
 package content
 
 import com.alex.Cache
+import com.alex.loaders.print
 
 object ContentLoader {
-
     @JvmStatic
     fun main(args: Array<String>)
     {
@@ -12,8 +12,8 @@ object ContentLoader {
 
             Cache.init()
             println("Populating cache...")
-
-            load()
+            print(Cache.getStore(), "bas_dump.txt")
+//          load()
             println("Cache populated successfully.")
         }.onFailure { e ->
             e.printStackTrace()

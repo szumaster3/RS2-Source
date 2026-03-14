@@ -256,4 +256,13 @@ public final class InputStream extends Stream {
         if (i >= 128) return -49152 + readUnsignedShort();
         return -64 + readUnsignedByte();
     }
+
+    public int readShortSmart() {
+        int peek = buffer[offset] & 0xFF;
+        if (peek < 128) {
+            return readUnsignedByte();
+        } else {
+            return readUnsignedShort() - 32768;
+        }
+    }
 }

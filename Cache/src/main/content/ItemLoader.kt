@@ -8,7 +8,7 @@ object ItemLoader {
         val copy = ItemCopy.create().startAt(ItemCopy.create().load())
 
         copy.addItems({
-            id = Items.ARDOUGNE_CLOAK_1_14701
+            //id = Items.ARDOUGNE_CLOAK_1_14701
             name = "Ardougne cloak 1"
             invModelId = 45499
             cost = 0
@@ -33,7 +33,7 @@ object ItemLoader {
         })
 
         copy.addItems({
-            id = Items.ARDOUGNE_CLOAK_2_14702
+            //id = Items.ARDOUGNE_CLOAK_2_14702
             name = "Ardougne cloak 2"
             invModelId = 45499
             cost = 0
@@ -58,7 +58,7 @@ object ItemLoader {
         })
 
         copy.addItems({
-            id = Items.ARDOUGNE_CLOAK_3_14703
+            //id = Items.ARDOUGNE_CLOAK_3_14703
             name = "Ardougne cloak 3"
             invModelId = 45499
             cost = 0
@@ -81,7 +81,7 @@ object ItemLoader {
         })
 
         copy.addItems({
-            id = Items.ANTIQUE_LAMP_14704
+            //id = Items.ANTIQUE_LAMP_14704
             name = "Antique lamp"
             invModelId = 3348
             cost = 1
@@ -105,7 +105,7 @@ object ItemLoader {
         })
 
         copy.addItems({
-            id = Items.ANTIQUE_LAMP_14705
+            //id = Items.ANTIQUE_LAMP_14705
             name = "Antique lamp"
             invModelId = 3348
             cost = 1
@@ -129,7 +129,7 @@ object ItemLoader {
         })
 
         copy.addItems({
-            id = Items.ANTIQUE_LAMP_14706
+            //id = Items.ANTIQUE_LAMP_14706
             name = "Antique lamp"
             invModelId = 3348
             cost = 1

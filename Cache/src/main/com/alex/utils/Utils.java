@@ -2,13 +2,10 @@ package com.alex.utils;
 
 import com.alex.io.InputStream;
 import com.alex.io.OutputStream;
-
-import java.io.*;
+import com.alex.store.Store;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public final class Utils {
 
@@ -76,5 +73,10 @@ public final class Utils {
 
     public static int getNameHash(String name) {
         return name.toLowerCase(Locale.getDefault()).hashCode();
+    }
+
+    public static int getRenderAnimationDefinitionsSize(Store store) {
+        int lastArchiveId = store.getIndexes()[2].getLastArchiveId();
+        return lastArchiveId * 128 + store.getIndexes()[2].getValidFilesCount(lastArchiveId);
     }
 }

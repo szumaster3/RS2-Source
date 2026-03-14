@@ -312,6 +312,16 @@ public final class OutputStream extends Stream {
 
     }
 
+    public void writeShortSmart(int value) {
+        if (value >= 0 && value < 128) {
+            writeByte(value);
+        } else if (value >= 128 && value < 32768) {
+            writeShort(value + 32768);
+        } else {
+            throw new IllegalArgumentException("Value " + value + " out of range for writeShortSmart");
+        }
+    }
+
     public void setBuffer(byte[] buffer) {
         this.buffer = buffer;
     }
