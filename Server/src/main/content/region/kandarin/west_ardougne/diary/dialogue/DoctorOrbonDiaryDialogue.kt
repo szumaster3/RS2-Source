@@ -84,6 +84,7 @@ class DoctorOrbonDiaryDialogue : DialogueFile() {
                 stage = 0
             }
             18 -> {
+                setTitle(player!!, 2)
                 val altTele = getAttribute(player!!, GameAttributes.ATTRIBUTE_WATCHTOWER_ALT_TELE, false)
                 sendOptions(player!!, "Toggle Watchtower Teleport to ${if (altTele) "Watchtower" else "centre of Yanille"}?", "Yes", "No")
                 stage++
