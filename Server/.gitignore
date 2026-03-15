@@ -24,6 +24,7 @@ Tools/
 bin/**
 data/eco/offer_dispatch_db.emp
 data/logs/**
+data/backup/**
 data/players/**
 data/profile/**
 data/cache.zip
