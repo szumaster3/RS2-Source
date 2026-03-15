@@ -59,14 +59,13 @@ enum class EnchantedJewellery(val options: Array<String>, val locations: Array<L
 
         lock(player, 4)
 
-        val location = if (this@EnchantedJewellery == RING_OF_LIFE) {
-            if(isDiaryComplete(player, DiaryType.ARDOUGNE, 2)) {
+        val location = if (this@EnchantedJewellery == RING_OF_LIFE)
+            if (isDiaryComplete(player, DiaryType.ARDOUGNE, 2))
                 Location.create(2662, 3307, 0)
-            }
-            player.getRespawnLocation()
-        } else {
+            else
+                player.getRespawnLocation()
+        else
             getLocation(buttonID)
-        }
 
         closeAllInterfaces(player)
         queueScript(player, 0, QueueStrength.SOFT) { stage ->
