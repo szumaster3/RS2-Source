@@ -98,6 +98,11 @@ class FruitAndBerryPicker : OptionHandler() {
                         player.achievementDiaryManager.finishTask(player, DiaryType.ARDOUGNE, 1, 5)
                     }
 
+                    if ((plantable == Plantable.PAPAYA_SAPLING && patch.patch == FarmingPatch.TREE_GNOME_VILLAGE_FRUIT_TREE) ||
+                        plantable == Plantable.PALM_SAPLING && patch.patch == FarmingPatch.TREE_GNOME_VILLAGE_FRUIT_TREE) {
+                        player.achievementDiaryManager.finishTask(player, DiaryType.ARDOUGNE, 2, 14)
+                    }
+
                     return patch.getFruitOrBerryCount() == 0
                 }
             },

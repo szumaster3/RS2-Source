@@ -14,6 +14,7 @@ import core.game.node.entity.npc.NPC
 import core.game.node.item.Item
 import core.game.world.map.Location
 import core.game.world.map.RegionManager.getLocalNpcs
+import core.game.world.map.zone.ZoneBorders
 import core.game.world.update.flag.context.Graphics
 import core.net.packet.PacketRepository
 import core.net.packet.context.CameraContext
@@ -57,7 +58,7 @@ class MonkeyMadnessPlugin : InteractionListener {
                 player.equipment.containsAtLeastOneItem(IntArray(4022 - 4021 + 1) { it + 4021 }) &&
                 getQuestStage(player, Quests.MONKEY_MADNESS) == 33
             ) {
-                openDialogue(player, MonkeyDialogue(), npc,)
+                openDialogue(player, MonkeyDialogue(), npc)
             }
             return@on true
         }
@@ -231,6 +232,18 @@ class MonkeyMadnessPlugin : InteractionListener {
 
             */
             return@onEquip true
+        }
+    }
+
+    override fun defineDestinationOverrides() {
+        setDest(IntType.NPC, NPCs.MONKEY_MINDER_1469) { player, node ->
+            val bottomMonkeyCage = ZoneBorders(2598, 3274, 2601, 3278)
+            val centerMonkeyCage = ZoneBorders(2600, 3276, 2606, 3282)
+            if (inBorders(player, bottomMonkeyCage) || inBorders(player, centerMonkeyCage)) {
+                return@setDest player.location
+            } else {
+                return@setDest node.location
+            }
         }
     }
 }

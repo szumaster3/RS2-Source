@@ -103,8 +103,10 @@ class ModernSpellbookTeleport : SpellListener("modern") {
                 sendMessage(player, "You haven't learnt how to cast this spell yet.")
                 return@onCast
             }
+            val alternateTeleport = getAttribute(player, GameAttributes.ATTRIBUTE_WATCHTOWER_ALT_TELE, false)
+            val dest = if (alternateTeleport) Location.create(2606, 3093, 0) else Location.create(2549, 3112, 0)
             requires(player = player, magicLevel = 58, runes = arrayOf(Item(Items.EARTH_RUNE_557, 2), Item(Items.LAW_RUNE_563, 2)))
-            sendTeleport(player = player, xp = 68.0, location = Location.create(2549, 3112, 0))
+            sendTeleport(player = player, xp = 68.0, location = dest)
             finishDiaryTask(player, DiaryType.ARDOUGNE, 1, 6)
         }
 

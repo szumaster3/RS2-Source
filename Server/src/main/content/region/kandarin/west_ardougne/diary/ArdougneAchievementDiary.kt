@@ -26,6 +26,8 @@ import shared.consts.Scenery
 class ArdougneAchievementDiary : DiaryEventHookBase(DiaryType.ARDOUGNE) {
     private val COMBAT_TRAINING_CAMP_AREA = ZoneBorders(2516, 3357, 2519, 3360)
     private val ARDOUGNE_NATURE_RUNE_CHEST_AREA = ZoneBorders(2670, 3298, 2678, 3304, 1, true)
+    private val SOUTH_OF_MONASTERY_AREA = ZoneBorders(2622, 3199, 2642, 3218)
+
     private val RING_OF_DUELING = arrayOf(Items.RING_OF_DUELLING8_2552, Items.RING_OF_DUELLING7_2554, Items.RING_OF_DUELLING6_2556, Items.RING_OF_DUELLING5_2558, Items.RING_OF_DUELLING4_2560, Items.RING_OF_DUELLING3_2562, Items.RING_OF_DUELLING2_2564, Items.RING_OF_DUELLING1_2566)
     private val WIZARD_PORTAL = intArrayOf(Scenery.MAGIC_PORTAL_2156, Scenery.MAGIC_PORTAL_2157, Scenery.MAGIC_PORTAL_2158)
 
@@ -98,13 +100,13 @@ class ArdougneAchievementDiary : DiaryEventHookBase(DiaryType.ARDOUGNE) {
             const val CAST_OURANIA_TELEPORT_SPELL = 5 // Outside
             const val PICKPOCKET_WATCHMAN_WHILE_WEARING_GLOVES = 6 // Outside
             const val KILL_FROGEEL_IN_TOWER_OF_LIFE = 7
-            const val ZOOKEEPER_PUT_YOU_IN_MONKEY_CAGE = 8
+            const val ZOOKEEPER_PUT_YOU_IN_MONKEY_CAGE = 8 // Outside
             const val KILL_OWN_JADE_VINE_AFTER_BACK_TO_MY_ROOTS = 9
-            const val USE_AIR_GUITAR_EMOTE_NEAR_MUSICIAN = 10
+            const val USE_AIR_GUITAR_EMOTE_NEAR_MUSICIAN = 10 // Outside
             const val CAST_ARD_TELEPORT_SPELL = 11 // Outside
             const val CROSS_MONKEY_BARS_IN_AGILITY_DUNGEON = 12 // Outside
             const val CATCH_RED_SALAMANDER_OUTSIDE_OURANIA_ALTAR = 13
-            const val PICK_PAPAYA_OR_COCONUT_NEAR_TREE_GNOME_VILLAGE = 14
+            const val PICK_PAPAYA_OR_COCONUT_NEAR_TREE_GNOME_VILLAGE = 14 // Outside
             const val STEAL_BLOOD_RUNES_FROM_CHAOS_DRUID_TOWER = 15
             const val USE_CATAPULT_IN_CASTLE_WARS_AFTER_CONSTRUCTION = 16
         }

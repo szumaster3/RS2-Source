@@ -449,7 +449,7 @@ enum class DiaryType(
                 "Kill a frogeel in the Tower of Life.",
                 "Have a zookeeper put you in Ardougne Zoo's monkey cage.",
                 "Kill your own jade vine after the Back to my Roots quest.",
-                "Use the Air Guitar emote near the musician southeast of the monastery<br><br>south of Ardougne.",
+                "Use the Air Guitar emote near the south-east of the monastery<br><br>south of Ardougne.",
                 "Cast the Ardougne Teleport spell.",
                 "Cross the monkey bars in the Yanille Agility Dungeon.",
                 "Catch a red salamander from the Hunter area outside of Ourania Altar.",
