@@ -2,123 +2,83 @@ package com.alex.tools
 
 import com.alex.Cache
 import com.alex.loaders.items.ItemDefinition
-import com.alex.store.Store
-import java.util.function.Consumer
 
-class ItemCopy private constructor() {
+class ItemCopy private constructor(private val startIdInitial: Int = 0) {
 
-    private val tasks = mutableListOf<ItemTask>()
-    private var currentId = 0
-    private var modifier: Consumer<ItemDefinition>? = null
+    private var startId: Int = startIdInitial
     private val copiedItems = mutableListOf<ItemDefinition>()
 
+    companion object {
+        fun create(): ItemCopy = ItemCopy()
+    }
+
     fun startAt(id: Int): ItemCopy {
-        this.currentId = id
+        this.startId = id
         return this
     }
 
-    fun modify(modifier: Consumer<ItemDefinition>?): ItemCopy {
-        this.modifier = modifier
+    fun addItem(setup: ItemDefinition.() -> Unit): ItemCopy {
+        val store = Cache.getStore() ?: throw IllegalStateException("Cache store is not loaded!")
+        val item = ItemDefinition(store, startId, false)
+        item.setup()
+        item.write(store)
+        copiedItems.add(item)
+        startId++
         return this
     }
 
-    fun copy(sourceId: Int): ItemTask {
-        val task = ItemTask(sourceId, currentId++)
-        tasks.add(task)
-        return task
-    }
-
-    fun copy(vararg sourceIds: Int): ItemCopy {
-        sourceIds.forEach { copy(it) }
+    fun addItems(vararg setups: ItemDefinition.() -> Unit): ItemCopy {
+        setups.forEach { addItem(it) }
         return this
     }
 
-    fun copyRange(from: Int, to: Int): ItemCopy {
-        for (i in from..to) copy(i)
-        return this
-    }
-
-    fun addItems(vararg modifiers: Consumer<ItemDefinition>?): ItemCopy {
-        for (mod in modifiers) {
-            val task = ItemTask(-1, currentId++)
-            task.modifier = mod
-            tasks.add(task)
-        }
-        return this
-    }
-
-    fun addItems(vararg modifiers: ItemDefinition.() -> Unit): ItemCopy {
-        for (mod in modifiers) {
-            val task = ItemTask(-1, currentId++)
-            task.kModifier = mod
-            tasks.add(task)
-        }
-        return this
-    }
-
-    private fun createNewItem(store: Store, id: Int): ItemDefinition {
-        return ItemDefinition(store, id, false)
-    }
-
-    fun save(): List<ItemDefinition> {
-        copiedItems.clear()
-        val store = Cache.getStore() ?: return copiedItems
-
-        for (task in tasks) {
-
-            val item = if (task.sourceId >= 0) {
-                val src = ItemDefinition.getItemDefinition(store, task.sourceId)
-                val clone = src.clone() as ItemDefinition
-                clone.id = task.targetId
-                clone
-            } else {
-                createNewItem(store, task.targetId)
+    fun ItemDefinition.changeModelColor(originalColor: Int, modifiedColor: Int) {
+        if (this.originalModelColors != null) {
+            for (i in this.originalModelColors!!.indices) {
+                if (this.originalModelColors!![i] == originalColor) {
+                    this.modifiedModelColors!![i] = modifiedColor
+                    return
+                }
             }
 
-            modifier?.accept(item)
-            task.modifier?.accept(item)
-            task.kModifier?.invoke(item)
-
-            item.write(store)
-
-            copiedItems.add(item)
+            val newOriginal = originalModelColors!!.copyOf(originalModelColors!!.size + 1)
+            val newModified = modifiedModelColors!!.copyOf(modifiedModelColors!!.size + 1)
+            newOriginal[newOriginal.size - 1] = originalColor
+            newModified[newModified.size - 1] = modifiedColor
+            this.originalModelColors = newOriginal
+            this.modifiedModelColors = newModified
+        } else {
+            this.originalModelColors = intArrayOf(originalColor)
+            this.modifiedModelColors = intArrayOf(modifiedColor)
         }
-
-        return copiedItems
     }
 
-    fun addNoteItem(templateId: Int = 799): ItemDefinition {
-        val store = Cache.getStore() ?: error("Store not initialized")
-        val baseItem = copiedItems.lastOrNull() ?: error("No base item to create a note from")
+    fun ItemDefinition.changeTextureColor(originalColor: Short, modifiedColor: Short) {
+        if (this.originalTextureColors != null) {
+            for (i in this.originalTextureColors!!.indices) {
+                if (this.originalTextureColors!![i] == originalColor) {
+                    this.modifiedTextureColors!![i] = modifiedColor
+                    return
+                }
+            }
 
-        val newId = currentId++
-
-        val noteItem = ItemDefinition(store, newId, false).apply {
-            id = newId
-            notedItemId = baseItem.id
-            switchNoteItemId = templateId
+            val newOriginal = originalTextureColors!!.copyOf(originalTextureColors!!.size + 1)
+            val newModified = modifiedTextureColors!!.copyOf(modifiedTextureColors!!.size + 1)
+            newOriginal[newOriginal.size - 1] = originalColor
+            newModified[newModified.size - 1] = modifiedColor
+            this.originalTextureColors = newOriginal
+            this.modifiedTextureColors = newModified
+        } else {
+            this.originalTextureColors = shortArrayOf(originalColor)
+            this.modifiedTextureColors = shortArrayOf(modifiedColor)
         }
-        noteItem.write(store)
-        copiedItems.add(noteItem)
-        return noteItem
+    }
+
+    fun save(): ItemCopy {
+        val store = Cache.getStore() ?: throw IllegalStateException("Cache store is not loaded!")
+        copiedItems.forEach { it.write(store) }
+        return this
     }
 
     fun getCopiedItems(): List<ItemDefinition> = copiedItems
-
-    class ItemTask(val sourceId: Int, val targetId: Int) {
-        var modifier: Consumer<ItemDefinition>? = null
-        var kModifier: (ItemDefinition.() -> Unit)? = null
-    }
-
-    fun load(): Int {
-        val store = Cache.getStore() ?: error("Store not initialized")
-        val lastArchiveId: Int = store.indexes[19].lastArchiveId
-        val validFiles = store.indexes[19].getValidFilesCount(lastArchiveId)
-        return lastArchiveId * 256 + validFiles
-    }
-
-    companion object {
-        @JvmStatic
-        fun create() = ItemCopy()
-    }
 }

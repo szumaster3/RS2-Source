@@ -21,6 +21,7 @@ object ModelLoader {
                 val id = file.nameWithoutExtension.toIntOrNull() ?: return@forEach
                 val data = Files.readAllBytes(file.toPath())
                 modelIndex.putFile(id, 0, data)
+                println("Packed model $id")
             } catch (_: Exception) {
 
             }

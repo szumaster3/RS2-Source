@@ -20,10 +20,10 @@ object ContentLoader {
 
     private fun load()
     {
-//      models()
+        models()
 //      sprites()
         interfaces()
-//      items()
+        items()
     }
 
     private fun models()
