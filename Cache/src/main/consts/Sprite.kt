@@ -1,4 +1,4 @@
-package content.data
+package consts
 
 object Sprite {
     const val BLIZZARD_SPELL_OFF = 1707

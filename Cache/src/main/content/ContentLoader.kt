@@ -1,49 +1,57 @@
 package content
 
 import com.alex.Cache
+import com.alex.loaders.BasDefinition
+import com.alex.loaders.LocDefinition
+import com.alex.loaders.items.ItemDefinition
+import com.alex.tools.ModelPacker
+import content.items.AntiqueLamps
+import content.items.ArdougneCloaks
 
 object ContentLoader {
     @JvmStatic
-    fun main(args: Array<String>)
-    {
+    fun main(args: Array<String>) {
         runCatching {
-            println("Initializing cache...")
             Cache.init()
-            println("Populating cache...")
+            //print()
             load()
-            println("Cache populated successfully.")
         }.onFailure { e ->
             e.printStackTrace()
         }
-
     }
 
-    private fun load()
-    {
+    private fun load() {
         models()
-//      sprites()
+        sprites()
+        objects()
         interfaces()
         items()
     }
 
-    private fun models()
-    {
-        ModelLoader.importModels()
-    }
-
-    private fun sprites()
-    {
-        SpriteLoader.importSprites()
-    }
-
-    private fun interfaces()
-    {
-//      content.interfaces.CustomSpellBookInterface.add()
+    private fun interfaces() {
         content.interfaces.AchievementDiaryInterface.add()
     }
 
-    private fun items()
-    {
-        ItemLoader.importItems()
+    private fun items() {
+        ArdougneCloaks.add()
+        AntiqueLamps.add()
+    }
+
+    private fun objects() {
+
+    }
+
+    private fun models() {
+        ModelPacker.add()
+    }
+
+    private fun sprites() {
+        //SpritePacker.add()
+    }
+
+    private fun print() {
+        LocDefinition.print(Cache.getStore(), "dumps/object_dumps.txt")
+        ItemDefinition.print(Cache.getStore(), "dumps/item_dumps.txt")
+        BasDefinition.print(Cache.getStore(), "dumps/bas_dumps.txt")
     }
 }

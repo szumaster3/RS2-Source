@@ -1,4 +1,4 @@
-package content.data
+package consts
 
 /**
  * @see <a href="References/interface_font_examples.png">References/interface_font_examples.png</a>

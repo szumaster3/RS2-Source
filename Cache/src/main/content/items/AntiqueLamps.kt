@@ -1,11 +1,11 @@
 package content.items
 
-import com.alex.tools.ItemCopy
+import com.alex.tools.ItemPacker
 
 object AntiqueLamps {
 
-    fun importItems() {
-        val copy = ItemCopy.create().startAt(14704)
+    fun add() {
+        val copy = ItemPacker.create().startAt(14704)
 
         copy.addItems(
             {

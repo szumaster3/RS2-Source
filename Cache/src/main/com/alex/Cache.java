@@ -11,6 +11,7 @@ public final class Cache {
 
     public static void init() throws IOException {
         store = new Store("../Server/data/cache/");
+        System.out.println("Initializing cache...");
     }
 
     public static void init(String path) throws IOException {

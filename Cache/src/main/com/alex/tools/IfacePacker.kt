@@ -6,7 +6,7 @@ import com.alex.util.crc32.CRC32HGenerator
 import java.util.*
 import kotlin.collections.ArrayList
 
-class IfaceCopy private constructor(val targetInterface: Int) {
+class IfacePacker private constructor(val targetInterfaceId: Int) {
 
     private data class Task(
         val sourceId: Int,
@@ -21,18 +21,18 @@ class IfaceCopy private constructor(val targetInterface: Int) {
     private var globalModifier: (ComponentDefinition.() -> Unit)? = null
     private val copiedComponents = mutableListOf<ComponentDefinition>()
 
-    fun from(sourceInterface: Int): IfaceCopy {
+    fun from(sourceInterface: Int): IfacePacker {
         this.src = sourceInterface
         return this
     }
 
-    fun startAt(id: Int): IfaceCopy {
+    fun startAt(id: Int): IfacePacker {
         this.startId = id
         this.currentId = id
         return this
     }
 
-    fun modify(modifier: ComponentDefinition.() -> Unit): IfaceCopy {
+    fun modify(modifier: ComponentDefinition.() -> Unit): IfacePacker {
         globalModifier = if (globalModifier == null) {
             modifier
         } else {
@@ -45,41 +45,41 @@ class IfaceCopy private constructor(val targetInterface: Int) {
         return this
     }
 
-    fun copy(sourceId: Int, modifier: ComponentDefinition.() -> Unit = {}): IfaceCopy {
+    fun copy(sourceId: Int, modifier: ComponentDefinition.() -> Unit = {}): IfacePacker {
         tasks.add(Task(sourceId, currentId++, modifier))
         return this
     }
 
-    fun copy(vararg sourceIds: Int): IfaceCopy {
+    fun copy(vararg sourceIds: Int): IfacePacker {
         sourceIds.forEach { copy(it) }
         return this
     }
 
-    fun copyRange(from: Int, to: Int): IfaceCopy {
+    fun copyRange(from: Int, to: Int): IfacePacker {
         for (i in from..to) copy(i)
         return this
     }
 
-    fun addComponents(vararg modifiers: ComponentDefinition.() -> Unit): IfaceCopy {
+    fun addComponents(vararg modifiers: ComponentDefinition.() -> Unit): IfacePacker {
         modifiers.forEach { mod -> tasks.add(Task(-1, currentId++, mod)) }
         return this
     }
 
-    fun addComponent(modifier: ComponentDefinition.() -> Unit): IfaceCopy {
+    fun addComponent(modifier: ComponentDefinition.() -> Unit): IfacePacker {
         tasks.add(Task(-1, currentId++, modifier))
         return this
     }
 
     private fun createNewComponent(targetId: Int): ComponentDefinition {
-        var comps = ComponentDefinition.getInterface(targetInterface, true)
+        var comps = ComponentDefinition.getInterface(targetInterfaceId, true)
         if (comps!!.size <= targetId) {
             val expanded = arrayOfNulls<ComponentDefinition>(targetId + 1)
             System.arraycopy(comps, 0, expanded, 0, comps.size)
-            ComponentDefinition.componentDefinition?.set(targetInterface, expanded)
+            ComponentDefinition.componentDefinition?.set(targetInterfaceId, expanded)
             comps = expanded
         }
         if (comps[targetId] == null) comps[targetId] = ComponentDefinition()
-        comps[targetId]!!.componentHash = (targetInterface shl 16) or targetId
+        comps[targetId]!!.componentHash = (targetInterfaceId shl 16) or targetId
         return comps[targetId]!!
     }
 
@@ -93,38 +93,28 @@ class IfaceCopy private constructor(val targetInterface: Int) {
             else
                 createNewComponent(task.targetId)
 
-            comp!!.componentHash = (targetInterface shl 16) or task.targetId
+            comp!!.componentHash = (targetInterfaceId shl 16) or task.targetId
 
             globalModifier?.let { it(comp) }
             task.modifier?.let { it(comp) }
 
             val status = if (task.sourceId >= 0) "Modified" else "New"
-            println("Packed ${comp.name ?: "unnamed"}:$targetInterface:${task.targetId} [$status]")
+            println("Packed ${comp.name ?: "unnamed"}:$targetInterfaceId:${task.targetId} [$status]")
 
             val fileNameHash: Int? = comp.name?.takeIf { it.isNotBlank() }?.let {
                 CRC32HGenerator.getHash(it.uppercase(Locale.getDefault()).toByteArray(Charsets.UTF_8))
             }
 
             if (fileNameHash != null) {
-                store.indexes[3].putFile(
-                    targetInterface,
-                    task.targetId,
-                    2,
-                    comp.encode(comp.hasScripts),
-                    null,
-                    true,
-                    true,
-                    -1,
-                    fileNameHash
-                )
+                store.indexes[3].putFile(targetInterfaceId, task.targetId, 2, comp.encodeIf3(), null, true, true, -1, fileNameHash)
             } else {
-                store.indexes[3].putFile(targetInterface, task.targetId, comp.encode(comp.hasScripts))
+                store.indexes[3].putFile(targetInterfaceId, task.targetId, comp.encodeIf3())
             }
 
             copiedComponents.add(comp)
         }
 
-        init(targetInterface)
+        init(targetInterfaceId)
         return copiedComponents
     }
 
@@ -149,18 +139,18 @@ class IfaceCopy private constructor(val targetInterface: Int) {
 
     companion object {
         @JvmStatic
-        fun to(targetInterface: Int): IfaceCopy = IfaceCopy(targetInterface)
+        fun to(targetInterface: Int): IfacePacker = IfacePacker(targetInterface)
 
         @JvmStatic
-        fun newInterface(): IfaceCopy {
+        fun newInterface(): IfacePacker {
             val id = createInterface(6, 36)
-            return IfaceCopy(id)
+            return IfacePacker(id)
         }
 
         @JvmStatic
-        fun newInterface(templateInterface: Int, templateComponent: Int): IfaceCopy {
+        fun newInterface(templateInterface: Int, templateComponent: Int): IfacePacker {
             val id = createInterface(templateInterface, templateComponent)
-            return IfaceCopy(id)
+            return IfacePacker(id)
         }
 
         @JvmStatic
@@ -171,7 +161,7 @@ class IfaceCopy private constructor(val targetInterface: Int) {
                 base.baseX = 0
                 base.baseY = 0
                 base.parentId = -1
-                Cache.getStore()!!.indexes[3].putFile(newId, 0, base.encode(base.hasScripts))
+                Cache.getStore()!!.indexes[3].putFile(newId, 0, base.encodeIf3())
             }
             ComponentDefinition.componentDefinition = arrayOfNulls(newId + 1)
             return newId

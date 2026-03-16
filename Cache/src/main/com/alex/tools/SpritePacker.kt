@@ -1,4 +1,4 @@
-package content
+package com.alex.tools
 
 import com.alex.Cache
 import com.alex.loaders.sprites.SpriteArchive
@@ -9,7 +9,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
-object SpriteLoader {
+object SpritePacker {
     private val spriteCache: HashMap<Int, SpriteArchive> = HashMap()
 
     private val numSprites: Int
@@ -40,11 +40,15 @@ object SpriteLoader {
         return success
     }
 
-    fun importSprites() {
+    fun add() {
         val folder = File("../Assets/sprites/")
         if (!folder.exists() || !folder.isDirectory) return
 
-        val files = folder.listFiles { f -> f.extension.lowercase() == "png" }?.sorted() ?: return
+        val files = folder.walkTopDown()
+            .filter { it.isFile && it.extension.lowercase() == "png" }
+            .toList()
+            .sortedBy { it.name }
+
         if (files.isEmpty()) return
 
         val addedArchives = mutableListOf<Pair<String, Int>>()
@@ -59,11 +63,15 @@ object SpriteLoader {
                 val success = put(archiveId, encoded.array())
                 if (success) addedArchives.add(file.name to archiveId)
                 archiveId++
-            } catch (_: Exception) {}
+            } catch (ex: Exception) {
+                println("Failed to add sprite: ${file.name} -> ${ex.message}")
+            }
         }
 
         if (addedArchives.isNotEmpty()) {
-            addedArchives.forEach { (name, id) -> println("Added sprite $id") }
+            addedArchives.forEach { (name, id) ->
+                println("Packed sprite $id")
+            }
         }
     }
 

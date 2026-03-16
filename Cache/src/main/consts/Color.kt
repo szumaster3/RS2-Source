@@ -1,4 +1,4 @@
-package content.data
+package consts
 
 object Color {
     const val WHITE = 0xFFFFFF

@@ -1,4 +1,4 @@
-package content.data
+package consts
 
 object OptionMask {
 

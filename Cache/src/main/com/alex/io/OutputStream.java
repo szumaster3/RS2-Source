@@ -322,6 +322,17 @@ public final class OutputStream extends Stream {
         }
     }
 
+    public void writeUnsignedShort(int value) {
+        this.writeByte((value >> 8) & 0xFF);
+        this.writeByte(value & 0xFF);
+    }
+
+    public void writeMedium(int value) {
+        writeByte((value >> 16) & 0xFF);
+        writeByte((value >> 8) & 0xFF);
+        writeByte(value & 0xFF);
+    }
+
     public void setBuffer(byte[] buffer) {
         this.buffer = buffer;
     }

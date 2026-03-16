@@ -5,10 +5,7 @@ import com.alex.io.OutputStream;
 import com.alex.store.Store;
 import com.alex.utils.Utils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,10 +40,6 @@ public class ItemDefinition implements Cloneable {
    public short[] modifiedTextureColors;
    public byte[] recolorPalette;
    public int[] unknownArray2;
-   public int[] unknownArray4;
-   public int[] unknownArray5;
-   public byte[] unknownArray6;
-   public byte[] unknownArray3;
    public boolean unnoted;
    public int primaryMaleDialogueHead;
    public int primaryFemaleDialogueHead;
@@ -80,8 +73,6 @@ public class ItemDefinition implements Cloneable {
    public int unknownInt23;
    public int unknownValue1;
    public int unknownValue2;
-	private int opcode218;
-	private int opcode219;
    public HashMap clientScriptData;
 
    public static ItemDefinition getItemDefinition(Store cache, int itemId) {
@@ -105,16 +96,27 @@ public class ItemDefinition implements Cloneable {
       }
    }
 
-   public static void print(Store cache) {
-      try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("items_dump.txt")))) {
-         printer = writer;
+   public static void print(Store cache, String outputFile) {
+      try {
+         File file = new File(outputFile);
+         File parent = file.getParentFile();
+         if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+         }
+         if (!file.exists()) {
+            file.createNewFile();
+         }
 
-         int size = Utils.getItemDefinitionsSize(cache);
-         for (int id = 0; id < size; id++) {
-            ItemDefinition item = new ItemDefinition(cache, id, false);
-            item.loadItemDefinition(cache);
-            if (item.loaded) {
-               printItemData(item);
+         try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))) {
+            printer = writer;
+
+            int size = Utils.getItemDefinitionsSize(cache);
+            for (int id = 0; id < size; id++) {
+               ItemDefinition item = new ItemDefinition(cache, id, false);
+               item.loadItemDefinition(cache);
+               if (item.loaded) {
+                  printItemData(item);
+               }
             }
          }
 

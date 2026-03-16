@@ -3,12 +3,10 @@ package content.interfaces
 import com.alex.loaders.interfaces.ComponentDefinition
 import com.alex.loaders.interfaces.ComponentType
 import com.alex.loaders.interfaces.IComponentSettings
-import com.alex.tools.IfaceCopy
-import content.data.OptionMask
-import content.data.Sprite
+import com.alex.tools.IfacePacker
+import consts.OptionMask
+import consts.Sprite
 import shared.consts.Items
-import java.util.function.Consumer
-
 
 // TODO.
 object CustomSpellBookInterface {
@@ -17,7 +15,7 @@ object CustomSpellBookInterface {
 
         val tabLayer = ComponentDefinition.getInterfaceComponent(834,16)?.componentHash
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(0)
             .addComponent {
                 name               = "guild_home_teleport"
@@ -36,7 +34,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, 356, 406, 0, "Guild Hall Home Teleport", "Requires no runes - recharge time 30 mins. Warning: This spell takes a long time to cast and will be interrupted by combat.", -1, 0, -1, 0, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(1)
             .addComponent {
                 name               = "blizzard_spell"
@@ -55,7 +53,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, 356, 406, 0, Sprite.BLIZZARD_SPELL_ON, Sprite.BLIZZARD_SPELL_OFF, 9, "Blizzard", "A low level Ice missile", Items.MIST_RUNE_4695, 1, -1, 0, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(2)
             .addComponent {
                 name               = "invisible_spell_lv1"
@@ -74,7 +72,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_ON, Sprite.INVISIBLE_SPELL_OFF, 50, "Lvl-1 Invisible", "Become invisible for 5 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 4, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(3)
             .addComponent {
                 name               = "invisible_spell_lv2"
@@ -93,7 +91,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV2_ON, Sprite.INVISIBLE_SPELL_LV2_OFF, 70, "Lvl-2 Invisible", "Become invisible for 10 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 8, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(4)
             .addComponent {
                 name               = "invisible_spell_lv3"
@@ -112,7 +110,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.INVISIBLE_SPELL_LV3_ON, Sprite.INVISIBLE_SPELL_LV3_OFF, 90, "Lvl-3 Invisible", "Become invisible for 15 seconds, avoiding opponent's attacks", Items.GHOSTLY_GLOVES_6110, 1, Items.STEAM_RUNE_4694, 12, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(5)
             .addComponent {
                 name               = "god_wars_dungeon_teleport"
@@ -131,7 +129,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.GWD_TELEPORT_SPELL_ON, Sprite.GWD_TELEPORT_SPELL_OFF, 99, "God Wars Dungeon Teleport", "Teleports you to God Wars Dungeon", 0, 1, 0, 1, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(6)
             .addComponent {
                 name               = "guild_warehouse_teleport"
@@ -150,7 +148,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.MISSION_TELEPORT_SPELL_ON, Sprite.MISSION_TELEPORT_SPELL_OFF, 25, "Guild Teleport", "Teleport you to Guild Warehouse", 0, 1, Items.LAW_RUNE_563, 1, Items.AIR_RUNE_556, 1, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(7)
             .addComponent {
                 name               = "create_food_spell"
@@ -169,7 +167,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, Sprite.CREATE_FOOD_SPELL_ON, Sprite.CREATE_FOOD_SPELL_OFF, 80, "Create Meat", "Creates random meat. Reduces Magic Level by 3.", Items.LAVA_RUNE_4699, 2, Items.NATURE_RUNE_561, 1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(8)
             .addComponent {
                 name               = "sort_button_highlight"
@@ -194,7 +192,7 @@ object CustomSpellBookInterface {
                 onClickRepeat      = arrayOf(2058, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(9)
             .addComponent {
                 name               = "sort_button_v1"
@@ -217,7 +215,7 @@ object CustomSpellBookInterface {
                 onClickRepeat      = arrayOf(2058, 1)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(10)
             .addComponent {
                 name               = "sort_button_v2"
@@ -240,7 +238,7 @@ object CustomSpellBookInterface {
                 onClickRepeat      = arrayOf(2058, 2)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(11)
             .addComponent {
                 name = "sort_sprite_v1"
@@ -259,7 +257,7 @@ object CustomSpellBookInterface {
                 rightClickOptions = arrayOf("", "", "", "", "", "", "", "", "", "   ")
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(12)
             .addComponent {
                 name               = "sort_sprite_v2"
@@ -278,7 +276,7 @@ object CustomSpellBookInterface {
                 rightClickOptions  = arrayOf("", "", "", "", "", "", "", "", "", "   ")
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(13)
             .addComponent {
                 name               = "sort_sprite_v3"
@@ -297,7 +295,7 @@ object CustomSpellBookInterface {
                 rightClickOptions  = arrayOf("", "", "", "", "", "", "", "", "", "   ")
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(14)
             .addComponent {
                 name               = "layer_v1"
@@ -316,7 +314,7 @@ object CustomSpellBookInterface {
 
         val parentLayer = ComponentDefinition.getInterfaceComponent(834, 14)!!.componentHash
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(15)
             .addComponent {
                 name               = "layer_v2"
@@ -332,7 +330,7 @@ object CustomSpellBookInterface {
                 rightClickOptions  = arrayOf("", "", "", "", "", "", "", "", "", "  ")
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(16)
             .addComponent {
                 name               = "tab_border"
@@ -346,7 +344,7 @@ object CustomSpellBookInterface {
                 settings           = IComponentSettings(-1, -1)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(999999999)
             .addComponent {
                 name               = "arctic_dig_spell"
@@ -364,7 +362,7 @@ object CustomSpellBookInterface {
                 onLoadScript       = arrayOf(6, -2147483645, tabLayer, -1, -1, 64, "Arctic Dig", "Allows you to dig up treasure in the snow without a spade", Items.ELEMENTAL_RUNE_12850, 4, Items.DUST_RUNE_4696, 3, -1, 0, -1, 0)
             }.save()
 
-        IfaceCopy.to(834)
+        IfacePacker.to(834)
             .startAt(999999999)
             .addComponent {
                 name               = "arctic_agility_spell"

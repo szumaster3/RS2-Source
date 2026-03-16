@@ -80,6 +80,11 @@ public final class Utils {
         return lastArchiveId * 256 + store.getIndexes()[19].getValidFilesCount(lastArchiveId);
     }
 
+    public static final int getObjectDefinitionsSize(Store store) {
+        int lastArchiveId = store.getIndexes()[16].getLastArchiveId();
+        return lastArchiveId * 256 + store.getIndexes()[16].getValidFilesCount(lastArchiveId);
+    }
+
     public static int getRenderAnimationDefinitionsSize(Store store) {
         int lastArchiveId = store.getIndexes()[2].getLastArchiveId();
         return lastArchiveId * 128 + store.getIndexes()[2].getValidFilesCount(lastArchiveId);

@@ -1,17 +1,17 @@
-package content
+package com.alex.tools
 
 import com.alex.Cache
 import com.alex.store.Index
 import java.io.File
 import java.nio.file.Files
 
-object ModelLoader {
+object ModelPacker {
 
     private val modelIndex: Index
         get() = Cache.getStore()!!.indexes[7]
 
     @JvmStatic
-    fun importModels() {
+    fun add() {
         val folder = File("../Assets/models/")
 
         if (!folder.exists() || !folder.isDirectory) return

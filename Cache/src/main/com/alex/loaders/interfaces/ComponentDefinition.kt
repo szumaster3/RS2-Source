@@ -13,15 +13,10 @@ class ComponentDefinition {
     var interfaceId: Int = 0
     var componentId: Int = 0
 
-    var positionX: Int = 0
-    var positionY: Int = 0
     var baseX: Int = 0
     var baseY: Int = 0
     var baseWidth: Int = 0
     var baseHeight: Int = 0
-
-    var width: Int = 0
-    var height: Int = 0
 
     var modelObjWidth: Int = 0
     var modelObjHeight: Int = 0
@@ -79,7 +74,6 @@ class ComponentDefinition {
     var optionBase: String? = ""
     var optionCircumfix: String? = ""
     var optionMask: Int = 0
-    var Option: Int = 0
     private var mask = -1
 
     var dragDeadtime: Int = 0
@@ -122,37 +116,6 @@ class ComponentDefinition {
     private var opId: IntArray? = null
     private var repeatCount: ByteArray? = null
     private var modifier: ByteArray? = null
-
-    private var buttonType = 0
-    private var cs1ComparisonOpcodes: IntArray? = null
-    private var cs1ComparisonOperands: IntArray? = null
-    private var cs1Scripts: Array<IntArray>? = null
-
-    private var activeText: String? = null
-    private var activeColor = 0
-    private var overColor = 0
-    private var unknownColor = 0
-
-    private var unknownProp_11 = 0
-    private var objCounts: IntArray? = null
-    private var objTypes: IntArray? = null
-
-    private var invMarginX = 0
-    private var invMarginY = 0
-    private var invOffsetX: IntArray? = null
-    private var invOffsetY: IntArray? = null
-    private var invSprite: IntArray? = null
-    private var invOptions: Array<String?>? = null
-
-    private var activeSpriteId = -1
-    private var activeModelType = 0
-    private var activeModelId = -1
-    private var activeModelAnimId = -1
-
-    private var option: String = ""
-    private var optionSuffix: String = ""
-
-    fun encode(hasScripts: Boolean): ByteArray = encodeIf3()
 
     fun encodeIf3(): ByteArray {
         val out = OutputStream()
