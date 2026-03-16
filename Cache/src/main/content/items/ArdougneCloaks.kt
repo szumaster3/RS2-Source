@@ -78,6 +78,5 @@ object ArdougneCloaks {
         )
 
         copy.save()
-        copy.getCopiedItems().forEach { println("Packed item ${it.name}:${it.id}") }
     }
 }
