@@ -90,8 +90,7 @@ class GrewDialogue(player: Player? = null) : Dialogue(player) {
             5 -> npc(FaceAnim.OLD_NEUTRAL, "What can a morsel like you do for me?").also { stage++ }
             6 -> player("I am a mighty adventurer, slayer of monsters and user", "of magic powers.").also { stage++ }
             7 -> npc(FaceAnim.OLD_NEUTRAL, "Well well, perhaps the morsel can help after all... If you", "t'ink you're tough find Gorad my enemy to the south-", "east, and knock one of his teeth out!").also { stage++ }
-            8 -> npc(FaceAnim.OLD_NEUTRAL, "If you think you're tough", "find Gorad my enemy in the south east settlement", "And knock one of his teeth out!"). also { stage++ }
-            9 -> npc(FaceAnim.OLD_LAUGH1, "Heheheheh!").also {
+            8 -> npc(FaceAnim.OLD_LAUGH1, "Heheheheh!").also {
                 setAttribute(player, GameAttributes.WATCHTOWER_GORAD_TOOTH, true)
                 stage = END_DIALOGUE
             }
