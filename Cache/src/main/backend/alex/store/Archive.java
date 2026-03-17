@@ -43,6 +43,10 @@ public class Archive {
                 compressedData1 = BZip2Compressor.compress(this.data);
                 stream.writeInt(compressedData1.length);
                 stream.writeInt(this.data.length);
+            case 2:
+                compressedData1 = GZipCompressor.compress(this.data);
+                stream.writeInt(compressedData1.length);
+                stream.writeInt(this.data.length);
             default:
                 compressedData1 = GZipCompressor.compress(this.data);
                 stream.writeInt(compressedData1.length);
