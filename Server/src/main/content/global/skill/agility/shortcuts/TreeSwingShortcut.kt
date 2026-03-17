@@ -88,11 +88,12 @@ class TreeSwingShortcut : OptionHandler() {
         val experience = if (node.id == Scenery.ROPESWING_2324) 0.0 else 12.5
         val end = if (node.id == 2325) Location(2505, 3087, 0) else Location(2511, 3096, 0)
 
-        faceLocation(player, end.location)
+        faceLocation(player, end)
         playGlobalAudio(player.location, Sounds.SWING_ACROSS_2494, 1)
         animateScenery(player, node.asScenery(), 497, true)
         AgilityHandler.delay = GameWorld.ticks + 2
         player.lock(3)
+
         GameWorld.Pulser.submit(object : Pulse(1, player) {
             override fun pulse(): Boolean {
                 AgilityHandler.forceWalk(
@@ -103,12 +104,13 @@ class TreeSwingShortcut : OptionHandler() {
                     Animation.create(Animations.SWING_ACROSS_OBSTACLE_3130),
                     50,
                     experience,
-                    "You skillfully swing across.",
+                    "You skillfully swing across."
                 )
                 return true
             }
         })
-        return false
+
+        return true
     }
 
     override fun getDestination(node: Node, n: Node): Location =
