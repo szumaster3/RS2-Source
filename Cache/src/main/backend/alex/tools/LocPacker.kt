@@ -4,58 +4,81 @@ import backend.alex.Cache
 import backend.alex.io.OutputStream
 import backend.alex.loaders.LocDefinition
 
-class LocPacker private constructor(private val targetLocId: Int = 0) {
+class LocPacker private constructor(private val startId: Int = 0) {
 
-    private var startId: Int = targetLocId
-    private val copiedLocs = mutableListOf<LocDefinition>()
+    private var currentId = startId
+    private val tasks = mutableListOf<Task>()
+    private var lastTask: Task? = null
+
+    private data class Task(
+        val sourceId: Int,
+        var modifier: (LocDefinition.() -> Unit)?
+    )
 
     companion object {
         fun create(): LocPacker = LocPacker()
+        fun create(startId: Int): LocPacker = LocPacker(startId)
     }
 
     fun startAt(id: Int): LocPacker {
-        this.startId = id
+        currentId = id
         return this
     }
 
-    fun addLoc(setup: LocDefinition.() -> Unit): LocPacker {
-        val loc = LocDefinition()
-        loc.id = startId
-
-        loc.setup()
-
-        copiedLocs.add(loc)
-        startId++
-
+    fun addLoc(modifier: LocDefinition.() -> Unit): LocPacker {
+        val task = Task(-1, modifier)
+        tasks.add(task)
+        lastTask = task
         return this
     }
 
-    fun addLocs(vararg setups: LocDefinition.() -> Unit): LocPacker {
-        setups.forEach { addLoc(it) }
+    fun copyLoc(sourceId: Int, modifier: LocDefinition.() -> Unit = {}): LocPacker {
+        val task = Task(sourceId, modifier)
+        tasks.add(task)
+        lastTask = task
         return this
     }
 
-    fun save(): LocPacker {
-        val store = Cache.getStore() ?: throw IllegalStateException("Cache store is not loaded!")
+    fun copyRange(fromId: Int, toId: Int, modifier: LocDefinition.() -> Unit = {}): LocPacker {
+        for (id in fromId..toId) copyLoc(id, modifier)
+        return this
+    }
 
-        copiedLocs.forEach { loc ->
+    fun modify(modifier: LocDefinition.() -> Unit): LocPacker {
+        lastTask?.modifier = {
+            this.apply { lastTask?.modifier?.invoke(this) }
+            modifier()
+        }
+        return this
+    }
+
+    fun save(): List<LocDefinition> {
+        val store = Cache.getStore() ?: throw IllegalStateException("Cache store not loaded")
+        val savedLocs = mutableListOf<LocDefinition>()
+
+        for (task in tasks) {
+            val loc = if (task.sourceId >= 0) {
+                val srcLoc = LocDefinition.load(store, task.sourceId)
+                    ?: throw IllegalStateException("Loc ${task.sourceId} not found")
+                srcLoc.id = currentId
+                srcLoc.apply { task.modifier?.invoke(this) }
+            } else {
+                LocDefinition().apply {
+                    id = currentId
+                    task.modifier?.invoke(this)
+                }
+            }
 
             val stream = OutputStream()
             loc.encode(stream)
-
             val data = stream.buffer.copyOf(stream.offset)
-
-            store.indexes[16].putFile(
-                loc.id shr 8,
-                loc.id and 0xFF,
-                data
-            )
+            store.indexes[16].putFile(loc.id shr 8, loc.id and 0xFF, data)
 
             println("Packed ${loc.name ?: "unknown"}:${loc.id}")
+            savedLocs.add(loc)
+            currentId++
         }
 
-        return this
+        return savedLocs
     }
-
-    fun getCopiedLocs(): List<LocDefinition> = copiedLocs
 }

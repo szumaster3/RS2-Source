@@ -2,10 +2,10 @@ package content.items
 
 import backend.alex.tools.ItemPacker
 
-object AntiqueLamps {
+object `AntiqueLamps(14641-14643)` {
 
     fun add() {
-        val copy = ItemPacker.create().startAt(14704)
+        val copy = ItemPacker.create().startAt(14641)
 
         copy.addItems(
             {

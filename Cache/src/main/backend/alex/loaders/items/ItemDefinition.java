@@ -45,7 +45,7 @@ public class ItemDefinition implements Cloneable {
    public int primaryFemaleDialogueHead;
    public int secondaryMaleDialogueHead;
    public int secondaryFemaleDialogueHead;
-   public int Zan2d;
+   public int zan2d;
    public int dummyItem;
    public int switchNoteItemId;
    public int notedItemId;
@@ -493,7 +493,7 @@ public class ItemDefinition implements Cloneable {
       this.secondaryMaleDialogueHead = -1;
       this.primaryFemaleDialogueHead = -1;
       this.secondaryFemaleDialogueHead = -1;
-      this.Zan2d = 0;
+      this.zan2d = 0;
    }
 
    public byte[] encode() {
@@ -639,9 +639,9 @@ public class ItemDefinition implements Cloneable {
          stream.writeBigSmart(this.secondaryFemaleDialogueHead);
       }
 
-      if (this.Zan2d != 0) {
+      if (this.zan2d != 0) {
          stream.writeByte(95);
-         stream.writeShort(this.Zan2d);
+         stream.writeShort(this.zan2d);
       }
 
       if(this.switchNoteItemId != -1) {
@@ -862,7 +862,7 @@ public class ItemDefinition implements Cloneable {
          } else if(opcode == 93) {
             this.secondaryFemaleDialogueHead = stream.readUnsignedShort();//stream.readBigSmart();
          } else if(opcode == 95) {
-            this.Zan2d = stream.readUnsignedShort();
+            this.zan2d = stream.readUnsignedShort();
          } else if(opcode == 96) {
             this.dummyItem = stream.readUnsignedByte();
          } else if(opcode == 97) {
@@ -1069,7 +1069,7 @@ public class ItemDefinition implements Cloneable {
       printer.println("zoom2d = " + item.zoom2d);
       printer.println("xan2d = " + item.xan2d);
       printer.println("yan2d = " + item.yan2d);
-      printer.println("zan2d = " + item.Zan2d);
+      printer.println("zan2d = " + item.zan2d);
       printer.println("xOffset2d = " + item.xOffset2d);
       printer.println("yOffset2d = " + item.yOffset2d);
       printer.println("stackable = " + item.stackable);

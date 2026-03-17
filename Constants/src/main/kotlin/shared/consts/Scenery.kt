@@ -19417,4 +19417,5 @@ object Scenery {
     const val SHRINE_41979 = 41979
     const val GATE_42002 = 42002
     const val GATE_42003 = 42003
+    const val OBELISK_42004 = 42004
 }

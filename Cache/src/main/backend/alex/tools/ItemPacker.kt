@@ -7,6 +7,7 @@ class ItemPacker private constructor(private val startId: Int = 0) {
 
     private var currentId = startId
     private val tasks = mutableListOf<Task>()
+    private val copiedItems = mutableListOf<ItemDefinition>()
 
     private data class Task(
         val sourceId: Int,
@@ -44,7 +45,7 @@ class ItemPacker private constructor(private val startId: Int = 0) {
 
     fun save(): List<ItemDefinition> {
         val store = Cache.getStore() ?: throw IllegalStateException("Cache store not loaded")
-        val savedItems = mutableListOf<ItemDefinition>()
+        copiedItems.clear()
 
         for (task in tasks) {
             val item = if (task.sourceId >= 0) {
@@ -56,11 +57,31 @@ class ItemPacker private constructor(private val startId: Int = 0) {
             }
 
             item.write(store)
+            copiedItems.add(item)
             println("Packed ${item.name ?: "unknown"}:${currentId}")
-            savedItems.add(item)
             currentId++
         }
 
-        return savedItems
+        return copiedItems
     }
+
+    fun addNoteItem(templateId: Int = 799): ItemDefinition {
+        val store = Cache.getStore() ?: error("Store not initialized")
+        val baseItem = copiedItems.lastOrNull() ?: error("No base item to note")
+        val newId = currentId
+
+        val noteItem = ItemDefinition(store, newId, false).apply {
+            id = newId
+            notedItemId = baseItem.id
+            switchNoteItemId = templateId
+        }
+
+        noteItem.write(store)
+        copiedItems.add(noteItem)
+        currentId++
+
+        return noteItem
+    }
+
+    fun getCopiedItems(): List<ItemDefinition> = copiedItems
 }

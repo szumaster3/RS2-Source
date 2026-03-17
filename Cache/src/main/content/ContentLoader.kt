@@ -5,8 +5,8 @@ import backend.alex.loaders.BasDefinition
 import backend.alex.loaders.LocDefinition
 import backend.alex.loaders.items.ItemDefinition
 import backend.alex.tools.*
-import content.items.AntiqueLamps
-import content.items.ArdougneCloaks
+import content.items.*
+import content.objects.`Obelisk(42004)`
 
 object ContentLoader {
     @JvmStatic
@@ -33,12 +33,20 @@ object ContentLoader {
     }
 
     private fun items() {
-        ArdougneCloaks.add()
-        AntiqueLamps.add()
+        `FixSeersHeadband(14631)`.add()
+        `ArdougneCloaks(14638-14640)`.add()
+        `AntiqueLamps(14641-14643)`.add()
+        `AntiqueLamps(14641-14643)`.add()
+        `SummoningObelisk(14644)`.add()
+        `SeersHeadbands(14645-14646)`.add()
+        `AgileTop(14647)`.add()
+        `AgileLegs(14648)`.add()
+        `RandomEventGift(14649)`.add()
+        `Afro(14650-14700)`.add()
     }
 
     private fun objects() {
-
+        `Obelisk(42004)`.add()
     }
 
     private fun models() {
