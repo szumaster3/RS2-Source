@@ -8,6 +8,7 @@ import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.node.Node
 import core.game.node.entity.npc.NPC
+import core.game.system.task.Pulse
 import core.game.world.map.Location
 import shared.consts.NPCs
 import shared.consts.Scenery
@@ -33,12 +34,13 @@ class BraindeathIslandPlugin : InteractionListener {
 
         on(Scenery.GATE_10172, IntType.SCENERY, "open") { player, node ->
             val lukeNPC = findLocalNPC(player, NPCs.LUKE_50PERCENT_2828)
-            faceLocation(lukeNPC!!, player.location)
-            if (player.location.y > 5098) {
+            if (lukeNPC != null)
+                faceLocation(lukeNPC, player.location)
+
+            if (player.location.y > 5098)
                 openDialogue(player, LukeFiftyPercentDialogue(node))
-                return@on true
-            }
-            openDialogue(player, LukeDistractionDialogue(node))
+             else
+                openDialogue(player, LukeDistractionDialogue(node))
             return@on true
         }
 
@@ -56,7 +58,7 @@ class BraindeathIslandPlugin : InteractionListener {
         override fun handle(componentID: Int, buttonID: Int) {
             when (stage) {
                 0 -> sendNPCDialogueLines(player!!, NPCs.LUKE_50PERCENT_2828, FaceAnim.OLD_DEFAULT, false, "Hey! What are you doing out there?").also { stage++ }
-                1 -> player("Nothing.")
+                1 -> player("Nothing.").also { stage++ }
                 2 -> sendNPCDialogueLines(player!!, NPCs.LUKE_50PERCENT_2828, FaceAnim.OLD_DEFAULT, false, "Well Cap'n Donnie said no livin' landlubbers were", "allowed out of the compound.").also { stage++ }
                 3 -> sendNPCDialogueLines(player!!, NPCs.LUKE_50PERCENT_2828, FaceAnim.OLD_DEFAULT, false, "So get yerself back in here, or yer for it!").also { stage++ }
                 4 -> {
@@ -82,15 +84,18 @@ class BraindeathIslandPlugin : InteractionListener {
 
             when (stage) {
                 0 -> sendNPCDialogueLines(player!!, NPCs.LUKE_50PERCENT_2828, FaceAnim.OLD_DEFAULT, false, "Arr! Tryin' ter get away eh? Well ye'll never sneak", "past me, I'm the best lookout this crew has ever seen!").also { stage++ }
-                1 -> playerl(FaceAnim.FRIENDLY, index)
-                4 -> {
-                    val npc = NPC(NPCs.LUKE_50PERCENT_2828)
-                    faceLocation(npc, Location(2120, 5095, 0))
-                    sendChat(npc, "Where?", 1)
+                1 -> playerl(FaceAnim.FRIENDLY, index).also { stage++ }
+                2 -> {
                     end()
-                    runTask(player!!, 1) {
-                        DoorActionHandler.handleAutowalkDoor(player!!, n.asScenery())
-                    }
+                    val npc = NPC(NPCs.LUKE_50PERCENT_2828)
+                    submitIndividualPulse(player!!, object : Pulse(2) {
+                        override fun pulse(): Boolean {
+                            faceLocation(npc, Location(2120, 5095, 0))
+                            sendChat(npc, "Where?", 1)
+                            DoorActionHandler.handleAutowalkDoor(player!!, n.asScenery())
+                            return true
+                        }
+                    })
                 }
             }
         }
