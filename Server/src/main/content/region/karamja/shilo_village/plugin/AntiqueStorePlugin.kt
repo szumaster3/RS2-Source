@@ -78,12 +78,7 @@ private class BlackPrismDialogue : DialogueFile() {
 
             2 -> {
                 setTitle(player!!, 2)
-                sendOptions(
-                    player!!,
-                    "SELL THE PRISM FOR 5000 COINS?",
-                    "Yes, I'll sell it for 5000",
-                    "No, I think I'll hold on it a while longer yet.",
-                )
+                sendOptions(player!!, "SELL THE PRISM FOR 5000 COINS?", "Yes, I'll sell it for 5000", "No, I think I'll hold on it a while longer yet.")
                 stage++
             }
 
@@ -96,11 +91,14 @@ private class BlackPrismDialogue : DialogueFile() {
             5 -> npc("Very well my friend, let me count out your reward.").also { stage++ }
             6 -> {
                 end()
-                if (removeItem(player!!, Items.BLACK_PRISM_4808)) {
-                    sendMessage(player!!, "You sell the black prism for 5000 coins.")
-                    addItemOrDrop(player!!, Items.COINS_995, 5000)
-                    npc("Thanks!")
+                if (!removeItem(player!!, Items.BLACK_PRISM_4808)) {
+                    sendMessage(player!!, "You don't have the black prism.")
+                    return
                 }
+
+                sendMessage(player!!, "You sell the black prism for 5000 coins.")
+                addItemOrDrop(player!!, Items.COINS_995, 5000)
+                npc(FaceAnim.FRIENDLY, "Thanks!")
             }
         }
     }
@@ -139,19 +137,17 @@ private class YanniDialogue(antique: Int) : DialogueFile() {
                 stage++
             }
 
-            3 -> {
-                if (buttonID != 1) {
-                    end()
-                    return
+            3 -> when (buttonID) {
+                1 -> {
+                    if (removeItem(player!!, item.antique)) {
+                        npc("Here's ${item.price} for it.")
+                        sendMessage(player!!, "You sell the $itemName for ${item.price} gold.")
+                        addItemOrDrop(player!!, Items.COINS_995, item.price)
+                    } else {
+                        sendMessage(player!!, "You don't have the $itemName.")
+                    }
                 }
-                end()
-                if (removeItem(player!!, item.antique)) {
-                    npc("Here's ${item.price} for it.")
-                    sendMessage(player!!, "You sell the $itemName for ${item.price} gold.")
-                    addItemOrDrop(player!!, Items.COINS_995, item.price)
-                } else {
-                    sendMessage(player!!, "You don't have the $itemName.")
-                }
+                2 -> end()
             }
         }
     }
