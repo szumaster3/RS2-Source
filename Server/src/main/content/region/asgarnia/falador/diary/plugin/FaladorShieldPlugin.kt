@@ -43,21 +43,31 @@ class FaladorShieldPlugin : InteractionListener {
     }
 
     private fun handlePrayerRestore(player: Player, level: Int) {
-        val attrTime = player.getAttribute<Long>("diary:falador:shield-restore-time")
+        val lastRestoreTime = player.getAttribute<Long>("diary:falador:shield-restore-time")
+
         setTitle(player, 2)
         sendOptions(player, "Are you sure you wish to recharge?", "Yes, recharge my Prayer points.", "No, I've changed my mind.")
+
         addDialogueAction(player) { _, button ->
-            if (button == 2) {
-                if (attrTime != null && attrTime > System.currentTimeMillis()) {
-                    sendMessage(player, "You have no charges left today.")
-                    return@addDialogueAction
-                }
-                val effect = PrayerEffect(0.0, if (level == 0) 0.25 else if (level == 1) 0.5 else 1.0)
-                player.graphics(Graphics(GFX_PRAYER_RESTORE[level]))
-                setAttribute(player, "/save:diary:falador:shield-restore-time", System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))
-                sendMessage(player, "You restore ${if (level < 2) "some" else "your"} Prayer points.")
-                effect.activate(player)
+            if (button != 2) return@addDialogueAction
+            if (lastRestoreTime != null && lastRestoreTime > System.currentTimeMillis()) {
+                sendMessage(player, "You have no charges left today.")
+                return@addDialogueAction
             }
+            val restoreMultiplier = when (level) {
+                0 -> 0.25
+                1 -> 0.5
+                else -> 1.0
+            }
+            val effect = PrayerEffect(0.0, restoreMultiplier)
+            effect.activate(player)
+            player.graphics(Graphics(GFX_PRAYER_RESTORE[level]))
+            setAttribute(player, "/save:diary:falador:shield-restore-time",
+                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+            )
+            val messageText = if (level < 2) "some" else "your"
+            sendMessage(player, "You restore $messageText Prayer points.")
+            return@addDialogueAction
         }
     }
 
