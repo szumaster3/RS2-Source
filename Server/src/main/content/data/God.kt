@@ -22,9 +22,7 @@ enum class God(
         Items.BANDOS_BOOTS_11728,
         Items.BANDOS_CHESTPLATE_11724,
         Items.BANDOS_GODSWORD_11696,
-        Items.BANDOS_TASSETS_11726,
-        Items.GRANITE_MACE_14642,
-        Items.GRANITE_MACE_14644,
+        Items.BANDOS_TASSETS_11726
     ),
     SARADOMIN(
         Items.ANCIENT_SYMBOL_11181,

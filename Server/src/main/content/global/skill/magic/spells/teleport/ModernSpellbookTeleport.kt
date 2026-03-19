@@ -70,7 +70,7 @@ class ModernSpellbookTeleport : SpellListener("modern") {
         onCast(ModernSpells.CAMELOT_TELEPORT, NONE) { player, _ ->
             requires(player = player, magicLevel = 45, runes = arrayOf(Item(Items.AIR_RUNE_556, 5), Item(Items.LAW_RUNE_563)))
             val alternateTeleport = getAttribute(player, GameAttributes.ATTRIBUTE_CAMELOT_ALT_TELE, false) ||
-                    inEquipment(player, Items.SEERS_HEADBAND_3_14641)
+                    inEquipment(player, Items.SEERS_HEADBAND_3_14646)
             val dest = if (alternateTeleport) {
                 Location.create(2731, 3485, 0)
             } else {

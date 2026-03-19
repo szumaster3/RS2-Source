@@ -56,7 +56,7 @@ class DoctorOrbonDiaryDialogue : DialogueFile() {
             9 -> player("Yes please.").also { stage++ }
             10 -> {
                 Diary.flagRewarded(player!!, DiaryType.ARDOUGNE, 0)
-                sendDoubleItemDialogue(player!!, Items.ARDOUGNE_CLOAK_1_14701, Items.ANTIQUE_LAMP_14704, "Doctor Orbon hands you a cloak and an old lamp.")
+                sendDoubleItemDialogue(player!!, Items.ARDOUGNE_CLOAK_1_14638, Items.ANTIQUE_LAMP_14641, "Doctor Orbon hands you a cloak and an old lamp.")
                 stage++
             }
             11 -> npcl(FaceAnim.NEUTRAL, "It's strange, that cloak. I'm sure it has magical powers. People like market stallholders don't seem to notice doing certain...things when you wear it.").also { stage++ }
@@ -67,7 +67,7 @@ class DoctorOrbonDiaryDialogue : DialogueFile() {
             16 -> npcl(FaceAnim.ASKING, "Lost it? Well, it just so happens I found another. Take better care of this one.").also { stage++ }
             17 -> {
                 Diary.grantReplacement(player!!, DiaryType.ARDOUGNE, 0)
-                sendItemDialogue(player!!, Items.ARDOUGNE_CLOAK_1_14701, "Doctor Orbon hands you a cloak.")
+                sendItemDialogue(player!!, Items.ARDOUGNE_CLOAK_1_14638, "Doctor Orbon hands you a cloak.")
                 stage = 0
             }
             18 -> {

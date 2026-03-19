@@ -15,9 +15,9 @@ import shared.consts.Items
 class ArdougneCloakPlugin : InteractionListener {
 
     private val ARDOUGNE_CLOAK_IDS = intArrayOf(
-        Items.ARDOUGNE_CLOAK_1_14701,
-        Items.ARDOUGNE_CLOAK_2_14702,
-        Items.ARDOUGNE_CLOAK_3_14703
+        Items.ARDOUGNE_CLOAK_1_14638,
+        Items.ARDOUGNE_CLOAK_2_14639,
+        Items.ARDOUGNE_CLOAK_3_14640
     )
 
     override fun defineListeners() {

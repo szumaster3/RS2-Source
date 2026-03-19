@@ -20,7 +20,7 @@ class RandomEventGift : InteractionListener {
          * Handles opening and roll the random event gift.
          */
 
-        on(Items.RANDOM_EVENT_GIFT_14645, IntType.ITEM, "open") { player, node ->
+        on(Items.RANDOM_EVENT_GIFT_14649, IntType.ITEM, "open") { player, node ->
             val loot = GIFT_BOX.roll().first()
 
             if (!removeItem(player, node.asItem())) return@on true

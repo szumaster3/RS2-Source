@@ -383,8 +383,8 @@ enum class DiaryType(
         ),
         arrayOf(
             arrayOf(Item(Items.SEERS_HEADBAND_1_14631), Item(LampItem.SEERS_ACHIEVEMENT_EASY.item)),
-            arrayOf(Item(Items.SEERS_HEADBAND_2_14640), Item(LampItem.SEERS_ACHIEVEMENT_MEDIUM.item)),
-            arrayOf(Item(Items.SEERS_HEADBAND_3_14641), Item(LampItem.SEERS_ACHIEVEMENT_HARD.item))
+            arrayOf(Item(Items.SEERS_HEADBAND_2_14645), Item(LampItem.SEERS_ACHIEVEMENT_MEDIUM.item)),
+            arrayOf(Item(Items.SEERS_HEADBAND_3_14646), Item(LampItem.SEERS_ACHIEVEMENT_HARD.item))
         ),
         "To start marking off tasks in your journal, speak to<br><br>any seer in Seers' Village, Stankers by the coal<br><br>trucks or Sir Kay in Camelot.",
         intArrayOf(NPCs.SEER_388, NPCs.STANKERS_383, NPCs.SIR_KAY_241)
@@ -467,7 +467,7 @@ enum class DiaryType(
             //  - [ ] More drops in the Tower of Life will become noted.
             //  - [ ] A boost of Prayer on entry to Castle Wars
 
-            arrayOf(Item(Items.ARDOUGNE_CLOAK_1_14701), Item(LampItem.ARDOUGNE_ACHIEVEMENT_EASY.item)),
+            arrayOf(Item(Items.ARDOUGNE_CLOAK_1_14638), Item(LampItem.ARDOUGNE_ACHIEVEMENT_EASY.item)),
 
             // TODO:
             //  - [x] Teleport to Ardougne Farm once per day.
@@ -478,7 +478,7 @@ enum class DiaryType(
             //  - [ ] Longer immunity from attack once teleporting to the wilderness from the Ardougne Lever. (10 secs)
             //  - [x] Toggle Ring of life teleport to Ardougne.
 
-            arrayOf(Item(Items.ARDOUGNE_CLOAK_2_14702), Item(LampItem.ARDOUGNE_ACHIEVEMENT_MEDIUM.item)),
+            arrayOf(Item(Items.ARDOUGNE_CLOAK_2_14639), Item(LampItem.ARDOUGNE_ACHIEVEMENT_MEDIUM.item)),
             // TODO:
             //  - [ ] Better chance at stealing and pickpocketing anywhere in RuneScape.
             //  - [ ] Magical traps on chests will teleport the player to Ardougne's North Bank, instead of a random location.
@@ -486,7 +486,7 @@ enum class DiaryType(
             //  - [ ] Wizard Cromperty will give 150 pure essence per day.
             //  - [x] Ability to change the Watchtower teleport to take the player within Yanille's walls.
 
-            arrayOf(Item(Items.ARDOUGNE_CLOAK_3_14703), Item(LampItem.ARDOUGNE_ACHIEVEMENT_HARD.item))
+            arrayOf(Item(Items.ARDOUGNE_CLOAK_3_14640), Item(LampItem.ARDOUGNE_ACHIEVEMENT_HARD.item))
         ),
         "To start making off tasks in your journal, speak to Doctor<br><br>Orbon in East Ardougne's church, Ardougne's town crier in<br><br>the marketplace, or Aleck in Yannile.",
         intArrayOf(NPCs.DOCTOR_ORBON_290, NPCs.TOWN_CRIER_6138, NPCs.ALECK_5110)

@@ -6,40 +6,28 @@ import core.game.world.GameWorld
 import shared.consts.Items
 
 /**
- * Represents the items that reduce player weight on equip.
+ * Applies negative weight modifiers to specific equipment items.
  */
 class ReduceWeightItemPlugin : InteractionListener {
 
-    private val AGILE_TOP = intArrayOf(Items.AGILE_TOP_14696, Items.AGILE_TOP_14697)
-    private val AGILE_LEGS = intArrayOf(Items.AGILE_LEGS_14698, Items.AGILE_LEGS_14699)
-    private val BOOTS_OF_LIGHTNESS = intArrayOf(Items.BOOTS_OF_LIGHTNESS_88)
-
     override fun defineListeners() {
-        applyWeightModifiers()
+        if (GameWorld.settings?.isMembers != true) {
+            return
+        }
+        items()
+    }
+
+    private fun items() {
+        applyWeight(Items.AGILE_TOP_14647,      -12.0)
+        applyWeight(Items.AGILE_LEGS_14648,     -10.0)
+        applyWeight(Items.BOOTS_OF_LIGHTNESS_88,-4.534)
     }
 
     /**
-     * Applies negative weight modifiers.
+     * Applies a weight modifier to a single item id.
      */
-    private fun applyWeightModifiers() {
-        if (!GameWorld.settings!!.isMembers) {
-            return
-        }
-
-        AGILE_TOP.forEach { id ->
-            val def = ItemDefinition.forId(id)
-            def.handlers["weight"] = -12.0
-        }
-
-        AGILE_LEGS.forEach { id ->
-            val def = ItemDefinition.forId(id)
-            def.handlers["weight"] = -10.0
-        }
-
-        BOOTS_OF_LIGHTNESS.forEach { id ->
-            val def = ItemDefinition.forId(id)
-            def.handlers["weight"] = -4.534
-        }
+    private fun applyWeight(itemId: Int, weight: Double) {
+        val def = ItemDefinition.forId(itemId) ?: return
+        def.handlers["weight"] = weight
     }
-
 }

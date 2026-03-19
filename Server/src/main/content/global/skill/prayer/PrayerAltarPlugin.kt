@@ -43,7 +43,7 @@ class PrayerAltarPlugin : InteractionListener {
     private fun pray(player: Player, node: Node): Boolean {
         val hasPrayerBoost =
             node.id in BOOSTED_ALTAR ||
-                    (inEquipment(player, Items.SEERS_HEADBAND_3_14641) &&
+                    (inEquipment(player, Items.SEERS_HEADBAND_3_14646) &&
                             node.id == Scenery.ALTAR_409)
 
         val prayerLevel = getStatLevel(player, Skills.PRAYER) + if (hasPrayerBoost) 2 else 0
