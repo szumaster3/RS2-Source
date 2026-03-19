@@ -11,7 +11,7 @@ public enum Decoration {
     ROCK(13406, 8169, 5, 100, new Item[]{new Item(Items.LIMESTONE_BRICK_3420, 5)}),
     POND(13407, 8170, 10, 100, new Item[]{new Item(Items.SOFT_CLAY_1761, 10)}),
     IMP_STATUE(13408, 8171, 15, 150, new Item[]{new Item(Items.LIMESTONE_BRICK_3420, 5), new Item(Items.SOFT_CLAY_1761, 5)}),
-    SMALL_OBELISK(42004, 14700, 41, 676, new Item[]{new Item(Items.MARBLE_BLOCK_8786), new Item(Items.SPIRIT_SHARDS_12183, 1000), new Item(Items.CRIMSON_CHARM_12160, 10), new Item(Items.BLUE_CHARM_12163, 10)}),
+    SMALL_OBELISK(42004, Items.SUMMONING_OBELISK_14644, 41, 676, new Item[]{new Item(Items.MARBLE_BLOCK_8786), new Item(Items.SPIRIT_SHARDS_12183, 1000), new Item(Items.CRIMSON_CHARM_12160, 10), new Item(Items.BLUE_CHARM_12163, 10)}),
     DUNGEON_ENTRANCE(13409, 8172, 70, 500, new Item[]{new Item(Items.MARBLE_BLOCK_8786)}),
 
     BIG_DEAD_TREE(13411, 8173, 5, 31, new int[]{BuildingUtils.WATERING_CAN}, new Item[]{new Item(Items.BAGGED_DEAD_TREE_8417)}),
@@ -350,7 +350,7 @@ public enum Decoration {
     SMALL_MAP(13525, 8294, 38, 211, new Item[]{new Item(Items.TEAK_PLANK_8780, 3), new Item(Items.SMALL_MAP_8004)}),
     MEDIUM_MAP(13526, 8295, 58, 451, new Item[]{new Item(Items.MAHOGANY_PLANK_8782, 3), new Item(Items.MEDIUM_MAP_8005)}),
     LARGE_MAP(13527, 8296, 78, 591, new Item[]{new Item(Items.MAHOGANY_PLANK_8782, 4), new Item(Items.LARGE_MAP_8006)}),
-    MINI_OBELISK(42004, 14700, 41, 676, new Item[]{new Item(Items.MARBLE_BLOCK_8786, 1), new Item(Items.SPIRIT_SHARDS_12183, 1000), new Item(Items.GOLD_CHARM_12158, 10), new Item(Items.GREEN_CHARM_12159, 10), new Item(Items.CRIMSON_CHARM_12160, 10), new Item(Items.BLUE_CHARM_12163, 10)}),
+    MINI_OBELISK(42004, Items.SUMMONING_OBELISK_14644, 41, 676, new Item[]{new Item(Items.MARBLE_BLOCK_8786, 1), new Item(Items.SPIRIT_SHARDS_12183, 1000), new Item(Items.GOLD_CHARM_12158, 10), new Item(Items.GREEN_CHARM_12159, 10), new Item(Items.CRIMSON_CHARM_12160, 10), new Item(Items.BLUE_CHARM_12163, 10)}),
     //OAK_PET_FEEDER(44834, 15233, 37, 240, new Item[]{new Item(Items.OAK_PLANK_8778, 4)}),
     //TEAK_PET_FEEDER(44835, 15234, 52, 380, new Item[]{new Item(Items.TEAK_PLANK_8780, 4)}),
     //MAHOGANY_PET_FEEDER(44836, 15235, 67, 880, new Item[]{new Item(Items.MAHOGANY_PLANK_8782, 4), new Item(Items.GOLD_LEAF_8784, 1)}),

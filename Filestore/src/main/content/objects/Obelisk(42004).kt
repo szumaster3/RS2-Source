@@ -8,7 +8,7 @@ object `Obelisk(42004)` {
     fun add() {
         LocPacker.create()
             .startAt(Scenery.OBELISK_42004)
-            .copyLoc(Scenery.OBELISK_28734)
+            .copyLoc(Scenery.OBELISK_28716)
             .modify {
                 actions = arrayOfNulls<String>(5).apply {
                     this[0] = "Renew-points"
