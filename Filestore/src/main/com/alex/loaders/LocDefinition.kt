@@ -19,16 +19,12 @@ class LocDefinition {
     var delayShading: Boolean = false
     @JvmField var interactable = false
     var blockProjectile = true
-    var clipType = 2
-    var mapIconId = -1
     var blocksProjectile = false
     var models: IntArray? = null
     var modelTypes: IntArray? = null
 
     var actions = arrayOfNulls<String>(5)
     var animations: IntArray? = null
-    var percents: IntArray? = null
-    var objectAnimation = -1
     var alternateModelIds: IntArray? = null
 
     var recolourOriginal: IntArray? = null
@@ -54,55 +50,38 @@ class LocDefinition {
     var animateImmediately = true
     var isSolidFlag = true
     var isMembers = false
-    var isWalkable = false
     var adjustMapSceneRotation = false
     var hasAnimation = false
-    var invertMapScene = false
 
     var contouredGround: Byte = 0
     var cullingType = 1
     var brightness = 0
     var contrast = 0
-    var brightnessOverride = 255
-    var mapScene = -1
     var mapSceneRotation = 0
     var mapSceneId = -1
-    var mapDefinitionId = -1
     var configId = 0
 
     var ambientSoundId = -1
     var ambientSoundMinDelay = 0
     var ambientSoundMaxDelay = 0
     var animationId = 0
-    var ambientSoundVolume: Int = 0
-    var ambientSoundPitch: Int = 0
-    var ambientSoundRadius: Int = 0
-    var ambientSoundEffectType: Int = 0
 
     var unknownAnimationField = -1
     var unknownField1 = -1
-    var unknownInt1 = 0
-    var unknownInt2 = 0
-    var unknownInt3 = 0
-    var unknownInt4 = 0
-    var unknownInt5 = 0
-    var unknownInt6 = 0
-    var modelBrightness = 256
-    var modelShadow = 256
-    var aBoolean2961 = false
-    var aBoolean2993 = false
-    var transformVarbitIds: IntArray? = null
-    var hideMinimap = false           // opcode 82
-    var mapFunction = -1              // opcode 60
-    var category = -1                 // opcode 61
-    var supportItems = 0              // opcode 75
-    var animationFrameCount = 0       // opcode 99
-    var animationDuration = 0         // opcode 99
-    var isInteractable = false        // opcode 90
-    var blockFlag = 0                 // opcode 69
-    var mapSceneBrightness = 0        // opcode 170
-    var parameters: Map<Int, Any>? = null  // opcode 249
+    var hideMinimap = false
+    var mapFunction = -1
+    var supportItems = 0
+    var animationFrameCount = 0
+    var animationDuration = 0
+    var isInteractable = false
+    var blockFlag = 0
+    var parameters: Map<Int, Any>? = null
+    var transforms: IntArray? = null
 
+    var anInt4425: Int = -1
+    var anInt4431: Int = -1
+
+    var anIntArray380: IntArray? = null
     var loaded = false
 
     fun load(stream: InputStream) {
@@ -116,86 +95,134 @@ class LocDefinition {
 
     private fun decode(opcode: Int, buffer: InputStream) {
         when (opcode) {
+
             1, 5 -> {
                 val count = buffer.readUnsignedByte()
                 if (count > 0) {
                     models = IntArray(count)
                     modelTypes = if (opcode == 1) IntArray(count) else null
-                    for (i in 0 until count) {
+
+                    repeat(count) { i ->
                         models!![i] = buffer.readUnsignedShort()
-                        if (opcode == 1) modelTypes!![i] = buffer.readUnsignedByte()
+                        if (opcode == 1) {
+                            modelTypes!![i] = buffer.readUnsignedByte()
+                        }
                     }
                 }
             }
 
             2 -> name = buffer.readString()
-            3 -> desc = buffer.readString()
+
             14 -> sizeX = buffer.readUnsignedByte()
             15 -> sizeY = buffer.readUnsignedByte()
+
             17 -> {
                 blocksSky = false
                 solid = 0
             }
 
             18 -> blockProjectile = false
+
             19 -> interactable = buffer.readUnsignedByte() == 1
+
             21 -> contouredGround = 1
             22 -> delayShading = true
             23 -> cullingType = 1
+
             24 -> {
-                val length = buffer.readUnsignedShort()
-                if (length != 65535) {
-                    animations = intArrayOf(length)
-                }
+                val id = buffer.readUnsignedShort()
+                animations = if (id == 65535) null else intArrayOf(id)
             }
 
             27 -> solid = 1
             28 -> offsetMultiplier = buffer.readUnsignedByte()
             29 -> brightness = buffer.readByte()
-            in 30..34 -> actions[opcode - 30] = buffer.readString().takeIf { it.lowercase() != "hidden" }
+
+            in 30..34 -> {
+                val str = buffer.readString()
+                actions[opcode - 30] = str.takeIf { it.lowercase() != "hidden" }
+            }
+
             39 -> contrast = buffer.readUnsignedByte() * 5
+
             40 -> readColours(buffer)
             41 -> readTextures(buffer)
             42 -> readColourPalette(buffer)
+
             60 -> mapFunction = buffer.readUnsignedShort()
-            61 -> category = buffer.readUnsignedShort()
+
             62 -> mirrored = true
             64 -> castsShadow = false
+
             65 -> modelSizeX = buffer.readUnsignedShort()
             66 -> modelSizeZ = buffer.readUnsignedShort()
             67 -> modelSizeY = buffer.readUnsignedShort()
+
             69 -> blockFlag = buffer.readUnsignedByte()
+
             70 -> offsetX = buffer.readUnsignedShort() shl 2
             71 -> offsetZ = buffer.readUnsignedShort() shl 2
             72 -> offsetY = buffer.readUnsignedShort() shl 2
+
             73 -> blocksLand = true
             74 -> ignoreOnRoute = true
+
             75 -> supportItems = buffer.readUnsignedByte()
-            77, 92 -> readTransforms(buffer, opcode == 92)
+
+            // Transforms
+            77, 92 -> {
+
+                anInt4425 = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+                anInt4431 = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+
+                var fallback = -1
+
+                if (opcode == 92) {
+                    fallback = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+                }
+
+                val count = buffer.readUnsignedByte()
+
+                val arr = IntArray(count + 2)
+
+                for (i in 0..count) {
+                    val v = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+                    arr[i] = v
+                }
+
+                arr[count + 1] = fallback
+
+                anIntArray380 = arr
+            }
+
             78 -> {
                 ambientSoundId = buffer.readUnsignedShort()
                 ambientSoundMinDelay = buffer.readUnsignedByte()
             }
 
             79 -> {
-                ambientSoundMaxDelay = buffer.readUnsignedShort()
-                animationId = buffer.readUnsignedShort()
+                ambientSoundMaxDelay = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+                animationId = buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
                 ambientSoundMinDelay = buffer.readUnsignedByte()
+
                 val length = buffer.readUnsignedByte()
-                alternateModelIds = IntArray(length)
-                repeat(length) { i -> alternateModelIds!![i] = buffer.readUnsignedShort() }
+                alternateModelIds = IntArray(length) {
+                    buffer.readUnsignedShort().let { if (it == 65535) -1 else it }
+                }
             }
 
             81 -> {
                 contouredGround = 2
-                configId = buffer.readUnsignedByte() * 256
+                configId = buffer.readUnsignedByte() shl 8
             }
 
             82 -> hideMinimap = true
+
             88 -> isSolidFlag = false
             89 -> animateImmediately = false
             90 -> isInteractable = true
             91 -> isMembers = true
+
             93 -> {
                 contouredGround = 3
                 configId = buffer.readUnsignedShort()
@@ -203,9 +230,11 @@ class LocDefinition {
 
             94 -> contouredGround = 4
             95 -> contouredGround = 5
+
             96 -> blocksProjectile = true
             97 -> adjustMapSceneRotation = true
             98 -> hasAnimation = true
+
             99 -> {
                 animationFrameCount = buffer.readUnsignedByte()
                 animationDuration = buffer.readUnsignedShort()
@@ -218,108 +247,69 @@ class LocDefinition {
 
             101 -> mapSceneRotation = buffer.readUnsignedByte()
             102 -> mapSceneId = buffer.readUnsignedShort()
-            103 -> cullingType = 0
-            104 -> brightnessOverride = buffer.readUnsignedByte()
-            105 -> invertMapScene = true
-            106 -> {
-                val len = buffer.readUnsignedByte()
-                animations = IntArray(len)
-                percents = IntArray(len)
-                var total = 0
-                repeat(len) { i ->
-                    animations!![i] = buffer.readUnsignedShort()
-                    if (animations!![i] == 65535) animations!![i] = -1
-                    percents!![i] = buffer.readUnsignedByte()
-                    total += percents!![i]
-                }
-                repeat(len) { i -> percents!![i] = 65535 * percents!![i] / total }
-            }
 
-            107 -> mapDefinitionId = buffer.readUnsignedShort()
-            in 150..154 -> actions[opcode - 150] = buffer.readString().takeIf { isMembers }
-            160 -> {
-                val len = buffer.readUnsignedByte()
-                transformVarbitIds = IntArray(len)
-                repeat(len) { i -> transformVarbitIds!![i] = buffer.readUnsignedShort() }
-            }
-
-            162 -> {
-                contouredGround = 3
-                configId = buffer.readInt()
-            }
-
-            163 -> {
-                ambientSoundVolume = buffer.readByte()
-                ambientSoundPitch = buffer.readByte()
-                ambientSoundRadius = buffer.readByte()
-                ambientSoundEffectType = buffer.readByte()
-            }
-
-            164 -> unknownInt1 = buffer.readUnsignedShort()
-            165 -> unknownInt2 = buffer.readUnsignedShort()
-            166 -> unknownInt3 = buffer.readUnsignedShort()
-            167 -> unknownInt4 = buffer.readShort()
-            168 -> aBoolean2961 = true
-            169 -> aBoolean2993 = true
-            170 -> mapSceneBrightness = buffer.readUnsignedSmart()
-            171 -> unknownInt5 = buffer.readUnsignedSmart()
-            173 -> {
-                modelBrightness = buffer.readShort()
-                modelShadow = buffer.readShort()
-            }
-
-            177 -> isWalkable = true
-            178 -> unknownInt6 = buffer.readUnsignedByte()
             249 -> readParameters(buffer)
-            else -> {
-                // println("Unknown opcode $opcode for loc $id")
-            }
+
+            else -> Unit
         }
     }
 
     fun encode(stream: OutputStream) {
-        fun write(opcode: Int, block: OutputStream.() -> Unit) {
-            stream.writeByte(opcode)
+
+        fun write(op: Int, block: OutputStream.() -> Unit) {
+            stream.writeByte(op)
             stream.block()
         }
 
-        if (models != null) {
+        models?.let {
             if (modelTypes != null) {
                 write(1) {
-                    writeByte(models!!.size)
-                    for (i in models!!.indices) {
-                        writeShort(models!![i])
+                    writeByte(it.size)
+                    for (i in it.indices) {
+                        writeUnsignedShort(it[i])
                         writeByte(modelTypes!![i])
                     }
                 }
             } else {
                 write(5) {
-                    writeByte(models!!.size)
-                    for (model in models!!) writeShort(model)
+                    writeByte(it.size)
+                    it.forEach { id -> writeUnsignedShort(id) }
                 }
             }
         }
 
         name?.let { write(2) { writeString(it) } }
+
         if (sizeX != 1) write(14) { writeByte(sizeX) }
         if (sizeY != 1) write(15) { writeByte(sizeY) }
 
-        if (!blocksSky || solid == 0) stream.writeByte(17)
-        if (!blockProjectile) stream.writeByte(18)
+        if (!blocksSky) {
+            write(17) {}
+        }
+
+        if (!blockProjectile) write(18) {}
+
         if (interactable) write(19) { writeByte(1) }
-        if (contouredGround != 0.toByte()) {
-            when (contouredGround.toInt()) {
-                1 -> write(21) {}
-                2 -> write(81) { writeByte(((configId shr 8) and 0xFF)) }
-                3 -> write(93) { writeUnsignedShort(configId) }
-                4 -> write(94) {}
-                5 -> write(95) {}
+
+        if (contouredGround.toInt() == 1) write(21) {}
+        if (delayShading) write(22) {}
+        if (cullingType == 1) write(23) {}
+
+        animations?.let {
+            val valToWrite = if (it[0] == -1) 65535 else it[0]
+            write(24) { writeUnsignedShort(valToWrite) }
+        }
+
+        if (solid == 1) write(27) {}
+
+        if (offsetMultiplier != 0) write(28) { writeByte(offsetMultiplier) }
+        if (brightness != 0) write(29) { writeByte(brightness) }
+
+        actions.forEachIndexed { i, a ->
+            a?.let {
+                write(30 + i) { writeString(it) }
             }
         }
-        if (delayShading) stream.writeByte(22)
-        if (cullingType != 0) write(23) {}
-        if (brightness != 0) write(29) { writeByte(brightness) }
-        actions.forEachIndexed { i, a -> a?.let { write(30 + i) { writeString(it) } } }
 
         if (contrast != 0) write(39) { writeByte(contrast / 5) }
 
@@ -327,8 +317,8 @@ class LocDefinition {
             write(40) {
                 writeByte(it.size)
                 for (i in it.indices) {
-                    writeShort(it[i])
-                    writeShort(recolourModified!![i])
+                    writeUnsignedShort(it[i])
+                    writeUnsignedShort(recolourModified!![i])
                 }
             }
         }
@@ -337,93 +327,105 @@ class LocDefinition {
             write(41) {
                 writeByte(it.size / 2)
                 for (i in it.indices step 2) {
-                    writeShort(it[i])
-                    writeShort(it[i + 1])
+                    writeUnsignedShort(it[i])
+                    writeUnsignedShort(it[i + 1])
                 }
             }
         }
 
-        if (mapFunction != -1) write(60) { writeShort(mapFunction) }
-        if (category != -1) write(61) { writeShort(category) }
-        if (mirrored) stream.writeByte(62)
-        if (!castsShadow) stream.writeByte(64)
+        if (mapFunction != -1) write(60) { writeUnsignedShort(mapFunction) }
 
-        if (modelSizeX != 128) write(65) { writeShort(modelSizeX) }
-        if (modelSizeZ != 128) write(66) { writeShort(modelSizeZ) }
-        if (modelSizeY != 128) write(67) { writeShort(modelSizeY) }
+        if (mirrored) write(62) {}
+        if (!castsShadow) write(64) {}
+
+        if (modelSizeX != 128) write(65) { writeUnsignedShort(modelSizeX) }
+        if (modelSizeZ != 128) write(66) { writeUnsignedShort(modelSizeZ) }
+        if (modelSizeY != 128) write(67) { writeUnsignedShort(modelSizeY) }
 
         if (blockFlag != 0) write(69) { writeByte(blockFlag) }
-        if (offsetX != 0) write(70) { writeShort(offsetX shr 2) }
-        if (offsetZ != 0) write(71) { writeShort(offsetZ shr 2) }
-        if (offsetY != 0) write(72) { writeShort(offsetY shr 2) }
 
-        if (blocksLand) stream.writeByte(73)
-        if (ignoreOnRoute) stream.writeByte(74)
+        if (offsetX != 0) write(70) { writeUnsignedShort(offsetX shr 2) }
+        if (offsetZ != 0) write(71) { writeUnsignedShort(offsetZ shr 2) }
+        if (offsetY != 0) write(72) { writeUnsignedShort(offsetY shr 2) }
+
+        if (blocksLand) write(73) {}
+        if (ignoreOnRoute) write(74) {}
+
         if (supportItems != 0) write(75) { writeByte(supportItems) }
+
+        transforms?.let {
+
+            write(77) {
+                writeUnsignedShort(anInt4425.takeIf { it != -1 } ?: 65535)
+                writeUnsignedShort(anInt4431.takeIf { it != -1 } ?: 65535)
+
+                writeByte(it.size)
+
+                it.forEach { id ->
+                    writeUnsignedShort(id.takeIf { it != -1 } ?: 65535)
+                }
+            }
+        }
+
+        if (ambientSoundId != -1) {
+            write(78) {
+                writeUnsignedShort(ambientSoundId)
+                writeByte(ambientSoundMinDelay)
+            }
+        }
 
         alternateModelIds?.let {
             write(79) {
-                writeUnsignedShort(animationId)
                 writeUnsignedShort(ambientSoundMaxDelay)
+                writeUnsignedShort(animationId)
                 writeByte(ambientSoundMinDelay)
+
                 writeByte(it.size)
-                it.forEach { id -> writeShort(id) }
+                it.forEach { id -> writeUnsignedShort(id) }
             }
         }
 
-        if (hideMinimap) stream.writeByte(82)
-        if (!isSolidFlag) stream.writeByte(88)
-        if (!animateImmediately) stream.writeByte(89)
-        if (isInteractable) stream.writeByte(90)
-        if (isMembers) stream.writeByte(91)
+        if (contouredGround.toInt() == 2) {
+            write(81) {
+                writeByte(configId / 256)
+            }
+        }
 
-        if (blocksProjectile) stream.writeByte(96)
-        if (adjustMapSceneRotation) stream.writeByte(97)
-        if (hasAnimation) stream.writeByte(98)
+        if (hideMinimap) write(82) {}
 
-        if (animationFrameCount != 0) write(99) { writeByte(animationFrameCount); writeShort(animationDuration) }
-        if (unknownAnimationField != 0 || unknownField1 != 0) write(100) { writeByte(unknownAnimationField); writeShort(unknownField1) }
+        if (!castsShadow) write(64) {}
+        if (!animateImmediately) write(89) {}
+        if (isInteractable) write(90) {}
+        if (isMembers) write(91) {}
+
+        if (contouredGround.toInt() == 3) {
+            write(93) { writeUnsignedShort(configId) }
+        }
+
+        if (contouredGround.toInt() == 4) write(94) {}
+        if (contouredGround.toInt() == 5) write(95) {}
+
+        if (blocksProjectile) write(96) {}
+
+        if (adjustMapSceneRotation) write(97) {}
+        if (hasAnimation) write(98) {}
+
+        if (animationFrameCount != 0) {
+            write(99) {
+                writeByte(animationFrameCount)
+                writeUnsignedShort(animationDuration)
+            }
+        }
+
+        if (unknownAnimationField != 0 || unknownField1 != 0) {
+            write(100) {
+                writeByte(unknownAnimationField)
+                writeUnsignedShort(unknownField1)
+            }
+        }
 
         if (mapSceneRotation != 0) write(101) { writeByte(mapSceneRotation) }
-        if (mapSceneId != -1) write(102) { writeShort(mapSceneId) }
-        if (cullingType == 0) stream.writeByte(103)
-        if (brightnessOverride != 255) write(104) { writeByte(brightnessOverride) }
-        if (invertMapScene) stream.writeByte(105)
-
-        animations?.let {
-            if (percents != null) {
-                write(106) {
-                    writeByte(it.size)
-                    for (i in it.indices) {
-                        writeShort(if (it[i] == -1) 65535 else it[i])
-                        writeByte(percents!![i])
-                    }
-                }
-            }
-        }
-
-        if (mapDefinitionId != -1) write(107) { writeShort(mapDefinitionId) }
-
-        transformVarbitIds?.let {
-            write(160) {
-                writeByte(it.size)
-                it.forEach { id -> writeShort(id) }
-            }
-        }
-
-        if (ambientSoundVolume != 0 || ambientSoundPitch != 0 || ambientSoundRadius != 0 || ambientSoundEffectType != 0) {
-            write(163) {
-                writeByte(ambientSoundVolume)
-                writeByte(ambientSoundPitch)
-                writeByte(ambientSoundRadius)
-                writeByte(ambientSoundEffectType)
-            }
-        }
-
-        if (modelBrightness != 0 || modelShadow != 0) write(173) { writeShort(modelBrightness); writeShort(modelShadow) }
-
-        if (isWalkable) stream.writeByte(177)
-        if (unknownInt6 != 0) write(178) { writeByte(unknownInt6) }
+        if (mapSceneId != -1) write(102) { writeUnsignedShort(mapSceneId) }
 
         parameters?.let {
             write(249) {
