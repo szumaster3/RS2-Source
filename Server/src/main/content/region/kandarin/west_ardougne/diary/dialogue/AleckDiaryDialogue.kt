@@ -8,29 +8,29 @@ import core.game.dialogue.IfTopic
 import core.game.dialogue.Topic
 import core.game.node.entity.player.link.diary.Diary
 import core.game.node.entity.player.link.diary.DiaryType
+import core.tools.END_DIALOGUE
 import shared.consts.Items
 import shared.consts.Quests
 
-class TownCrierDiaryDialogue : DialogueFile() {
-
+class AleckDiaryDialogue : DialogueFile() {
     override fun handle(componentID: Int, buttonID: Int) {
         when (stage) {
             0 -> showTopics(
-                IfTopic("Ah, the cloak-wearer! How are you finding it?", 14, Diary.canReplaceReward(player!!, DiaryType.ARDOUGNE, 1)),
-                Topic("I've completed all of the Medium Tasks in the Ardougne set.", 1),
-                IfTopic("Toggle Ring of Life teleport location.", 20, isDiaryComplete(player!!, DiaryType.ARDOUGNE, 1)),
-                IfTopic("I'd like to change my Watchtower Teleport point.", 18, isDiaryComplete(player!!, DiaryType.ARDOUGNE, 2))
+                IfTopic("How's the cloak?", 14, Diary.canReplaceReward(player!!, DiaryType.ARDOUGNE, 2)),
+                Topic("I've completed all of the Hard Tasks in the Ardougne set.", 1),
+                Topic("Tell me about the Achievement Diary.", 7),
+                IfTopic("I'd like to change my Watchtower Teleport point.", 18, isDiaryComplete(player!!, DiaryType.ARDOUGNE, 2)),
             )
-            1 -> npcl(FaceAnim.FRIENDLY, "So you have. I have a special cloak I've kept aside for you.").also { stage++ }
+            1 -> npcl(FaceAnim.FRIENDLY, "Oh! So you have, well done! I have a lovely cloak here for you.").also { stage++ }
             2 -> {
-                Diary.flagRewarded(player!!, DiaryType.ARDOUGNE, 1)
-                sendDoubleItemDialogue(player!!, Items.ARDOUGNE_CLOAK_2_14639, Items.ANTIQUE_LAMP_14642, "The town crier hands you a cloak and a lamp.")
+                Diary.flagRewarded(player!!, DiaryType.ARDOUGNE, 2)
+                sendDoubleItemDialogue(player!!, Items.ARDOUGNE_CLOAK_3_14640, Items.ANTIQUE_LAMP_14643, "Aleck hands you a cloak and a lamp.")
                 stage++
             }
-            3 -> npcl(FaceAnim.FRIENDLY, "There you go. It's an interesting cloak, that one - seems to be quite magical. It's got an affinity with the vegetable patch north of the city when you can coax it into life. Oh, and someone gave me this lamp, but it's not really any use to me.").also { stage++ }
-            4 -> playerl(FaceAnim.HALF_ASKING, "Thanks! What else does it do?").also { stage++ }
-            5 -> npcl(FaceAnim.FRIENDLY, "Well, Cromperty told me that anyone he knows has earned it will get a nice little surprise if they talk to him every day. Oh, and it seems to have a magical effect when you use it at that Zamorakian-held runecrafting altar, south-").also { stage++ }
-            6 -> npcl(FaceAnim.FRIENDLY, "west of the city. I also heard rumours from the last person who owned it that it has a use at the Tower of Life. Of course, it may do even more that I'm just not aware of.").also { stage++ }
+            3 -> npcl(FaceAnim.FRIENDLY, "There you are. I think you'll find you can now, umm, shall we say 'expropriate' things around the world more easily while wearing that cloak.").also { stage++ }
+            4 -> npcl(FaceAnim.FRIENDLY, "Also, you may find Cromperty can help you out with your runecrafting. There may be other effects, too; it's quite an enigma.").also { stage++ }
+            5 -> npcl(FaceAnim.HAPPY, "Thanks!-").also { stage++ }
+            6 -> npcl(FaceAnim.HAPPY, "You're welcome.").also { stage = END_DIALOGUE }
             7 -> showTopics(
                 Topic("What is the Achievement Diary?", 8),
                 Topic("What are the rewards?", 11),
@@ -48,12 +48,12 @@ class TownCrierDiaryDialogue : DialogueFile() {
             12 -> npc(FaceAnim.NEUTRAL, "You need to complete all of the Diary in a set of a particular difficulty, then you can claim your reward.", "Some of the Ardougne set's Diary are simple, some will require skill levels, and some might require quests to be started or completed.").also { stage++ }
             13 -> npcl(FaceAnim.FRIENDLY, "To claim your Ardougne set rewards, speak to Doctor Orbon in East Ardougne church, Aleck in Yanille, or myself.").also { stage = 7 }
             14 -> player(FaceAnim.SAD, "I lost it.").also { stage++ }
-            15 -> npcl(FaceAnim.THINKING, "Oh, no!").also { stage++ }
+            15 -> npcl(FaceAnim.THINKING, "Really? Here, I found another in the storeroom.").also { stage++ }
             16 -> npcl(FaceAnim.NEUTRAL, "Never mind, I have another. Here...").also { stage++ }
             17 -> {
-                Diary.grantReplacement(player!!, DiaryType.ARDOUGNE, 1)
-                sendItemDialogue(player!!, Items.ARDOUGNE_CLOAK_2_14639, "The town crier hands you a cloak.")
-                stage = 0
+                Diary.grantReplacement(player!!, DiaryType.ARDOUGNE, 2)
+                sendItemDialogue(player!!, Items.ARDOUGNE_CLOAK_3_14640, "Aleck hands you another cloak.")
+                stage = 7
             }
             18 -> {
                 if (!isQuestComplete(player!!, Quests.WATCHTOWER)) {
@@ -75,23 +75,6 @@ class TownCrierDiaryDialogue : DialogueFile() {
                 }
                 2 -> end()
             }
-            20 -> {
-                setTitle(player!!, 2)
-                val altRingOfLifeTeleport =
-                    getAttribute(player!!, GameAttributes.ATTRIBUTE_RING_OF_LIFE_ALT_TELE, false)
-                sendOptions(player!!, "Toggle ring of life to ${if (!altRingOfLifeTeleport) "Ardougne" else "Lumbridge"}?", "Yes", "No")
-                stage++
-            }
-            21 -> when (buttonID) {
-                1 -> {
-                    end()
-                    setAttribute(player!!, GameAttributes.ATTRIBUTE_RING_OF_LIFE_ALT_TELE, !getAttribute(player!!, GameAttributes.ATTRIBUTE_WATCHTOWER_ALT_TELE, false))
-                    val destinationText = if (getAttribute(player!!, GameAttributes.ATTRIBUTE_RING_OF_LIFE_ALT_TELE, false)) "Lumbridge" else "Ardougne"
-                    sendMessage(player!!, "Rings of life will now teleport you to $destinationText.")
-                }
-                2 -> end()
-            }
         }
-
     }
 }

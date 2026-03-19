@@ -50,14 +50,14 @@ class GnomeTrainerDialogue(player: Player? = null) : Dialogue(player) {
                 4 -> player("I'm done for now.").also { stage = 21 }
             }
             13 -> npcl(FaceAnim.OLD_NORMAL, "This, my friend, is where we train and improve our Agility. It's an essential skill.").also { stage++ }
-            14 -> player("It looks easy enough.").also { stage++ }
+            14 -> player(FaceAnim.NEUTRAL, "It looks easy enough.").also { stage++ }
             15 -> npcl(FaceAnim.OLD_NORMAL, "If you complete the course, from the slippery log to the end, your Agility will increase more rapidly than by repeating just one obstacle.").also { stage = END_DIALOGUE }
             16 -> npcl(FaceAnim.OLD_NORMAL, "Well, it's where most people tend to start training.").also { stage = END_DIALOGUE }
             17 -> {
                 val count = getAttribute(player, GameAttributes.GNOME_STRONGHOLD_PERFECT_LAPS, 0)
                 val firstTalk = getAttribute(player, GameAttributes.GNOME_STRONGHOLD_GNOME_TALK, false)
                 val completeLaps = getAttribute(player, GameAttributes.GNOME_STRONGHOLD_COURSE_REWARD, false)
-                val hasAgileLegs = hasAnItem(player, Items.AGILE_LEGS_14698).container != null
+                val hasAgileLegs = hasAnItem(player, Items.AGILE_LEGS_14648).container != null
 
                 when {
                     completeLaps && !hasAgileLegs -> {
@@ -78,26 +78,28 @@ class GnomeTrainerDialogue(player: Player? = null) : Dialogue(player) {
             }
 
             18 -> {
+                end()
                 val p = player ?: return true
                 if (freeSlots(p) == 0) {
                     npc(FaceAnim.OLD_DEFAULT, "Well, I would give you the reward, but apparently you", "don't have any room.")
                     return true
                 }
-                addItem(p,  Items.AGILE_LEGS_14698)
+                addItem(p,  Items.AGILE_LEGS_14648)
                 npcl(FaceAnim.OLD_NORMAL, "There you go. Enjoy!")
                 setAttribute(p, GameAttributes.GNOME_STRONGHOLD_GNOME_TALK, true)
                 stage = 22
             }
 
-            19 -> player("Any chance of some more Agile legs?").also { stage++ }
+            19 -> player(FaceAnim.HALF_ASKING,"Any chance of some more Agile legs?").also { stage++ }
 
             20 -> {
+                end()
                 val p = player ?: return true
                 if (freeSlots(p) == 0) {
                     npc(FaceAnim.OLD_DEFAULT, "Well, I would give you the reward, but apparently you", "don't have any room.")
                     return true
                 }
-                addItem(p,  Items.AGILE_LEGS_14698)
+                addItem(p,  Items.AGILE_LEGS_14648)
                 npcl(FaceAnim.OLD_NORMAL, "Here you go, try not to lose them.")
                 stage = 22
             }

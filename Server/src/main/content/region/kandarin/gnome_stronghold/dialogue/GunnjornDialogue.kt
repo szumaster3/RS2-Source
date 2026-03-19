@@ -79,7 +79,7 @@ class GunnjornDialogue(player: Player? = null) : Dialogue(player) {
                 val firstTalk = getAttribute(p, GameAttributes.BARBARIAN_OUTPOST_GUNNJORN_TALK, false)
                 val perfectLaps = getAttribute(p, GameAttributes.BARBARIAN_OUTPOST_PERFECT_LAPS, 0)
                 val completeLaps = getAttribute(p, GameAttributes.BARBARIAN_OUTPOST_COURSE_REWARD, false)
-                val hasAgileTop = hasAnItem(p, Items.AGILE_TOP_14696).container != null
+                val hasAgileTop = hasAnItem(p, Items.AGILE_TOP_14647).container != null
 
                 when {
                     completeLaps && !hasAgileTop -> {
@@ -101,13 +101,13 @@ class GunnjornDialogue(player: Player? = null) : Dialogue(player) {
             17 -> npcl(FaceAnim.FRIENDLY, "As promised, I'll give you an item you may find useful - an Agile top. You'll find yourself lighter than usual while wearing it.").also { stage++ }
             18 -> npcl(FaceAnim.FRIENDLY, "We barbarians are tough folks, as you know, so it'll even keep you safe if you get drawn into combat.").also { stage++ }
             19 -> {
-                val p = player ?: return true
                 end()
+                val p = player ?: return true
                 if (freeSlots(p) == 0) {
                     npc(FaceAnim.HALF_GUILTY, "Well, I would give you the reward, but apparently you", "don't have any room.")
                     return true
                 }
-                addItem(p, Items.AGILE_TOP_14696)
+                addItem(p, Items.AGILE_TOP_14647)
                 npcl(FaceAnim.HAPPY, "There you go. Enjoy!")
                 setAttribute(p, GameAttributes.BARBARIAN_OUTPOST_GUNNJORN_TALK, true)
                 stage = 28
@@ -123,6 +123,7 @@ class GunnjornDialogue(player: Player? = null) : Dialogue(player) {
             24 -> player(FaceAnim.FRIENDLY, "Well, something has happened at the lighthouse, and she", "has been locked out. I need you to give me her key.").also { stage++ }
 
             25 -> {
+                end()
                 val p = player ?: return true
                 if (freeSlots(p) == 0) {
                     npc(FaceAnim.HALF_GUILTY, "Well, I would give you the key, but apparently you", "don't have any room.")
@@ -137,12 +138,13 @@ class GunnjornDialogue(player: Player? = null) : Dialogue(player) {
             26 -> player("Any chance of another Agile top?").also { stage++ }
 
             27 -> {
+                end()
                 val p = player ?: return true
                 if (freeSlots(p) == 0) {
                     npc(FaceAnim.HALF_GUILTY, "Well, I would give you the reward, but apparently you", "don't have any room.")
                     return true
                 }
-                addItem(p, Items.AGILE_TOP_14696)
+                addItem(p, Items.AGILE_TOP_14647)
                 npcl(FaceAnim.HAPPY, "Here you go.")
                 stage = 28
             }

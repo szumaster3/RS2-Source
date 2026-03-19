@@ -746,10 +746,8 @@ public class ItemDefinition extends Definition<Item> {
             Items.FALADOR_SHIELD_1_14577,
             Items.FALADOR_SHIELD_2_14578,
             Items.FALADOR_SHIELD_3_14579,
-            Items.AGILE_TOP_14696,
-            Items.AGILE_TOP_14697,
-            Items.AGILE_LEGS_14698,
-            Items.AGILE_LEGS_14699,
+            Items.AGILE_TOP_14647,
+            Items.AGILE_LEGS_14648,
             Items.PROSYTE_HARNESS_M_9666,
             Items.INITIATE_HARNESS_M_9668,
             Items.PROSYTE_HARNESS_F_9670

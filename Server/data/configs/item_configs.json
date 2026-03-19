@@ -132268,6 +132268,7 @@
   {
     "destroy_message": "Drop",
     "shop_price": "9",
+    "examine": "A raw turkey.",
     "durability": null,
     "name": "Raw turkey",
     "destroy": "true",
@@ -132293,6 +132294,7 @@
   },
   {
     "shop_price": "1",
+    "examine": "Oh dear, it's totally burnt!",
     "durability": null,
     "name": "Burnt turkey",
     "archery_ticket_price": "0",
@@ -132330,6 +132332,7 @@
   },
   {
     "shop_price": "1",
+    "examine": "Oh dear, it's totally burnt!",
     "durability": null,
     "name": "Burnt turkey drumstick",
     "archery_ticket_price": "0",
@@ -133001,6 +133004,13 @@
     "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
   },
   {
+    "examine": "An unlit home-made torch.",
+    "durability": null,
+    "name": "null",
+    "archery_ticket_price": "0",
+    "id": "14628"
+  },
+  {
     "destroy_message": "You can reclaim this item from the place you found it.",
     "examine": "I found this egg in the Phoenix's Lair, and clapped at it!",
     "durability": null,
@@ -133142,485 +133152,6 @@
     "bonuses": "0,0,0,0,0,30,32,27,0,30,7,0,0,0,0"
   },
   {
-    "destroy_message": "A player can get a new one by talking to any seer around Seer's village.",
-    "examine": "A headband with an eye embroidered on it.",
-    "durability": null,
-    "name": "Seer's headband 2",
-    "tradeable": "false",
-    "destroy": "true",
-    "archery_ticket_price": "0",
-    "attack_speed": "4",
-    "id": "14640",
-    "absorb": "0,0,0",
-    "bonuses": "0,0,0,0,0,0,0,0,3,0,0,0,0,0,0",
-    "equipment_slot": "0"
-  },
-  {
-    "examine": "A headband with an eye embroidered on it.",
-    "durability": null,
-    "destroy": "true",
-    "weight": "0.4",
-    "attack_speed": "4",
-    "absorb": "0,0,0",
-    "equipment_slot": "0",
-    "destroy_message": "A player can get a new one by talking to any seer around Seer's village.",
-    "name": "Seer's headband 3",
-    "tradeable": "false",
-    "archery_ticket_price": "0",
-    "id": "14641",
-    "bonuses": "0,0,0,0,0,0,0,0,3,0,0,0,0,0,0"
-  },
-  {
-    "requirements": "{0,55}-{2,55}",
-    "shop_price": "40000",
-    "ge_buy_limit": "10",
-    "examine": "The favoured weapon of Bandos.",
-    "has_special": "true",
-    "durability": null,
-    "weight": "3.0",
-    "attack_speed": "5",
-    "weapon_interface": "8",
-    "equip_audio": "2246",
-    "defence_anim": "403",
-    "equipment_slot": "3",
-    "attack_anims": "401,401,400,401",
-    "lendable": "true",
-    "grand_exchange_price": "29552",
-    "attack_audios": "2508,2508,2509,2508",
-    "name": "Granite mace",
-    "tradeable": "true",
-    "archery_ticket_price": "0",
-    "id": "14642",
-    "bonuses": "30,-2,49,0,0,0,0,0,0,0,0,45,0,4,0"
-  },
-  {
-    "requirements": "{0,55}-{2,55}",
-    "ge_buy_limit": "10",
-    "grand_exchange_price": "29552",
-    "durability": null,
-    "name": "Granite mace",
-    "tradeable": "true",
-    "archery_ticket_price": "0",
-    "id": "14643"
-  },
-  {
-    "requirements": "{0,55}-{2,55}",
-    "examine": "The favoured weapon of Bandos.",
-    "has_special": "true",
-    "durability": null,
-    "destroy": "true",
-    "weight": "3.0",
-    "attack_speed": "5",
-    "weapon_interface": "8",
-    "absorb": "0,0,0",
-    "equip_audio": "2246",
-    "defence_anim": "397",
-    "attack_anims": "390,390,381,390",
-    "lendable": "true",
-    "destroy_message": "Drop",
-    "grand_exchange_price": "29552",
-    "attack_audios": "2508,2508,2509,2508",
-    "name": "Granite Mace",
-    "archery_ticket_price": "0",
-    "id": "14644",
-    "bonuses": "30,-2,49,0,0,0,0,0,0,0,0,45,0,4,0"
-  },
-  {
-    "examine": "Open the box and choose a gift.",
-    "name": "Random event gift",
-    "weight": "0.4",
-    "id": "14645"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Burgundy afro",
-    "weight": "0.2",
-    "id": "14646",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Burgundy afro",
-    "id": "14647"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Red afro",
-    "weight": "0.2",
-    "id": "14648",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Red afro",
-    "id": "14649"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Vermilion afro",
-    "weight": "0.2",
-    "id": "14650",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Vermilion afro",
-    "id": "14651"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Pink afro",
-    "weight": "0.2",
-    "id": "14652",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Pink afro",
-    "id": "14653"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Orange afro",
-    "weight": "0.2",
-    "id": "14654",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Orange afro",
-    "id": "14655"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Yellow afro",
-    "weight": "0.2",
-    "id": "14656",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Yellow afro",
-    "id": "14657"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Peach afro",
-    "weight": "0.2",
-    "id": "14658",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Peach afro",
-    "id": "14659"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Brown afro",
-    "weight": "0.2",
-    "id": "14660",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Brown afro",
-    "weight": "0.45",
-    "id": "14661"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Dark brown afro",
-    "weight": "0.2",
-    "id": "14662",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Dark brown afro",
-    "weight": "0.4",
-    "id": "14663"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Light brown afro",
-    "weight": "0.2",
-    "id": "14664",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Light brown afro",
-    "id": "14665"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Mint green afro",
-    "weight": "0.2",
-    "id": "14666",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Mint green afro",
-    "id": "14667"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Green afro",
-    "weight": "0.2",
-    "id": "14668",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Green afro",
-    "id": "14669"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Dark green afro",
-    "weight": "0.2",
-    "id": "14670",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Dark green afro",
-    "id": "14671"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Dark blue afro",
-    "weight": "0.2",
-    "id": "14672",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Dark blue afro",
-    "id": "14673"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Turquoise afro",
-    "weight": "0.2",
-    "id": "14674",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Turquoise afro",
-    "id": "14675"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Light blue afro",
-    "weight": "0.2",
-    "id": "14676",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Light blue afro",
-    "id": "14677"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Purple afro",
-    "weight": "0.2",
-    "id": "14678",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Purple afro",
-    "weight": "3.6",
-    "id": "14679"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Violet afro",
-    "weight": "0.2",
-    "id": "14680",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Violet afro",
-    "weight": "3.6",
-    "id": "14681"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Indigo afro",
-    "weight": "0.2",
-    "id": "14682",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Indigo afro",
-    "id": "14683"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Dark Grey afro",
-    "weight": "0.2",
-    "id": "14684",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Dark Grey afro",
-    "weight": "2.0",
-    "id": "14685"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Military Grey afro",
-    "weight": "0.2",
-    "id": "14686",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Military Grey afro",
-    "id": "14687"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "White afro",
-    "weight": "0.2",
-    "id": "14688",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "White afro",
-    "id": "14689"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Light Grey afro",
-    "weight": "0.2",
-    "id": "14690",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Light Grey afro",
-    "id": "14691"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Taupe afro",
-    "weight": "0.2",
-    "id": "14692",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Taupe afro",
-    "weight": "0.5",
-    "id": "14693"
-  },
-  {
-    "remove_head": "true",
-    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
-    "examine": "Perfect for parties!",
-    "name": "Black afro",
-    "weight": "0.2",
-    "id": "14694",
-    "equipment_slot": "0"
-  },
-  {
-    "name": "Black afro",
-    "id": "14695"
-  },
-  {
-    "requirements": "{1,35}-{3,35}",
-    "shop_price": "1",
-    "examine": "It seems to be made of incredibly light, but durable materials.",
-    "durability": null,
-    "destroy": "true",
-    "weight": "0.3",
-    "absorb": "0,0,0",
-    "equipment_slot": "4",
-    "destroy_message": "You can get a replacement from Gunnjorn at the Barbarian Agility Course at the Barbarian Outpost.",
-    "remove_sleeves": "true",
-    "name": "Agile top",
-    "archery_ticket_price": "0",
-    "id": "14696",
-    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
-  },
-  {
-    "remove_sleeves": "true",
-    "requirements": "{1,35}-{3,35}",
-    "shop_price": "1",
-    "examine": "It seems to be made of incredibly light, but durable materials.",
-    "durability": null,
-    "name": "Agile top",
-    "archery_ticket_price": "0",
-    "weight": "0.3",
-    "id": "14697",
-    "absorb": "0,0,0",
-    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-    "equipment_slot": "4"
-  },
-  {
-    "requirements": "{1,35}-{3,35}",
-    "shop_price": "1",
-    "examine": "They seem to be made of an incredibly light but durable material.",
-    "durability": null,
-    "destroy": "true",
-    "weight": "0.3",
-    "absorb": "0,0,0",
-    "equipment_slot": "7",
-    "destroy_message": "You can get replacement from any gnome trainer on the Gnome Agility Course.",
-    "name": "Agile legs",
-    "archery_ticket_price": "0",
-    "id": "14698",
-    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
-  },
-  {
-    "requirements": "{1,35}-{3,35}",
-    "shop_price": "1",
-    "examine": "They seem to be made of an incredibly light but durable material.",
-    "durability": null,
-    "name": "Agile legs",
-    "archery_ticket_price": "0",
-    "weight": "0.3",
-    "id": "14699",
-    "absorb": "0,0,0",
-    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
-    "equipment_slot": "7"
-  },
-  {
     "shop_price": "0",
     "ge_buy_limit": "0",
     "examine": "A shadowy Ardougne cloak.",
@@ -133633,7 +133164,7 @@
     "name": "Ardougne cloak 1",
     "tradeable": "false",
     "archery_ticket_price": "0",
-    "id": "14701"
+    "id": "14638"
   },
   {
     "shop_price": "0",
@@ -133648,7 +133179,7 @@
     "name": "Ardougne cloak 2",
     "tradeable": "false",
     "archery_ticket_price": "0",
-    "id": "14702"
+    "id": "14639"
   },
   {
     "shop_price": "0",
@@ -133663,7 +133194,7 @@
     "name": "Ardougne cloak 3",
     "tradeable": "false",
     "archery_ticket_price": "0",
-    "id": "14703"
+    "id": "14640"
   },
   {
     "examine": "I wonder what happens if I rub it.",
@@ -133672,7 +133203,8 @@
     "tradeable": "false",
     "destroy": "true",
     "archery_ticket_price": "0",
-    "id": "14704"
+    "weight": "0.1",
+    "id": "14641"
   },
   {
     "examine": "I wonder what happens if I rub it.",
@@ -133681,7 +133213,8 @@
     "tradeable": "false",
     "destroy": "true",
     "archery_ticket_price": "0",
-    "id": "14705"
+    "weight": "0.1",
+    "id": "14642"
   },
   {
     "examine": "I wonder what happens if I rub it.",
@@ -133690,7 +133223,413 @@
     "tradeable": "false",
     "destroy": "true",
     "archery_ticket_price": "0",
-    "id": "14706"
+    "weight": "0.1",
+    "id": "14643"
+  },
+  {
+    "durability": null,
+    "name": "Summoning obelisk",
+    "tradeable": "false",
+    "destroy": "true",
+    "archery_ticket_price": "0",
+    "id": "14644"
+  },
+  {
+    "examine": "A headband with an eye embroidered on it.",
+    "durability": null,
+    "destroy": "true",
+    "weight": "0.4",
+    "attack_speed": "4",
+    "absorb": "0,0,0",
+    "equipment_slot": "0",
+    "destroy_message": "A player can get a new one by talking to any seer around Seer's village.",
+    "name": "Seer's headband 2",
+    "tradeable": "false",
+    "archery_ticket_price": "0",
+    "id": "14645",
+    "bonuses": "0,0,0,0,0,0,0,0,3,0,0,0,0,0,0"
+  },
+  {
+    "examine": "A headband with an eye embroidered on it.",
+    "durability": null,
+    "destroy": "true",
+    "weight": "0.4",
+    "attack_speed": "4",
+    "absorb": "0,0,0",
+    "equipment_slot": "0",
+    "destroy_message": "A player can get a new one by talking to any seer around Seer's village.",
+    "name": "Seer's headband 3",
+    "tradeable": "false",
+    "archery_ticket_price": "0",
+    "id": "14646",
+    "bonuses": "0,0,0,0,0,0,0,0,3,0,0,0,0,0,0"
+  },
+  {
+    "requirements": "{1,35}-{3,35}",
+    "shop_price": "1",
+    "examine": "It seems to be made of incredibly light, but durable materials.",
+    "durability": null,
+    "destroy": "true",
+    "weight": "0.3",
+    "absorb": "0,0,0",
+    "equipment_slot": "4",
+    "destroy_message": "You can get a replacement from Gunnjorn at the Barbarian Agility Course at the Barbarian Outpost.",
+    "remove_sleeves": "true",
+    "name": "Agile top",
+    "archery_ticket_price": "0",
+    "id": "14647",
+    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+  },
+  {
+    "requirements": "{1,35}-{3,35}",
+    "shop_price": "1",
+    "examine": "They seem to be made of an incredibly light but durable material.",
+    "durability": null,
+    "destroy": "true",
+    "weight": "0.3",
+    "absorb": "0,0,0",
+    "equipment_slot": "7",
+    "destroy_message": "You can get replacement from any gnome trainer on the Gnome Agility Course.",
+    "name": "Agile legs",
+    "archery_ticket_price": "0",
+    "id": "14648",
+    "bonuses": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+  },
+  {
+    "examine": "Open the box and choose a gift.",
+    "name": "Random event gift",
+    "weight": "0.4",
+    "id": "14649"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Burgundy afro",
+    "weight": "0.2",
+    "id": "14650",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Burgundy afro",
+    "id": "14651"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Red afro",
+    "weight": "0.2",
+    "id": "14652",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Red afro",
+    "id": "14653"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Vermilion afro",
+    "weight": "0.2",
+    "id": "14654",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Vermilion afro",
+    "id": "14655"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Pink afro",
+    "weight": "0.2",
+    "id": "14656",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Pink afro",
+    "id": "14657"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Orange afro",
+    "weight": "0.2",
+    "id": "14658",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Orange afro",
+    "id": "14659"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Yellow afro",
+    "weight": "0.2",
+    "id": "14660",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Yellow afro",
+    "id": "14661"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Peach afro",
+    "weight": "0.2",
+    "id": "14662",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Peach afro",
+    "id": "14663"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Brown afro",
+    "weight": "0.2",
+    "id": "14664",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Brown afro",
+    "weight": "",
+    "id": "14665"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Dark brown afro",
+    "weight": "0.2",
+    "id": "14666",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Dark brown afro",
+    "weight": "",
+    "id": "14667"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Light brown afro",
+    "weight": "0.2",
+    "id": "14668",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Light brown afro",
+    "id": "14669"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Mint green afro",
+    "weight": "0.2",
+    "id": "14670",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Mint green afro",
+    "id": "14671"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Green afro",
+    "weight": "0.2",
+    "id": "14672",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Green afro",
+    "id": "14673"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Dark green afro",
+    "weight": "0.2",
+    "id": "14674",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Dark green afro",
+    "id": "14675"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Dark blue afro",
+    "weight": "0.2",
+    "id": "14676",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Dark blue afro",
+    "id": "14677"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Turquoise afro",
+    "weight": "0.2",
+    "id": "14678",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Turquoise afro",
+    "id": "14679"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Light blue afro",
+    "weight": "0.2",
+    "id": "14680",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Light blue afro",
+    "id": "14681"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Purple afro",
+    "weight": "0.2",
+    "id": "14682",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Purple afro",
+    "weight": "",
+    "id": "14683"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Violet afro",
+    "weight": "0.2",
+    "id": "14684",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Violet afro",
+    "weight": "",
+    "id": "14685"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Indigo afro",
+    "weight": "0.2",
+    "id": "14686",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Indigo afro",
+    "id": "14687"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Dark Grey afro",
+    "weight": "0.2",
+    "id": "14688",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Dark Grey afro",
+    "id": "14689"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Military Grey afro",
+    "weight": "0.2",
+    "id": "14690",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Military Grey afro",
+    "id": "14691"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "White afro",
+    "weight": "0.2",
+    "id": "14692",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "White afro",
+    "id": "14693"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Light Grey afro",
+    "weight": "0.2",
+    "id": "14694",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Light Grey afro",
+    "id": "14695"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Taupe afro",
+    "weight": "0.2",
+    "id": "14696",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Taupe afro",
+    "weight": "",
+    "id": "14697"
+  },
+  {
+    "remove_head": "true",
+    "destroy_message": "Your item will be destroyed permanently and it may not be reclaimable.",
+    "examine": "Perfect for parties!",
+    "name": "Black afro",
+    "weight": "0.2",
+    "id": "14698",
+    "equipment_slot": "0"
+  },
+  {
+    "name": "Black afro",
+    "id": "14699"
   },
   {
     "examine": "Item container for C. Ele Minor Drop Table. You should not be able to obtain this item.",
@@ -133722,21 +133661,5 @@
     "examine": "You should not have this.",
     "name": "ASDT Slot",
     "id": "14430"
-  },
-  {
-    "examine": "A raw turkey.",
-    "name": "Raw turkey",
-    "weight": "0.2",
-    "id": "14539"
-  },
-  {
-    "examine": "Oh dear, it's totally burnt!",
-    "name": "Burnt turkey",
-    "id": "14541"
-  },
-  {
-    "examine": "Oh dear, it's totally burnt!",
-    "name": "Burnt turkey drumstick",
-    "id": "14544"
   }
 ]

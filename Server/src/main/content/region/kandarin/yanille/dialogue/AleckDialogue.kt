@@ -1,9 +1,15 @@
 package content.region.kandarin.yanille.dialogue
 
+import content.region.kandarin.west_ardougne.diary.dialogue.AleckDiaryDialogue
+import core.api.openDialogue
 import core.api.openNpcShop
 import core.game.dialogue.Dialogue
+import core.game.dialogue.IfTopic
+import core.game.dialogue.Topic
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
+import core.game.node.entity.player.link.diary.Diary
+import core.game.node.entity.player.link.diary.DiaryType
 import core.plugin.Initializable
 import core.tools.END_DIALOGUE
 import shared.consts.NPCs
@@ -21,17 +27,15 @@ class AleckDialogue(player: Player? = null) : Dialogue(player) {
         when (stage) {
             0 -> npc("Hello, hello, and a most warm welcome to my Hunter", "Emporium. We have everything the discerning Hunter", "could need.").also { stage++ }
             1 -> npc("Would you like me to show you our range of", "equipment? Or was there something specific you were", "after?").also { stage++ }
-            2 -> options(
-                "Ok, let's see what you've got.",
-                "I'm not interested, thanks.",
-                "Who's that guy over there?",
-            ).also { stage++ }
-            3 -> when (buttonId) {
-                1 -> player("Ok, let's see what you've got!").also { stage = 10 }
-                2 -> player("I'm not interested, thanks.").also { stage = END_DIALOGUE }
-                3 -> player("Who's that guy over there?").also { stage = 30 }
-            }
-
+            2 -> showTopics(
+                IfTopic("Talk about achievement diary", openDialogue(player, AleckDiaryDialogue()), Diary.canClaimLevelRewards(player!!, DiaryType.ARDOUGNE, 2)),
+                Topic("Ok, let's see what you've got.",4),
+                Topic("I'm not interested, thanks.",end()),
+                Topic("Who's that guy over there?",30)
+            )
+            4 -> player("Ok, let's see what you've got!").also { stage = 10 }
+            5 -> player("I'm not interested, thanks.").also { stage = END_DIALOGUE }
+            6 -> player("Who's that guy over there?").also { stage = 30 }
             10 -> {
                 end()
                 openNpcShop(player, NPCs.ALECK_5110)
