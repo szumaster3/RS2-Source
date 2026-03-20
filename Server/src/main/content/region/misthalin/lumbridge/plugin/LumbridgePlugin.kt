@@ -15,6 +15,8 @@ import core.game.node.entity.combat.equipment.Ammunition
 import core.game.node.entity.combat.equipment.WeaponInterface
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
+import core.game.node.entity.player.link.warning.WarningManager
+import core.game.node.entity.player.link.warning.WarningType
 import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
 import core.game.node.scenery.Scenery
@@ -124,6 +126,25 @@ class LumbridgePlugin : InteractionListener {
                 sendString(player, "<col=8A0808>Naked flames may cause an explosion!", 220, 8)
                 sendString(player, "<col=8A0808>Beware of vicious head-grabbing beasts!", 220, 10)
                 sendString(player, "<col=8A0808>Contact a Slayer master for protective headgear.", 220, 11)
+            }
+            return@on true
+        }
+
+        on(Objects.HOLE_6905, IntType.SCENERY, "squeeze-through") { player, _ ->
+            WarningManager.trigger(player, WarningType.LUMBRIDGE_CELLAR) {
+                val targetLocation: Location
+                val direction: core.game.world.map.Direction
+
+                if (player.location.x >= 3221) {
+                    targetLocation = Location.create(3219, 9618, 0)
+                    direction = core.game.world.map.Direction.WEST
+                } else {
+                    targetLocation = Location.create(3222, 9618, 0)
+                    direction = core.game.world.map.Direction.EAST
+                }
+
+                sendMessage(player, "You squeeze through the hole.")
+                forceMove(player, player.location, targetLocation, 0, 90, direction, 10578)
             }
             return@on true
         }
@@ -259,6 +280,13 @@ class LumbridgePlugin : InteractionListener {
 
         setDest(IntType.SCENERY, Objects.BELL_36976) { player, _ ->
             return@setDest player.location
+        }
+
+        setDest(IntType.SCENERY, shared.consts.Scenery.HOLE_6905) { p, _ ->
+            if (p.location.x < 3221)
+                Location.create(3219, 9618, 0)
+            else
+                Location.create(3222, 9618, 0)
         }
     }
 

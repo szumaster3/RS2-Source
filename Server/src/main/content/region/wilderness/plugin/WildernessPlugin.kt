@@ -14,6 +14,8 @@ import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.TeleportManager
 import core.game.node.entity.player.link.TeleportManager.TeleportType
 import core.game.node.entity.player.link.diary.DiaryType
+import core.game.node.entity.player.link.warning.WarningManager
+import core.game.node.entity.player.link.warning.WarningType
 import core.game.node.item.Item
 import core.game.world.map.Location
 import shared.consts.*
@@ -55,6 +57,24 @@ class WildernessPlugin : InteractionListener {
             return@on true
         }
 
+        /*
+         * Handles Corporeal Beast passages.
+         */
+
+        on(Scenery.PASSAGE_37929, IntType.SCENERY, "go-through") { player, _ ->
+            val offset = if (player.location.x > 2917) -4 else 4
+            player.properties.teleportLocation = player.location.transform(offset, 0, 0)
+            return@on true
+        }
+
+        on(Scenery.PASSAGE_38811, IntType.SCENERY, "go-through") { player, _ ->
+            WarningManager.trigger(player, WarningType.CORPOREAL_BEAST_DANGEROUS) {
+                val offset = if (player.location.x > 2970) -4 else 4
+                player.properties.teleportLocation =
+                    player.location.transform(offset, 0, 0)
+            }
+            return@on true
+        }
 
         /*
          * Handles interaction with wilderness ladders.
