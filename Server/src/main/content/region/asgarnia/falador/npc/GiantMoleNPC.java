@@ -198,7 +198,7 @@ public final class GiantMoleNPC extends AbstractNPC {
                 WarningManager.trigger(player, WarningType.FALADOR_MOLE_LAIR, () -> {
                     player.getProperties().setTeleportLocation(Location.create(1752, 5237, 0));
                     playAudio(player, Sounds.ROOF_COLLAPSE_1384);
-                    player.getPacketDispatch().sendMessage("You seem to have dropped into a network of mole tunnels.");
+                    player.getPacketDispatch().sendMessage("You seem to have dropped down into a network of mole tunnels.");
 
                     if (!player.getAchievementDiaryManager().getDiary(DiaryType.FALADOR).isComplete(0, 5)) {
                         player.getAchievementDiaryManager().getDiary(DiaryType.FALADOR).updateTask(player, 0, 5, true);
