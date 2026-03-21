@@ -6,7 +6,7 @@ import content.data.Color
 import content.data.InterfaceFont
 import shared.consts.Components
 
-object AchievementDiaryInterface {
+object `AreaTask(259)` {
     fun add() {
         IfacePacker.to(Components.AREA_TASK_259)
             .from(Components.AREA_TASK_259)

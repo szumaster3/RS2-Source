@@ -32,7 +32,7 @@ object ContentLoader {
     }
 
     private fun interfaces() {
-        content.interfaces.AchievementDiaryInterface.add()
+        content.interfaces.`AreaTask(259)`.add()
     }
 
     private fun items() {
