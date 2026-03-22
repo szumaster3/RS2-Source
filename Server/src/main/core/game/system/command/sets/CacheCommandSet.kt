@@ -8,6 +8,8 @@ import core.api.*
 import core.cache.Cache
 import core.cache.def.impl.*
 import core.game.system.command.Privilege
+import core.game.system.task.Pulse
+import core.game.world.GameWorld
 import core.game.world.map.RegionManager
 import core.game.world.map.RegionPlane
 import core.plugin.Initializable
@@ -61,10 +63,10 @@ class CacheCommandSet : CommandSet(Privilege.ADMIN) {
                     override fun pulse(): Boolean {
                         if (player == null) return true
 
-                        animateInterface(player, iface, component, currentAnim)
+                        currentAnim?.let { animateInterface(player, iface, component, it) }
                         player.debug("anim: $currentAnim")
 
-                        currentAnim++
+                        currentAnim = currentAnim!! + 1
 
                         return false
                     }
