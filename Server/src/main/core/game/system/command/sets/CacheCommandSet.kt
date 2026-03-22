@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import core.ServerConstants
+import core.api.animateInterface
 import core.api.sendItemOnInterface
 import core.api.sendModelOnInterface
 import core.api.sendString
@@ -31,6 +32,33 @@ import kotlin.reflect.jvm.isAccessible
 class CacheCommandSet : CommandSet(Privilege.ADMIN) {
 
     override fun defineCommands() {
+
+        /*
+         * Command for animating interface component.
+         */
+
+        define(
+            name = "ianim",
+            privilege = Privilege.ADMIN,
+            usage = "::ianim <interface_id> <component_id> <anim_id>",
+            description = "Play an animation on an interface component."
+        ) { player, args ->
+            if (args.size < 4) {
+                reject(player, "Usage: ::ianim <interface_id> <component_id> <anim_id>")
+                return@define
+            }
+
+            val iface     = args[1].toIntOrNull()
+            val component = args[2].toIntOrNull()
+            val animId    = args[3].toIntOrNull()
+
+            if (iface == null || component == null || animId == null || animId < 0) {
+                reject(player, "Iface, component and anim Id must be valid ints!")
+                return@define
+            }
+
+            animateInterface(player, iface, component, animId)
+        }
 
         /*
          * Command for send model to interface.

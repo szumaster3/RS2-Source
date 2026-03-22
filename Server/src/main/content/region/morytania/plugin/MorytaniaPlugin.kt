@@ -76,19 +76,28 @@ class MorytaniaPlugin : InteractionListener, MapArea {
 
     override fun defineListeners() {
         on(SWAMP_BOAT, IntType.SCENERY, "board", "Board ( Pay 10 )") { player, node ->
-            if (!hasRequirement(player, Quests.NATURE_SPIRIT)) return@on false
+            if (!isQuestComplete(player, Quests.NATURE_SPIRIT)) return@on false
+
+            val isForward = node.id == 6970
+            val overlay = if (isForward) Components.SWAMP_BOATJOURNEY_321 else Components.SWAMP_BOATJOURNEY_BACK_322
+            val destination = if (isForward) Location(3522, 3285, 0) else Location(3498, 3380, 0)
+            val destinationName = if (isForward) "Mort'ton." else "the swamp"
+            val anim = if(isForward) 1372 else 1373
+
             lock(player, 13)
             openOverlay(player, Components.FADE_TO_BLACK_120)
+
             queueScript(player, 3, QueueStrength.SOFT) { stage ->
                 when (stage) {
                     0 -> {
-                        openOverlay(player, Components.SWAMP_BOATJOURNEY_321)
                         setMinimapState(player, 2)
+                        openOverlay(player, overlay)
+                        animateInterface(player, overlay, 2, anim)
                         return@queueScript delayScript(player, 7)
                     }
 
                     1 -> {
-                        teleport(player, if (node.id == 6970) Location(3522, 3285, 0) else Location(3498, 3380, 0))
+                        teleport(player, destination)
                         setMinimapState(player, 0)
                         openInterface(player, Components.FADE_FROM_BLACK_170)
                         return@queueScript keepRunning(player)
@@ -96,13 +105,14 @@ class MorytaniaPlugin : InteractionListener, MapArea {
 
                     2 -> {
                         closeOverlay(player)
-                        sendDialogue(player, "You arrive at ${if (node.id == 6970) "Mort'ton." else "the swamp"}.")
+                        sendDialogue(player, "You arrive at $destinationName")
                         return@queueScript stopExecuting(player)
                     }
 
                     else -> return@queueScript stopExecuting(player)
                 }
             }
+
             return@on true
         }
 
