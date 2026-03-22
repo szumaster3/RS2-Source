@@ -41,7 +41,7 @@ class WerewolfCourseListener : InteractionListener {
                 sendNPCDialogueLines(
                     player,
                     NPCs.WEREWOLF_1665,
-                    FaceAnim.CHILD_NORMAL,
+                    FaceAnim.FAMILIAR_NEUTRAL,
                     false,
                     "You can't go down there human. If it wasn't my duty",
                     "to guard this trapdoor, I would be relieving you of the",
@@ -51,7 +51,7 @@ class WerewolfCourseListener : InteractionListener {
                 sendNPCDialogueLines(
                     player,
                     NPCs.WEREWOLF_1665,
-                    FaceAnim.CHILD_NORMAL,
+                    FaceAnim.FAMILIAR_NEUTRAL,
                     false,
                     "Good luck down there, my friend. Remember, to the",
                     "west is the main agility course, while to the east is a",
@@ -73,8 +73,7 @@ class WerewolfCourseListener : InteractionListener {
         }
 
         on(AGILITY_TRAINER, IntType.NPC, "Give-Stick") { player, node ->
-            val stick = player.inventory.toArray().firstOrNull { it != null && it.id == Items.STICK_4179 }
-            if (stick != null && stick.charge == 2005) {
+            if (inInventory(player, Items.STICK_4179)) {
                 val stickAmount = amountInInventory(player, Items.STICK_4179)
                 removeAll(player, Item(Items.STICK_4179, stickAmount), Container.INVENTORY)
                 rewardXP(player, Skills.AGILITY, 190.0)

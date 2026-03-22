@@ -3,13 +3,11 @@ package content.global.skill.agility.courses.werewolf
 import content.global.skill.agility.AgilityCourse
 import content.global.skill.agility.AgilityHandler
 import core.api.*
-import core.api.utils.Vector
 import core.cache.def.impl.SceneryDefinition
 import core.game.dialogue.FaceAnim
 import core.game.node.Node
 import core.game.node.entity.player.Player
 import core.game.node.entity.skill.Skills
-import core.game.node.item.Item
 import core.game.node.scenery.Scenery
 import core.game.system.task.Pulse
 import core.game.world.GameWorld
@@ -62,22 +60,31 @@ class WerewolfCourse : AgilityCourse {
         if (!checkRequirements(p)) return true
 
         val loc = p.location
-        val dir = Vector.betweenLocs(loc, scenery.location).toDirection()
+        val index = steppingPath.indexOf(p.location)
+
+        if (index == -1 || loc.y >= 9882) {
+            sendMessage(p, "You can't do that from here.")
+            return true
+        }
+
+        if (index == steppingPath.lastIndex) {
+            return true
+        }
+
+        val next = steppingPath[index + 1]
 
         if (loc == Location(3538, 9873, 0)) {
             findLocalNPC(p, NPCs.AGILITY_BOSS_1661)?.let { face(it, p, 3) }
             findLocalNPC(p, NPCs.AGILITY_BOSS_1661)?.sendChat("FETCH!!!!!")
             findLocalNPC(p, NPCs.AGILITY_BOSS_1661)?.let { animate(it, Animations.WEREWOLF_FETCH_6536) }
         }
-
-        GameWorld.Pulser.submit(
-            object : Pulse() {
-                override fun pulse(): Boolean {
-                    AgilityHandler.forceWalk(p, -1, loc, loc.transform(dir, 2), Animation.create(1604), 20, 10.0, null)
-                    return true
-                }
-            },
-        )
+        lock(p, 3)
+        GameWorld.Pulser.submit(object : Pulse() {
+            override fun pulse(): Boolean {
+                AgilityHandler.forceWalk(p, -1, p.location, next, Animation.create(1604), 20, 10.0, null)
+                return true
+            }
+        })
         return true
     }
 
@@ -86,11 +93,6 @@ class WerewolfCourse : AgilityCourse {
      */
     private fun jumpHurdleObstacle(p: Player, scenery: Scenery): Boolean {
         val loc = p.location
-        if (loc.y in arrayOf(9894, 9897, 9900)) {
-            sendMessage(p, "You can't do that from here.")
-            return false
-        }
-
         AgilityHandler.forceWalk(p, -1, loc, loc.transform(Direction.NORTH, 2), Animation.create(1603), 10, 25.0, null)
         runTask(p, 2) { p.faceLocation(loc.transform(Direction.SOUTH)) }
         return true
@@ -107,13 +109,11 @@ class WerewolfCourse : AgilityCourse {
         }
 
         if (loc.x in arrayOf(3538, 3541, 3544)) {
-            val stick = Item(Items.STICK_4179, 1, 2005)
-            produceGroundItem(p, stick.id, 1, stickRandomLocation.location)
+            produceGroundItem(p, Items.STICK_4179, 1, stickRandomLocation.location)
         }
-
+        lock(p, 6)
         GameWorld.Pulser.submit(object : Pulse(1, p) {
             override fun pulse(): Boolean {
-                lock(p, 6)
                 AgilityHandler.forceWalk(
                     p, -1, loc, loc.transform(Direction.NORTH, 5),
                     Animation.create(Animations.CLIMB_THROUGH_OBSTACLE_10580), 10, 20.0, null
@@ -135,10 +135,9 @@ class WerewolfCourse : AgilityCourse {
             sendMessage(p, "You can't do that from here.")
             return false
         }
-
+        lock(p, 3)
         GameWorld.Pulser.submit(object : Pulse() {
             override fun pulse(): Boolean {
-                lock(p, 3)
                 AgilityHandler.forceWalk(p, -1, loc, loc.transform(Direction.WEST, 3), Animation.create(Animations.CLIMB_DOWN_B_740), 15, 25.0, null)
                 p.animate(Animation(-1), 2)
                 return true
@@ -154,16 +153,16 @@ class WerewolfCourse : AgilityCourse {
         val loc = p.location
         val helmet = getItemFromEquipment(p, EquipmentSlot.HEAD)
 
+        val randomMessage = messages.random()
         if (helmet != null) {
-            val messages = listOf(
-                "That headgear won't help you here, human! Take it off!",
-                "You need to take your headgear off before you try the Deathslide, otherwise you won't be able to get a good enough grip with your teeth."
-            )
-            sendNPCDialogue(p, NPCs.AGILITY_TRAINER_1664, messages.random())
+            sendNPCDialogue(p, NPCs.AGILITY_TRAINER_1664, randomMessage)
             return true
         }
 
-        if (!finishedMoving(p)) lock(p, 16)
+        if (!finishedMoving(p))
+            return false
+
+        lock(p, 16)
         face(p, loc.transform(Direction.SOUTH))
         animate(p, Animations.WEREWOLF_ZIPLINE_1601)
         replaceScenery(scenery, shared.consts.Scenery.ZIP_LINE_5142, 6)
@@ -177,8 +176,10 @@ class WerewolfCourse : AgilityCourse {
                     Animation(1602), 30, 0.0, null, 1
                 )
                 p.sendMessage("... and land safely on your feet.", 14)
-                p.animate(Animation(-1), 14)
-                runTask(p, 14) { rewardXP(p, Skills.AGILITY, 180.0) }
+                runTask(p, 14) {
+                    rewardXP(p, Skills.AGILITY, 180.0)
+                    resetAnimator(p)
+                }
                 return true
             }
         })
@@ -193,8 +194,30 @@ class WerewolfCourse : AgilityCourse {
         arrayOf(5139, 5140, 5141).forEach { SceneryDefinition.forId(it).handlers["option:teeth-grip"] = this }
     }
 
+    override fun getDestination(node: Node, n: Node): Location?
+    {
+        return when (n.id)
+        {
+            Objects.ZIP_LINE_5139 -> Location.create(3528, 9910, 0)
+            Objects.STEPPING_STONE_35996 -> node.location ?: super.getDestination(node, n)
+            else -> super.getDestination(node, n)
+        }
+    }
+
     companion object {
         private val stickLocation = Location.create(3542, 9912, 0)
         val stickRandomLocation: Location = Location.getRandomLocation(stickLocation, 2, true)
+        val messages = listOf(
+            "That headgear won't help you here, human! Take it off!",
+            "You need to take your headgear off before you try the Deathslide, otherwise you won't be able to get a good enough grip with your teeth."
+        )
+        private val steppingPath = listOf(
+            Location.create(3538, 9873, 0),
+            Location.create(3538, 9875, 0),
+            Location.create(3538, 9877, 0),
+            Location.create(3540, 9877, 0),
+            Location.create(3540, 9879, 0),
+            Location.create(3540, 9881, 0)
+        )
     }
 }
