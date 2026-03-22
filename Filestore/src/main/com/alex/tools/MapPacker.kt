@@ -2,10 +2,12 @@ package com.alex.tools
 
 import com.alex.Cache
 import com.alex.loaders.MapIndex
+import com.alex.utils.Utils
 import java.io.File
 import java.nio.file.Files
 
 object MapPacker {
+
     @JvmStatic
     fun pack() {
         val store = Cache.getStore()
@@ -19,36 +21,76 @@ object MapPacker {
             return
         }
 
-        mapDir.listFiles { f -> f.extension == "dat" }?.forEach { mapFile ->
-            val regionId = mapFile.nameWithoutExtension.removePrefix("map_").toIntOrNull()
+        val mapFiles = mapDir.listFiles { f -> f.extension == "dat" } ?: return
+
+        var nextArchiveId = mapIndex.lastArchiveId + 1
+
+        for (mapFile in mapFiles) {
+
+            val regionId = mapFile.nameWithoutExtension.toIntOrNull()
             if (regionId == null) {
                 println("Invalid map file name: ${mapFile.name}")
-                return@forEach
+                continue
             }
 
-            val landFile = File(landDir, "land_$regionId.dat")
+            val landFile = File(landDir, "$regionId.dat")
             if (!landFile.exists()) {
                 println("Missing land file for region $regionId")
-                return@forEach
+                continue
             }
 
             val x = regionId shr 8
             val y = regionId and 0xFF
 
-            val mapArchiveId =
-                mapIndex.getArchiveId("m${x}_$y").takeIf { it != -1 } ?: (mapIndex.lastArchiveId + 1)
-            val landArchiveId =
-                mapIndex.getArchiveId("l${x}_$y").takeIf { it != -1 } ?: (mapIndex.lastArchiveId + 1)
+            val mapName = "m${x}_$y"
+            val landName = "l${x}_$y"
+
+            val mapArchiveId = mapIndex.getArchiveId(mapName).takeIf { it != -1 }
+                ?: nextArchiveId++
+
+            val landArchiveId = mapIndex.getArchiveId(landName).takeIf { it != -1 }
+                ?: nextArchiveId++
 
             val mapData = Files.readAllBytes(mapFile.toPath())
             val landData = Files.readAllBytes(landFile.toPath())
 
-            mapIndex.putFile(mapArchiveId, 0, 0, mapData, null, false, false, 0, 0)
-            mapIndex.putFile(landArchiveId, 0, 0, landData, null, false, false, 0, 0)
+            if (mapData.isEmpty() || landData.isEmpty()) {
+                println("Empty data for region $regionId")
+                continue
+            }
+
+            mapIndex.putFile(
+                mapArchiveId,
+                0,
+                0,
+                mapData,
+                null,
+                false,
+                false,
+                Utils.getNameHash(mapName),
+                0
+            )
+
+            mapIndex.putFile(
+                landArchiveId,
+                0,
+                0,
+                landData,
+                null,
+                false,
+                false,
+                Utils.getNameHash(landName),
+                0
+            )
 
             MapIndex.setRegion(regionId, landArchiveId, mapArchiveId)
 
-            println("Packed region $regionId  [m${x}_$y, l${x}_$y]")
+            println("Packed region $regionId [$mapName, $landName]")
         }
+
+        mapIndex.rewriteTable()
+        mapIndex.resetCachedFiles()
+
+        println("Done packing maps.")
     }
 }

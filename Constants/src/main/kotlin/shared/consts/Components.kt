@@ -190,7 +190,7 @@ object Components {
     const val MACRO_EVIL_BOB_186 = 186
     const val MUSIC_V3_187 = 187
     const val MACRO_MIME_EMOTES_188 = 188
-    const val MACRO_PILLORY_GUARD_188 = 189
+    const val MACRO_PILLORY_GUARD_189 = 189
     const val MACRO_WHICH_SHAPE_IS_BLUE_190 = 190
     const val MACRO_QUIZSHOW_191 = 191
     const val MAGIC_192 = 192
@@ -274,7 +274,7 @@ object Components {
     const val TUTOR_MAP_270 = 270
     const val PRAYER_271 = 271
     const val PRIESTPERIL_GRAVEMONUMENT_272 = 272
-    const val PRISONPETE_273 = 273
+    const val MACRO_PRISON_PETE_273 = 273
     const val QUESTJOURNAL_V2_274 = 274
     const val QUESTJOURNAL_SCROLL_275 = 275
     const val COMPONENT_276 = 276

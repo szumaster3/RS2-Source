@@ -19,7 +19,7 @@ object PilloryUtils {
     /**
      * The interface for this event
      */
-    const val INTERFACE = Components.MACRO_PILLORY_GUARD_188
+    const val INTERFACE = Components.MACRO_PILLORY_GUARD_189
 
     /**
      * The locations where the event can take place.

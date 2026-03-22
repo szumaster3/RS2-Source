@@ -14,13 +14,13 @@ class PrisonPeteInterface : InterfaceListener {
     private val rotatingAnimation = 3047
 
     override fun defineInterfaceListeners() {
-        onOpen(Components.PRISONPETE_273) { player, _ ->
+        onOpen(Components.MACRO_PRISON_PETE_273) { player, _ ->
             sendModelOnInterface(player = player, iface = 273, child = 3, model = modelIDs, zoom = 230)
             sendAnimationOnInterface(player = player, anim = animationIDs, iface = 273, child = 3)
             return@onOpen true
         }
 
-        on(Components.PRISONPETE_273) { _, _, _, _, _, _ ->
+        on(Components.MACRO_PRISON_PETE_273) { _, _, _, _, _, _ ->
             return@on true
         }
     }

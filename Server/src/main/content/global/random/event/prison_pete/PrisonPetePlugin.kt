@@ -41,7 +41,7 @@ class PrisonPetePlugin : InteractionListener, MapArea {
 
         on(Scenery.LEVER_26191, IntType.SCENERY, "pull") { player, _ ->
             animate(player, Animations.PULL_LEVER_798)
-            openInterface(player, Components.PRISONPETE_273)
+            openInterface(player, Components.MACRO_PRISON_PETE_273)
             return@on true
         }
 
