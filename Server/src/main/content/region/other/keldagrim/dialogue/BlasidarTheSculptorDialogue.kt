@@ -1,12 +1,18 @@
 package content.region.other.keldagrim.dialogue
 
+import core.api.hasRequirement
+import core.api.openInterface
+import core.api.sendOptions
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
+import core.game.dialogue.Topic
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.plugin.Initializable
 import core.tools.END_DIALOGUE
+import shared.consts.Components
 import shared.consts.NPCs
+import shared.consts.Quests
 
 /**
  * Represents the Blasidar The Sculptor dialogue.
@@ -16,21 +22,48 @@ class BlasidarTheSculptorDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
         npc = args[0] as NPC
-        npc(FaceAnim.OLD_NORMAL, "The new statue looks beautiful, don't you agree?")
+        if(!hasRequirement(player, Quests.THE_GIANT_DWARF)){
+            npc(FaceAnim.OLD_NORMAL, "Hello!")
+        } else {
+            showTopics(
+                Topic("Could you change my gravestone, please?", 8),
+                Topic("The weather's lovely, don't you think?", 10)
+            )
+        }
         return true
     }
 
     override fun handle(interfaceId: Int, buttonId: Int): Boolean {
         when (stage) {
-            0 -> player(FaceAnim.NEUTRAL, "Oh yes, quite.").also { stage++ }
-            1 -> npc(FaceAnim.OLD_NORMAL, "My finest piece of work, without a doubt.").also { stage++ }
-            2 -> player(FaceAnim.HALF_ASKING, "Say, I was wondering, did you do the statues down", "in the mines as well?").also { stage++ }
-            3 -> npc(FaceAnim.OLD_NORMAL, "What, out with the trolls?").also { stage++ }
-            4 -> npc(FaceAnim.OLD_NORMAL, "If only! But no, they've been there for many thousands of years,", "actually. Been there before dwarven recorded history.").also { stage++ }
-            5 -> player(FaceAnim.HALF_WORRIED, "No no, I'm sure they weren't there before!").also { stage++ }
-            6 -> npc(FaceAnim.OLD_NORMAL, "Of course they were, don't be silly!").also { stage++ }
-            7 -> player("Alright... my mistake then.").also { stage++ }
-            8 -> end()
+            0 -> player(FaceAnim.FRIENDLY, "Ho there! Who are you?").also { stage++ }
+            1 -> npc(FaceAnim.OLD_NORMAL, "Only the most famous sculptor in all of Keldagrim.").also { stage++ }
+            2 -> player(FaceAnim.HALF_ASKING, "Does Keldagrim have a lot of sculptors then?").also { stage++ }
+            3 -> npc(FaceAnim.OLD_NORMAL, "Well... I'm the best outside of Keldagrim too, I tell you! Especially here in the north.").also { stage++ }
+            4 -> if(!hasRequirement(player, Quests.MOUNTAIN_DAUGHTER)) {
+                player("Sure, sure, of course.").also { stage = END_DIALOGUE }
+            } else {
+                player(FaceAnim.HAPPY, "Yeah, maybe you should visit the mountain people topside of this mountain some time... all they have is a big lump of stone!").also { stage++ }
+            }
+
+            5 -> npc(FaceAnim.OLD_NORMAL, "Ah, the philistines!").also { stage++ }
+            6 -> npc(FaceAnim.OLD_NORMAL, "But I'd rather not go up there, they don't like dwarves much.").also { stage++ }
+            7 -> player("Oh yes, good point.").also { stage = END_DIALOGUE }
+
+            8 -> npc(FaceAnim.OLD_NORMAL, "Certainly, if you can afford to pay for the materials! I'm sure there'll be something in that catalogue to suit your taste.").also { stage++ }
+            9 -> {
+                end()
+                openInterface(player, Components.GRAVESTONE_SHOP_652)
+            }
+            10 -> player(FaceAnim.NEUTRAL, "Oh yes, quite.").also { stage++ }
+            11 -> npc(FaceAnim.OLD_NORMAL, "My finest piece of work, without a doubt.").also { stage++ }
+            12 -> player(FaceAnim.HALF_ASKING, "Say, I was wondering, did you do the statues down", "in the mines as well?").also { stage++ }
+            13 -> npc(FaceAnim.OLD_NORMAL, "What, out with the trolls?").also { stage++ }
+            14 -> npc(FaceAnim.OLD_NORMAL, "If only! But no, they've been there for many thousands of years,", "actually. Been there before dwarven recorded history.").also { stage++ }
+            15 -> player(FaceAnim.HALF_WORRIED, "No no, I'm sure they weren't there before!").also { stage++ }
+            16 -> npc(FaceAnim.OLD_NORMAL, "Of course they were, don't be silly!").also { stage++ }
+            17 -> player("Alright... my mistake then.").also { stage = END_DIALOGUE }
+
+            /*
             9 -> npc(FaceAnim.OLD_NORMAL, "Why, yes, yes, that I am!").also { stage++ }
             10 -> player(FaceAnim.FRIENDLY, "Oh, well, I'm ${player.username}. Veldaban of the Black Guard", "sent me to you, you see. Said you might need some help with the statue.").also { stage++ }
             11 -> npc(FaceAnim.OLD_NORMAL, "Oh, I don't need an assistant sculptor, really,", "I can do just fine on my own.").also { stage++ }
@@ -69,6 +102,8 @@ class BlasidarTheSculptorDialogue(player: Player? = null) : Dialogue(player) {
             41 -> npc(FaceAnim.OLD_NORMAL, "And? The battleaxe?").also { stage++ }
             42 -> player(FaceAnim.NEUTRAL, "Sorry, no, I'm still looking for it.").also { stage++ }
             43 -> npc(FaceAnim.OLD_NORMAL, "Look a little harder please!").also { stage = END_DIALOGUE }
+
+             */
         }
         return true
     }

@@ -19,6 +19,7 @@ import core.game.interaction.QueueStrength
 import core.game.system.command.Privilege
 import core.game.world.map.zone.impl.WildernessZone
 import core.game.world.repository.Repository
+import core.game.world.update.flag.context.Animation
 import core.tools.secondsToTicks
 import core.tools.colorize
 import shared.consts.*
@@ -26,69 +27,60 @@ import kotlin.math.min
 
 class GraveController : PersistWorld, TickListener, InteractionListener, Commands {
     override fun defineListeners() {
-        on(GraveType.ids, IntType.NPC, "read", handler = this::onGraveReadOption)
-        on(GraveType.ids, IntType.NPC, "bless", handler = this::onGraveBlessed)
-        on(GraveType.ids, IntType.NPC, "repair", handler = this::onGraveRepaired)
-        on(GraveType.ids, IntType.NPC, "demolish", handler = this::onGraveDemolished)
+        on(GraveType.ids, IntType.NPC, "read", handler = this::onRead)
+        on(GraveType.ids, IntType.NPC, "bless", handler = this::onBless)
+        on(GraveType.ids, IntType.NPC, "repair", handler = this::onRepair)
+        on(GraveType.ids, IntType.NPC, "demolish", handler = this::onDemolish)
     }
 
     override fun defineCommands() {
         define("forcegravedeath", Privilege.ADMIN, "", "Forces a death that should produce a grave.") { player, _ ->
             player.details.rights = Rights.REGULAR_PLAYER
             setAttribute(player, GameAttributes.TUTORIAL_COMPLETE, true)
-            player.impactHandler.manualHit(player, player.skills.lifepoints, ImpactHandler.HitsplatType.NORMAL)
-            notify(player, "Grave created at ${player.getAttribute("/save:original-loc", player.location)}")
-            queueScript(player, 15, QueueStrength.SOFT) { stage: Int ->
+            impact(player, player.skills.lifepoints, ImpactHandler.HitsplatType.NORMAL)
+            notify(player, "Grave created at ${player.getAttribute(GameAttributes.ORIGINAL_LOCATION, player.location)}")
+            queueScript(player, 15, QueueStrength.SOFT) {
                 player.details.rights = Rights.ADMINISTRATOR
-                sendMessage(player, "Rights restored")
+                sendMessage(player, "Rights restored.")
                 return@queueScript stopExecuting(player)
             }
         }
     }
 
-
     override fun tick() {
-        for (grave in activeGraves.values.toTypedArray()) {
-            if (grave.ticksRemaining == -1) return
-
+        for (grave in activeGraves.values) {
+            if (grave.ticksRemaining == -1) continue
             if (grave.ticksRemaining == secondsToTicks(30) || grave.ticksRemaining == secondsToTicks(90)) {
                 grave.transform(grave.id + 1)
             }
-
-            if (grave.ticksRemaining == 0) {
+            if (grave.ticksRemaining <= 0) {
                 grave.collapse()
+                continue
             }
-
             grave.ticksRemaining--
         }
     }
 
-    private fun onGraveReadOption(player: Player, node: Node) : Boolean {
+    private fun onRead(player: Player, node: Node): Boolean {
         val grave = node as? Grave ?: return false
 
-        var isGraniteBackground = false
+        val isGranite = grave.type !in GraveType.MemorialPlaque..GraveType.Flag
 
-        when (grave.type) {
-            in GraveType.SMALL_GS..GraveType.ANGEL_DEATH -> isGraniteBackground = true
-            else -> {}
-        }
-
-        if (isGraniteBackground)
-            setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, 1)
-        else
-            setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, 0)
+        setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, if (isGranite) 1 else 0)
 
         openInterface(player, Components.GRAVESTONE_266)
         sendString(player, grave.retrieveFormattedText(), Components.GRAVESTONE_266, 23)
+        val baseMessage = "It looks like it'll survive another ${grave.getFormattedTimeRemaining()}."
 
-        sendMessage(player, "It looks like it'll survive another ${grave.getFormattedTimeRemaining()}.")
         if (player.details.uid == grave.ownerUid) {
-            sendMessage(player, "Isn't there something a bit odd about reading your own gravestone?")
+            sendMessage(player, "$baseMessage Isn't there something a bit odd about reading your own gravestone?")
+        } else {
+            sendMessage(player, baseMessage)
         }
         return true
     }
 
-    private fun onGraveBlessed(player: Player, node: Node) : Boolean {
+    private fun onBless(player: Player, node: Node): Boolean {
         val g = node as? Grave ?: return false
 
         if (getAttribute(g, "blessed", false)) {
@@ -104,28 +96,31 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
             return true
         }
 
-        val blessAmount = min(60, player.skills.prayerPoints.toInt() - 10)
+        val maxDrain = 60
+        val available = player.skills.prayerPoints.toInt() - 10
+        val amount = min(maxDrain, available)
 
-        if (blessAmount <= 0) {
+        if (amount <= 0) {
             sendMessage(player, "You need to recharge your Prayer at an altar.")
             return true
         }
 
-        g.addTime(secondsToTicks(blessAmount * 60))
-        player.skills.prayerPoints -= blessAmount
+        g.addTime(secondsToTicks(amount * 60))
+        player.skills.prayerPoints -= amount
+
         setAttribute(g, "blessed", true)
 
         playAudio(player, Sounds.PRAYER_RECHARGE_2674)
         animate(player, Animations.HUMAN_PRAY_645)
 
-        val gOwner = Repository.uid_map[g.ownerUid]
-        if (gOwner != null) {
-            sendMessage(gOwner, colorize("%RYour grave has been blessed."))
+        Repository.uid_map[g.ownerUid]?.let {
+            sendMessage(it, colorize("%RYour grave has been blessed."))
         }
+
         return true
     }
 
-    private fun onGraveRepaired(player: Player, node: Node) : Boolean {
+    private fun onRepair(player: Player, node: Node): Boolean {
         val g = node as? Grave ?: return false
 
         if (getAttribute(g, "repaired", false)) {
@@ -134,53 +129,53 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         }
 
         if (getStatLevel(player, Skills.PRAYER) < 2) {
-            sendMessage(player, "You need a Prayer level of 2 to bless a grave.")
+            sendMessage(player, "You need a Prayer level of 2 to repair a grave.")
             return true
         }
 
         if (player.skills.prayerPoints < 1.0) {
-            sendMessage(player, "You do not have enough prayer points to do that.")
+            sendMessage(player, "You need to recharge your Prayer at an altar.")
             return true
         }
 
         val restoreAmount = min(5, player.skills.prayerPoints.toInt())
+
         g.addTime(secondsToTicks(restoreAmount * 60))
         player.skills.prayerPoints -= restoreAmount
+
         setAttribute(g, "repaired", true)
+
         playAudio(player, Sounds.PRAYER_RECHARGE_2674)
         animate(player, Animations.HUMAN_PRAY_645)
+
         return true
     }
 
-    private fun onGraveDemolished(player: Player, node: Node) : Boolean {
+    private fun onDemolish(player: Player, node: Node): Boolean {
         val g = node as? Grave ?: return false
 
         if (player.details.uid != g.ownerUid) {
-            sendMessage(player, "You cannot demolish someone else's gravestone!")
+            sendMessage(player, "You cannot demolish this grave.")
             return true
         }
 
+        // g.animate(Animation.create(Animations.GRAVE_BROKEN_7396))
         g.demolish()
+
         return true
     }
 
-    override fun save() {
-        serializeToServerStore()
-    }
-
-    override fun parse() {
-        deserializeFromServerStore()
-    }
+    override fun save() = serialize()
+    override fun parse() = deserialize()
 
     companion object {
+
         val activeGraves = HashMap<Int, Grave>()
-        var childCounter = 0
         val ATTR_GTYPE = "/save:gravetype"
 
-        @JvmStatic fun produceGrave(type: GraveType): Grave {
-            val g = Grave()
-            g.configureType(type)
-            return g
+        @JvmStatic
+        fun produceGrave(type: GraveType): Grave {
+            return Grave().apply { configureType(type) }
         }
 
         @JvmStatic fun shouldCrumble(item: Int) : Boolean {
@@ -220,48 +215,50 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
             return true
         }
 
-        @JvmStatic fun getGraveType(player: Player) : GraveType {
-            return GraveType.values()[getAttribute(player, ATTR_GTYPE, 0)]
+        @JvmStatic
+        fun getGraveType(player: Player): GraveType {
+            val index = getAttribute(player, ATTR_GTYPE, 0)
+            return GraveType.values().getOrElse(index) { GraveType.DEFAULT }
         }
 
-        @JvmStatic fun updateGraveType(player: Player, type: GraveType) {
+        @JvmStatic
+        fun updateGraveType(player: Player, type: GraveType) {
             setAttribute(player, ATTR_GTYPE, type.ordinal)
         }
 
-        @JvmStatic fun hasGraveAt(loc: Location) : Boolean {
-            return activeGraves.values.toTypedArray().any { it.location == loc }
+        @JvmStatic
+        fun hasGraveAt(loc: Location): Boolean {
+            return activeGraves.values.any { it.location == loc }
         }
 
-        fun serializeToServerStore() {
+        fun serialize() {
             val archive = ServerStore.getArchive("active-graves") as JsonObject
-
-            val keysToRemove = archive.keySet().toList()
-            for (key in keysToRemove) {
-                archive.remove(key)
-            }
+            archive.entrySet().clear()
 
             for ((uid, grave) in activeGraves) {
                 val g = JsonObject()
+
                 g.addProperty("ticksRemaining", grave.ticksRemaining)
                 g.addProperty("location", grave.location.toString())
                 g.addProperty("type", grave.type.ordinal)
                 g.addProperty("username", grave.ownerUsername)
 
                 val items = JsonArray()
-                for (item in grave.getItems()) {
+
+                grave.getItems().forEach {
                     val i = JsonObject()
-                    i.addProperty("id", item.id)
-                    i.addProperty("amount", item.amount)
-                    i.addProperty("charge", item.charge)
+                    i.addProperty("id", it.id)
+                    i.addProperty("amount", it.amount)
+                    i.addProperty("charge", it.charge)
                     items.add(i)
                 }
-                g.add("items", items)
 
+                g.add("items", items)
                 archive.add(uid.toString(), g)
             }
         }
 
-        fun deserializeFromServerStore() {
+        fun deserialize() {
             val archive = ServerStore.getArchive("active-graves") as JsonObject
             for ((key, value) in archive.entrySet()) {
                 val g = value.asJsonObject

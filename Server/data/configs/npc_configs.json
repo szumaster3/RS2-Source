@@ -102528,7 +102528,7 @@
     "attack_level": "250"
   },
   {
-    "examine": "",
+    "examine": "Marks the place where someone died.",
     "name": "Grave marker",
     "safespot": null,
     "id": "6565"
@@ -102558,7 +102558,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "Marks the place where someone died.",
     "name": "Grave marker",
     "defence_level": "1",
     "safespot": null,
@@ -102594,7 +102594,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "Marks the place where someone died.",
     "name": "Gravestone",
     "defence_level": "1",
     "safespot": null,
@@ -102630,7 +102630,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "Marks the place where someone died.",
     "name": "Gravestone",
     "defence_level": "1",
     "safespot": null,
@@ -102666,7 +102666,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "Marks the place where someone died.",
     "name": "Gravestone",
     "defence_level": "1",
     "safespot": null,
@@ -102738,7 +102738,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "The holy symbol of the god of light.",
+    "examine": "An elegant monument to the person who died here.",
     "name": "Saradomin symbol",
     "defence_level": "1",
     "safespot": null,
@@ -102774,7 +102774,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "The holy symbol of the god of chaos.",
+    "examine": "An elegant monument to the person who died here.",
     "name": "Zamorak symbol",
     "defence_level": "1",
     "safespot": null,
@@ -102810,7 +102810,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "The holy symbol of the god of chabalanceos.",
+    "examine": "An elegant monument to the person who died here.",
     "name": "Guthix symbol",
     "defence_level": "1",
     "safespot": null,
@@ -102882,7 +102882,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "An elegant monument to the person who died here.",
     "name": "Armadyl symbol",
     "defence_level": "1",
     "safespot": null,
@@ -102918,7 +102918,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "An awesome statue placed in memory of the person who died here.",
     "name": "Memorial stone",
     "defence_level": "1",
     "safespot": null,
@@ -102954,7 +102954,7 @@
     "attack_level": "1"
   },
   {
-    "examine": "",
+    "examine": "An awesome statue placed in memory of the person who died here.",
     "name": "Memorial stone",
     "defence_level": "1",
     "safespot": null,
