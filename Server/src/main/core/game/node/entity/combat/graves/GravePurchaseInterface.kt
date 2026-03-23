@@ -39,19 +39,19 @@ class GravePurchaseInterface : InterfaceListener {
             }
 
             val cost = selectedType.cost
-            val requirement = selectedType.requiredQuest
+            val requirement = selectedType.prerequisite
 
-            if (requirement.isNotEmpty() && !isQuestComplete(player, requirement)) {
+            if (!requirement.isNullOrEmpty() && !isQuestComplete(player, requirement)) {
                 sendDialogue(player, "That gravestone requires completion of $requirement.")
                 return@on true
             }
 
-            if (selectedType != GraveType.MEM_PLAQUE && amountInInventory(player, Items.COINS_995) < cost) {
+            if (selectedType != GraveType.MemorialPlaque && amountInInventory(player, Items.COINS_995) < cost) {
                 sendDialogue(player, "You do not have enough coins to afford that gravestone.")
                 return@on true
             }
 
-            if (selectedType == GraveType.MEM_PLAQUE || removeItem(player, Item(Items.COINS_995, cost))) {
+            if (selectedType == GraveType.MemorialPlaque || removeItem(player, Item(Items.COINS_995, cost))) {
                 GraveController.updateGraveType(player, selectedType)
                 sendDialogue(player, "Your grave has been updated.")
             }

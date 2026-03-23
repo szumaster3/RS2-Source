@@ -7189,7 +7189,7 @@ object Animations {
     const val ANIMATION_7372 = 7372
     const val ANIMATION_7373 = 7373
     const val ANIMATION_7374 = 7374
-    const val ANIMATION_7375 = 7375
+    const val GRAVE_INIT_7375 = 7375
     const val WALK_AND_DISAPPEAR_7376 = 7376
     const val WALK_AND_APPEAR_7377 = 7377
     const val ANIMATION_7378 = 7378
@@ -7210,7 +7210,7 @@ object Animations {
     const val ANIMATION_7393 = 7393
     const val ANIMATION_7394 = 7394
     const val ANIMATION_7395 = 7395
-    const val ANIMATION_7396 = 7396
+    const val GRAVE_BROKEN_7396 = 7396
     const val ANIMATION_7397 = 7397
     const val ANIMATION_7398 = 7398
     const val ANIMATION_7399 = 7399
@@ -7304,7 +7304,7 @@ object Animations {
     const val ANIMATION_7487 = 7487
     const val ANIMATION_7488 = 7488
     const val ANIMATION_7489 = 7489
-    const val ANIMATION_7490 = 7490
+    const val GRAVE_COLLAPSE_7490 = 7490
     const val TAKE_THING_PULL_BACK_OR_CLIMB_ROPE_7491 = 7491
     const val ANIMATION_7492 = 7492
     const val CLIMB_UP_ROPE_7493 = 7493

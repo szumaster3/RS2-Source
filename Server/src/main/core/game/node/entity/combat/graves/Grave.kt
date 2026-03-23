@@ -9,12 +9,13 @@ import core.game.node.entity.player.Player
 import core.game.node.item.GroundItem
 import core.game.node.item.GroundItemManager
 import core.game.node.item.Item
-import core.game.world.map.Location
-import core.plugin.Initializable
 import core.game.world.GameWorld
+import core.game.world.map.Location
 import core.game.world.repository.Repository
-import core.tools.secondsToTicks
+import core.game.world.update.flag.context.Animation
+import core.plugin.Initializable
 import core.tools.colorize
+import core.tools.secondsToTicks
 import core.tools.ticksToSeconds
 import shared.consts.NPCs
 
@@ -24,33 +25,43 @@ class Grave : AbstractNPC {
     private val items = ArrayList<GroundItem>()
     var ownerUsername: String = ""
     var ownerUid: Int = -1
-
     var ticksRemaining = -1
 
-    constructor() : super(NPCs.GRAVESTONE_6571, Location.create(0,0,0), false)
+    constructor() : super(NPCs.GRAVESTONE_6571, Location.create(0, 0, 0), false)
     private constructor(id: Int, location: Location) : super(id, location)
 
-    override fun construct(id: Int, location: Location, vararg objects: Any): AbstractNPC {
-        return Grave(id, location)
+    override fun construct(id: Int, location: Location, vararg objects: Any): AbstractNPC = Grave(id, location)
+
+    override fun getIds(): IntArray = GraveType.ids
+
+    private fun GraveType.npc(variant: Int): Int {
+        val base = when (this) {
+            GraveType.MemorialPlaque -> GraveType.npcMap.defaultInt
+            else -> npcId
+        }
+        return base + variant
     }
 
-    override fun getIds(): IntArray {
-        return GraveType.ids
+    private fun transform() {
+        when {
+            ticksRemaining < 30 -> transform(type.npc(2))
+            ticksRemaining < 90 -> transform(type.npc(1))
+            else -> transform(type.npc(0))
+        }
     }
 
     fun configureType(type: GraveType) {
         this.type = type
-        this.transform(type.npcId)
-        this.ticksRemaining = secondsToTicks(type.durationMinutes * 60)
+        transform(type.npc(0))
+        this.ticksRemaining = secondsToTicks(type.duration * 60)
     }
 
     fun initialize(player: Player, location: Location, inventory: Array<Item>) {
-        if (!GraveController.allowGenerate(player))
-            return
+        if (!GraveController.allowGenerate(player)) return
 
         this.ownerUid = player.details.uid
         this.ownerUsername = player.username
-        this.location = player.getAttribute("/save:original-loc",location)
+        this.location = player.getAttribute("/save:original-loc", location)
         this.isRespawn = false
         this.isWalks = false
         this.isNeverWalks = true
@@ -74,7 +85,7 @@ class Grave : AbstractNPC {
 
             val gi = GroundItemManager.create(finalItem, this.location, player)
             gi.isRemainPrivate = true
-            gi.decayTime = secondsToTicks(type.durationMinutes * 60)
+            gi.decayTime = secondsToTicks(type.duration * 60)
             this.items.add(gi)
         }
 
@@ -84,14 +95,17 @@ class Grave : AbstractNPC {
         }
 
         this.init()
-
+        // this.animate(Animation.create(7375))
         if (GraveController.activeGraves[ownerUid] != null) {
             val oldGrave = GraveController.activeGraves[ownerUid]
             oldGrave?.collapse()
         }
 
         GraveController.activeGraves[ownerUid] = this
-        sendMessage(player, colorize("%RBecause of your current gravestone, you have ${type.durationMinutes} minutes to get your items back."))
+        sendMessage(
+            player,
+            colorize("%RBecause of your current gravestone, you have ${type.duration} minutes to get your items back.")
+        )
     }
 
     fun setupFromJsonParams(playerUid: Int, ticks: Int, location: Location, items: Array<Item>, username: String) {
@@ -109,43 +123,29 @@ class Grave : AbstractNPC {
             this.items.add(gi)
         }
 
-        this.transform(type.npcId)
+        this.transform()
         this.init()
     }
 
     override fun tick() {
-        //Grave should not do anything else on tick, that is all handled by GraveController.
         if (Repository.uid_map[ownerUid] != null) {
             val p = Repository.uid_map[ownerUid] ?: return
             registerHintIcon(p, this)
         }
     }
 
-    fun addTime(ticks: Int)
-    {
+    fun addTime(ticks: Int) {
         ticksRemaining += ticks
+
         for (gi in items) {
             gi.decayTime = ticksRemaining
         }
 
-        if (ticksRemaining < 30)
-        {
-            core.api.animate(this, 7490)
-            transform(type.npcId + 2)
-        }
-        else if (ticksRemaining < 90)
-        {
-            core.api.animate(this, 7396)
-            transform(type.npcId + 1)
-        }
-        else
-        {
-            core.api.animate(this, 7375)
-            transform(type.npcId)
-        }
+        transform()
     }
 
     fun collapse() {
+        // this.animate(Animation.create(7490))
         for (item in items) {
             GroundItemManager.destroy(item)
         }
@@ -180,7 +180,7 @@ class Grave : AbstractNPC {
             .replace("@mins", getFormattedTimeRemaining())
     }
 
-    fun getFormattedTimeRemaining() : String {
+    fun getFormattedTimeRemaining(): String {
         val seconds = ticksToSeconds(ticksRemaining)
         val timeQty = if (seconds / 60 > 0) seconds / 60 else seconds
         val timeUnit = (if (seconds / 60 > 0) "minute" else "second") + if (timeQty > 1) "s" else ""

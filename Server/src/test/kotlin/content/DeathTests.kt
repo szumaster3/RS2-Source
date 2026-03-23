@@ -24,7 +24,7 @@ class DeathTests {
     // Grave requirements source: https://runescape.wiki/w/Gravestone?oldid=854455
 
     @Test fun graveUtilsProduceGraveShouldProduceCorrectGrave() {
-        val type = GraveType.MEM_PLAQUE
+        val type = GraveType.DEFAULT
         val grave = GraveController.produceGrave(type)
 
         Assertions.assertEquals(type, grave.type)
@@ -40,14 +40,14 @@ class DeathTests {
             )
         val player = TestUtils.getMockPlayer("gravetest",Rights.REGULAR_PLAYER)
 
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(player, Location.create(0, 0, 0), inventory)
 
         for (item in grave.getItems()) {
             Assertions.assertEquals(player, item.dropper)
             Assertions.assertEquals(player.details.uid, item.dropperUid)
             Assertions.assertEquals(
-                GameWorld.ticks + secondsToTicks(GraveType.MEM_PLAQUE.durationMinutes * 60),
+                GameWorld.ticks + secondsToTicks(GraveType.DEFAULT.duration * 60),
                 item.decayTime,
             )
             Assertions.assertEquals(true, item.isRemainPrivate)
@@ -57,7 +57,7 @@ class DeathTests {
     }
 
     @Test fun graveInitializedWithNoItemsShouldNotSpawn() {
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         val p = TestUtils.getMockPlayer("gravetest")
 
         grave.initialize(p, Location.create(0, 0, 0), arrayOf())
@@ -77,7 +77,7 @@ class DeathTests {
                 Items.GIANT_POUCH_5515.asItem(),
             )
         val p = TestUtils.getMockPlayer("gravetest")
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(p, Location.create(0, 0, 0), inventory)
 
         Assertions.assertEquals(true, grave.getItems().isEmpty())
@@ -91,7 +91,7 @@ class DeathTests {
                 Items.RUNE_DEFENDER_8850.asItem(),
             )
         val p = TestUtils.getMockPlayer("gravetest")
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(p, Location.create(0, 0, 0), inventory)
 
         Assertions.assertEquals(2, grave.getItems().size)
@@ -104,7 +104,7 @@ class DeathTests {
                 Items.HOLY_GRAIL_19.asItem(),
             )
         val p = TestUtils.getMockPlayer("gravetest")
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(p, Location.create(0, 0, 0), inventory)
 
         Assertions.assertEquals(0, grave.getItems().size)
@@ -119,7 +119,7 @@ class DeathTests {
                 Items.BABY_IMPLING_JAR_11238.asItem(),
             )
         val p = TestUtils.getMockPlayer("gravetest")
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(p, Location.create(0, 0, 0), inventory)
 
         Assertions.assertEquals(0, grave.getItems().size)
@@ -139,17 +139,17 @@ class DeathTests {
 
         val startTime = GameWorld.ticks
         val p = TestUtils.getMockPlayer("gravetest")
-        val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave = GraveController.produceGrave(GraveType.DEFAULT)
         grave.initialize(p, Location.create(0, 0, 0), inventory)
 
         TestUtils.advanceTicks(30, false)
         val expectedTicksRemaining =
-            secondsToTicks(GraveType.MEM_PLAQUE.durationMinutes * 60) - (GameWorld.ticks - startTime)
+            secondsToTicks(GraveType.DEFAULT.duration * 60) - (GameWorld.ticks - startTime)
         Assertions.assertEquals(expectedTicksRemaining, grave.ticksRemaining)
 
-        GraveController.serializeToServerStore()
+        GraveController.serialize()
         GraveController.activeGraves.remove(p.details.uid)
-        GraveController.deserializeFromServerStore()
+        GraveController.deserialize()
 
         val newGrave = GraveController.activeGraves[p.details.uid]
         Assertions.assertNotNull(newGrave)
@@ -169,15 +169,15 @@ class DeathTests {
                     Items.BRONZE_AXE_1351.asItem(),
                 )
             val startTime = GameWorld.ticks
-            val grave = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+            val grave = GraveController.produceGrave(GraveType.DEFAULT)
             grave.initialize(p, Location.create(0, 0, 0), inventory)
             val expectedTicksRemaining =
-                secondsToTicks(GraveType.MEM_PLAQUE.durationMinutes * 60) - (GameWorld.ticks - startTime)
+                secondsToTicks(GraveType.DEFAULT.duration * 60) - (GameWorld.ticks - startTime)
             Assertions.assertEquals(expectedTicksRemaining, grave.ticksRemaining)
 
-            GraveController.serializeToServerStore()
+            GraveController.serialize()
             GraveController.activeGraves.remove(p.details.uid)
-            GraveController.deserializeFromServerStore()
+            GraveController.deserialize()
 
             var newGrave = GraveController.activeGraves[p.details.uid]
             Assertions.assertNotNull(newGrave)
@@ -187,8 +187,8 @@ class DeathTests {
             TestUtils.advanceTicks(expectedTicksRemaining + 1, false)
             Assertions.assertEquals(null, GraveController.activeGraves[p.details.uid])
 
-            GraveController.serializeToServerStore()
-            GraveController.deserializeFromServerStore()
+            GraveController.serialize()
+            GraveController.deserialize()
 
             newGrave = GraveController.activeGraves[p.details.uid]
             Assertions.assertNull(newGrave)
@@ -249,7 +249,7 @@ class DeathTests {
             arrayOf(
                 Items.RUNE_SCIMITAR_1333.asItem(),
             )
-        val grave1 = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave1 = GraveController.produceGrave(GraveType.DEFAULT)
         val p = TestUtils.getMockPlayer("gravetester")
         grave1.initialize(p, Location.create(0, 0, 0), inventory1)
 
@@ -266,7 +266,7 @@ class DeathTests {
             arrayOf(
                 Items.ABYSSAL_WHIP_4151.asItem(),
             )
-        val grave2 = GraveController.produceGrave(GraveType.MEM_PLAQUE)
+        val grave2 = GraveController.produceGrave(GraveType.DEFAULT)
         grave2.initialize(p, Location.create(0, 0, 0), inventory2)
 
         Assertions.assertEquals(false, grave1.isActive)
