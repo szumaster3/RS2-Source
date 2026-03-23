@@ -48,12 +48,12 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
     }
 
     override fun tick() {
-        for (grave in activeGraves.values) {
+        for (grave in activeGraves.values.toTypedArray()) {
             if (grave.ticksRemaining == -1) continue
             if (grave.ticksRemaining == secondsToTicks(30) || grave.ticksRemaining == secondsToTicks(90)) {
                 grave.transform(grave.id + 1)
             }
-            if (grave.ticksRemaining <= 0) {
+            if (grave.ticksRemaining == 0) {
                 grave.collapse()
                 continue
             }
