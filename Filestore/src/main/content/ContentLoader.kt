@@ -2,9 +2,9 @@ package content
 
 import com.alex.Cache
 import com.alex.loaders.BasDefinition
+import com.alex.loaders.ItemDefinition
 import com.alex.loaders.LocDefinition
 import com.alex.loaders.NpcDefinition
-import com.alex.loaders.ItemDefinition
 import com.alex.tools.dump.MapDumper
 import com.alex.tools.dump.ModelDumper
 import com.alex.tools.dump.SpriteDumper
@@ -12,7 +12,6 @@ import com.alex.tools.pack.ModelPacker
 import com.alex.tools.pack.SpritePacker
 import content.items.*
 import content.objects.`Obelisk(42004)`
-import java.io.File
 import java.nio.file.Paths
 
 object ContentLoader {
@@ -20,12 +19,10 @@ object ContentLoader {
     fun main(args: Array<String>) {
         runCatching {
             Cache.init()
-            //load()
-            //print()
-            dumpMaps()
-        }.onFailure { e ->
-            e.printStackTrace()
-        }
+            load()
+            // print()
+            // dumpMaps()
+        }.onFailure { e -> e.printStackTrace() }
     }
 
     private fun load() {
@@ -71,11 +68,11 @@ object ContentLoader {
 
     private fun print() {
         val store = Cache.getStore()
-        LocDefinition.print(store,        "../Dumps/object_dumps.txt")
-        ItemDefinition.print(store,       "../Dumps/item_dumps.txt")
+        LocDefinition.print(store, "../Dumps/object_dumps.txt")
+        ItemDefinition.print(store, "../Dumps/item_dumps.txt")
         ItemDefinition.printParams(store, "../Dumps/item_params.txt")
-        BasDefinition.print(store,        "../Dumps/bas_dumps.txt")
-        NpcDefinition.print(store,        "../Dumps/npc_dumps.txt")
+        BasDefinition.print(store, "../Dumps/bas_dumps.txt")
+        NpcDefinition.print(store, "../Dumps/npc_dumps.txt")
     }
 
     private fun dump() {
