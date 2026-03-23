@@ -1,60 +1,29 @@
 package core.game.node.entity.combat.graves
 
-import core.cache.def.impl.DataMap
+import shared.consts.NPCs
 import shared.consts.Quests
 
-enum class GraveType(val id: Int, val text: String) {
-    MEM_PLAQUE(0, "In memory of @name,<br>who died here."),
-    FLAG(1, MEM_PLAQUE.text),
-    SMALL_GS(2, "In loving memory of our dear friend @name,<br>who died in this place @mins ago."),
-    ORNATE_GS(3, SMALL_GS.text),
-    FONT_OF_LIFE(4, "In your travels,<br>pause awhile to remember @name,<br>who passed away at this spot."),
-    STELE(5, FONT_OF_LIFE.text),
-    SARA_SYMBOL(6, "@name,<br>an enlightened servant of Saradomin,<br>perished in this place."),
-    ZAM_SYMBOL(7, "@name,<br>a most bloodthirsty follower of Zamorak,<br>perished in this place."),
-    GUTH_SYMBOL(8, "@name,<br>who walked with the Balance of Guthix,<br>perished in this place."),
-    BAND_SYMBOL(9, "@name,<br>a vicious warrior dedicated to Bandos,<br>perished in this place."),
-    ARMA_SYMBOL(10, "@name,<br>a follower of the Law of Armadyl,<br>perished in this place."),
-    ZARO_SYMBOL(11, "@name,<br>servant of the Unknown Power,<br>perished in this place."),
-    ANGEL_DEATH(12, "Ye frail mortals who gaze upon this sight,<br>forget not the fate of @name, once mighty, now<br>surrendered to the inescapable grasp of destiny.<br><i>Requires cat in pace.</i>");
-
-    private val npcMap = DataMap.get(1098)
-    private val costMap = DataMap.get(1101)
-
-    val npcId: Int
-        get() = npcMap.getInt(id + 1)
-
-    val cost: Int
-        get() = costMap.getInt(id + 1)
-
-    val displayName: String
-        get() = DataMap.get(1099).getString(id + 1)
-
-    val description: String
-        get() = DataMap.get(1100).getString(id + 1)
-
-    val durationMinutes: Int
-        get() = when (id) {
-            0, 1 -> 2
-            2, 3 -> 2
-            4, 5 -> 4
-            6, 7, 8, 9, 10, 11 -> 4
-            12 -> 5
-            else -> 2
-        }
-
-    val isMembers: Boolean
-        get() = id >= 4
-
-    val requiredQuest: String?
-        get() = when (this) {
-            BAND_SYMBOL -> Quests.LAND_OF_THE_GOBLINS
-            ARMA_SYMBOL -> Quests.TEMPLE_OF_IKOV
-            ZARO_SYMBOL -> Quests.DESERT_TREASURE
-            else -> null
-        }
+/**
+ * Enum represents grave different grave type.
+ */
+enum class GraveType(val npcId: Int, val cost: Int, val durationMinutes: Int, val isMembers: Boolean, val requiredQuest: String = "", val text: String) {
+    MEM_PLAQUE(NPCs.GRAVE_MARKER_6565, 0, 2, false, text = "In memory of @name,<br>who died here."),
+    FLAG(NPCs.GRAVE_MARKER_6568, 50, 2, false, text = MEM_PLAQUE.text), SMALL_GS(NPCs.GRAVESTONE_6571, 500, 2, false, text = "In loving memory of our dear friend @name,<br>who died in this place @mins ago."),
+    ORNATE_GS(NPCs.GRAVESTONE_6574, 5000, 3, false, text = SMALL_GS.text), FONT_OF_LIFE(NPCs.GRAVESTONE_6577, 50000, 4, true, text = "In your travels,<br>pause awhile to remember @name,<br>who passed away at this spot."),
+    STELE(NPCs.STELE_6580, 50000, 4, true, text = FONT_OF_LIFE.text), SARA_SYMBOL(NPCs.SARADOMIN_SYMBOL_6583, 50000, 4, true, text = "@name,<br>an enlightened servant of Saradomin,<br>perished in this place."),
+    ZAM_SYMBOL(NPCs.ZAMORAK_SYMBOL_6586, 50000, 4, true, text = "@name,<br>a most bloodthirsty follower of Zamorak,<br>perished in this place."),
+    GUTH_SYMBOL(NPCs.GUTHIX_SYMBOL_6589, 50000, 4, true, text = "@name,<br>who walked with the Balance of Guthix,<br>perished in this place."),
+    BAND_SYMBOL(NPCs.BANDOS_SYMBOL_6592, 50000, 4, true, Quests.LAND_OF_THE_GOBLINS, "@name,<br>a vicious warrior dedicated to Bandos,<br>perished in this place."),
+    ARMA_SYMBOL(NPCs.ARMADYL_SYMBOL_6595, 50000, 4, true, Quests.TEMPLE_OF_IKOV, "@name,<br>a follower of the Law of Armadyl,<br>perished in this place."),
+    ZARO_SYMBOL(NPCs.MEMORIAL_STONE_6598, 50000, 4, true, Quests.DESERT_TREASURE, "@name,<br>servant of the Unknown Power,<br>perished in this place."),
+    ANGEL_DEATH(NPCs.MEMORIAL_STONE_6601, 500000, 5, true, text = "Ye frail mortals who gaze upon this sight,<br>forget not the fate of @name, once mighty, now<br>surrendered to the inescapable grasp of destiny.<br><i>Requiescat in pace.</i>"), ;
 
     companion object {
-        val ids = values().flatMap { listOf(it.npcId, it.npcId + 1, it.npcId + 2) }.toIntArray()
+        val ids = values().fold(ArrayList<Int>()) { list, type ->
+            list.add(type.npcId)
+            list.add(type.npcId + 1)
+            list.add(type.npcId + 2)
+            list
+        }.toIntArray()
     }
 }

@@ -12,11 +12,23 @@ import java.util.Map;
 import static core.api.ContentAPIKt.log;
 
 public class DataMap {
+
+    /**
+     * The config definitions mapping.
+     */
     private static final Map<Integer, DataMap> definitions = new HashMap<>();
+
+    /**
+     * The enum id.
+     */
     private final int id;
+
     public char keyType = '?';
+
     public char valueType = '?';
+
     public String defaultString;
+
     public int defaultInt;
 
     public HashMap<Integer, Object> dataStore = new HashMap<>();
@@ -26,29 +38,28 @@ public class DataMap {
     }
 
     public int getInt(int key) {
-        Object value = dataStore.get(key);
-
-        if (value != null) {
-            return (int) value;
+        if (!dataStore.containsKey(key)) {
+            log(this.getClass(), Log.ERR, "Invalid value passed for key: " + key + " map: " + id);
+            return -1;
         }
-
-        if (defaultInt != 0) {
-            return defaultInt;
-        }
-
-        log(this.getClass(), Log.ERR, "Missing int key: " + key + " in DataMap: " + id);
-
-        return 0;
+        return (int) dataStore.get(key);
     }
 
     public String getString(int key) {
-        Object value = dataStore.get(key);
+        return (String) dataStore.get(key);
+    }
 
-        if (value != null) {
-            return (String) value;
-        }
-
-        return defaultString != null ? defaultString : "";
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        return "DataMapDefinition{" +
+                "id=" + id +
+                ", keyType=" + keyType +
+                ", valueType=" + (valueType == 'K' ? "Normal" : valueType == 'J' ? "Struct Pointer" : "Unknown") +
+                ", defaultString='" + defaultString + '\'' +
+                ", defaultInt=" + defaultInt +
+                ", dataStore=" + dataStore +
+                '}' + "\n";
     }
 
     public static DataMap get(int id) {
@@ -64,32 +75,34 @@ public class DataMap {
 
     public static DataMap parse(int id, byte[] data) {
         DataMap def = new DataMap(id);
-        if (data == null) {
-            return def;
-        }
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        int opcode;
+        if (data != null) {
+            ByteBuffer buffer = ByteBuffer.wrap(data);
+            int opcode;
 
-        while ((opcode = buffer.get() & 0xFF) != 0) {
-            if (opcode == 1) {
-                def.keyType = StringUtils.getFromByte(buffer.get());
-            } else if (opcode == 2) {
-                def.valueType = StringUtils.getFromByte(buffer.get());
-            } else if (opcode == 3) {
-                def.defaultString = ByteBufferUtils.getString(buffer);
-            } else if (opcode == 4) {
-                def.defaultInt = buffer.getInt();
-            } else if (opcode == 5 || opcode == 6) {
-                int size = buffer.getShort() & 0xFFFF;
-                for (int i = 0; i < size; i++) {
-                    int key = buffer.getInt();
-                    Object value;
-                    if (opcode == 5) {
-                        value = ByteBufferUtils.getString(buffer);
-                    } else {
-                        value = buffer.getInt();
+            while ((opcode = buffer.get() & 0xFF) != 0) {
+
+                if (opcode == 1) {
+                    def.keyType = StringUtils.getFromByte(buffer.get());
+                } else if (opcode == 2) {
+                    def.valueType = StringUtils.getFromByte(buffer.get());
+                } else if (opcode == 3) {
+                    def.defaultString = ByteBufferUtils.getString(buffer);
+                } else if (opcode == 4) {
+                    def.defaultInt = buffer.getInt();
+                } else if (opcode == 5 || opcode == 6) {
+                    int size = buffer.getShort() & 0xFFFF;
+
+                    for (int i = 0; i < size; i++) {
+                        int key = buffer.getInt();
+
+                        Object value;
+                        if (opcode == 5) {
+                            value = ByteBufferUtils.getString(buffer);
+                        } else {
+                            value = buffer.getInt();
+                        }
+                        def.dataStore.put(key, value);
                     }
-                    def.dataStore.put(key, value);
                 }
             }
         }
@@ -98,10 +111,5 @@ public class DataMap {
 
     public int getId() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "DataMapDefinition{" + "id=" + id + ", keyType=" + keyType + ", valueType=" + valueType + ", defaultString='" + defaultString + '\'' + ", defaultInt=" + defaultInt + ", dataStore=" + dataStore + '}';
     }
 }
