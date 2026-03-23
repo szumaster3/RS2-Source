@@ -3,30 +3,28 @@ package core.game.node.entity.combat.graves
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import content.data.GameAttributes
-import core.ServerStore
 import core.api.*
-import core.game.interaction.IntType
-import core.game.interaction.InteractionListener
 import core.game.node.Node
 import core.game.node.entity.combat.ImpactHandler
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.info.Rights
 import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
-import core.game.system.command.Privilege
-import core.game.system.task.Pulse
-import core.game.world.GameWorld
 import core.game.world.map.Location
 import core.game.world.map.zone.ZoneRestriction
+import core.ServerStore
+import core.game.interaction.InteractionListener
+import core.game.interaction.IntType
+import core.game.interaction.QueueStrength
+import core.game.system.command.Privilege
 import core.game.world.map.zone.impl.WildernessZone
 import core.game.world.repository.Repository
-import core.tools.colorize
 import core.tools.secondsToTicks
+import core.tools.colorize
 import shared.consts.*
 import kotlin.math.min
 
 class GraveController : PersistWorld, TickListener, InteractionListener, Commands {
-
     override fun defineListeners() {
         on(GraveType.ids, IntType.NPC, "read", handler = this::onGraveReadOption)
         on(GraveType.ids, IntType.NPC, "bless", handler = this::onGraveBlessed)
@@ -38,23 +36,21 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         define("forcegravedeath", Privilege.ADMIN, "", "Forces a death that should produce a grave.") { player, _ ->
             player.details.rights = Rights.REGULAR_PLAYER
             setAttribute(player, GameAttributes.TUTORIAL_COMPLETE, true)
-            impact(player, player.skills.lifepoints, ImpactHandler.HitsplatType.NORMAL)
+            player.impactHandler.manualHit(player, player.skills.lifepoints, ImpactHandler.HitsplatType.NORMAL)
             notify(player, "Grave created at ${player.getAttribute("/save:original-loc", player.location)}")
-            GameWorld.Pulser.submit(
-                object : Pulse(15) {
-                    override fun pulse(): Boolean {
-                        player.details.rights = Rights.ADMINISTRATOR
-                        sendMessage(player, "Rights restored")
-                        return true
-                    }
-                },
-            )
+            queueScript(player, 15, QueueStrength.SOFT) { stage: Int ->
+                player.details.rights = Rights.ADMINISTRATOR
+                sendMessage(player, "Rights restored")
+                return@queueScript stopExecuting(player)
+            }
         }
     }
+
 
     override fun tick() {
         for (grave in activeGraves.values.toTypedArray()) {
             if (grave.ticksRemaining == -1) return
+
             if (grave.ticksRemaining == secondsToTicks(30) || grave.ticksRemaining == secondsToTicks(90)) {
                 grave.transform(grave.id + 1)
             }
@@ -67,11 +63,9 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         }
     }
 
-    private fun onGraveReadOption(
-        player: Player,
-        node: Node,
-    ): Boolean {
+    private fun onGraveReadOption(player: Player, node: Node) : Boolean {
         val grave = node as? Grave ?: return false
+
         var isGraniteBackground = false
 
         when (grave.type) {
@@ -79,19 +73,22 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
             else -> {}
         }
 
-        setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, if (isGraniteBackground) 1 else 0)
+        if (isGraniteBackground)
+            setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, 1)
+        else
+            setVarbit(player, Vars.VARBIT_IFACE_GRAVE_DISPLAY_4191, 0)
 
         openInterface(player, Components.GRAVESTONE_266)
-        sendString(player, grave.getFormattedText(), Components.GRAVESTONE_266, 23)
-        sendMessage(player, "It looks like it'll survive another ${grave.getFormattedTimeRemaining()}.")
+        sendString(player, grave.retrieveFormattedText(), Components.GRAVESTONE_266, 23)
 
+        sendMessage(player, "It looks like it'll survive another ${grave.getFormattedTimeRemaining()}.")
         if (player.details.uid == grave.ownerUid) {
             sendMessage(player, "Isn't there something a bit odd about reading your own gravestone?")
         }
         return true
     }
 
-    private fun onGraveBlessed(player: Player, node: Node): Boolean {
+    private fun onGraveBlessed(player: Player, node: Node) : Boolean {
         val g = node as? Grave ?: return false
 
         if (getAttribute(g, "blessed", false)) {
@@ -128,20 +125,21 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         return true
     }
 
-    private fun onGraveRepaired(player: Player, node: Node): Boolean {
+    private fun onGraveRepaired(player: Player, node: Node) : Boolean {
         val g = node as? Grave ?: return false
 
         if (getAttribute(g, "repaired", false)) {
             sendMessage(player, "This grave has already been repaired.")
             return true
         }
+
         if (getStatLevel(player, Skills.PRAYER) < 2) {
             sendMessage(player, "You need a Prayer level of 2 to bless a grave.")
             return true
         }
 
         if (player.skills.prayerPoints < 1.0) {
-            sendMessage(player, "You need to recharge your Prayer at an altar.")
+            sendMessage(player, "You do not have enough prayer points to do that.")
             return true
         }
 
@@ -154,7 +152,7 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         return true
     }
 
-    private fun onGraveDemolished(player: Player, node: Node): Boolean {
+    private fun onGraveDemolished(player: Player, node: Node) : Boolean {
         val g = node as? Grave ?: return false
 
         if (player.details.uid != g.ownerUid) {
@@ -179,15 +177,13 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
         var childCounter = 0
         val ATTR_GTYPE = "/save:gravetype"
 
-        @JvmStatic
-        fun produceGrave(type: GraveType): Grave {
+        @JvmStatic fun produceGrave(type: GraveType): Grave {
             val g = Grave()
             g.configureType(type)
             return g
         }
 
-        @JvmStatic
-        fun shouldCrumble(item: Int): Boolean {
+        @JvmStatic fun shouldCrumble(item: Int) : Boolean {
             when (item) {
                 Items.ECTOPHIAL_4251 -> return true
                 in Items.SMALL_POUCH_5509..Items.GIANT_POUCH_5515 -> return true
@@ -196,55 +192,45 @@ class GraveController : PersistWorld, TickListener, InteractionListener, Command
             return itemDefinition(item).hasAction("destroy")
         }
 
-        @JvmStatic
-        fun shouldRelease(item: Int): Boolean {
+        @JvmStatic fun shouldRelease(item: Int) : Boolean {
             when (item) {
                 Items.CHINCHOMPA_9976 -> return true
                 Items.CHINCHOMPA_10033 -> return true
-                in Items.BABY_IMPLING_JAR_11238..Items.DRAGON_IMPLING_JAR_11257 -> return itemDefinition(item).isUnnoted()
+                in Items.BABY_IMPLING_JAR_11238..Items.DRAGON_IMPLING_JAR_11257 -> return itemDefinition(item).isUnnoted
             }
 
             return false
         }
 
-        @JvmStatic
-        fun checkTransform(item: Item): Item {
-            if (item.hasItemPlugin()) {
-                return item.plugin!!.getDeathItem(item)
-            }
+        @JvmStatic fun checkTransform(item: Item) : Item {
+            if (item.hasItemPlugin())
+                return item.plugin.getDeathItem(item)
             return item
         }
 
-        @JvmStatic
-        fun allowGenerate(player: Player): Boolean {
-            if (player.skullManager.isSkulled) {
+        @JvmStatic fun allowGenerate(player: Player) : Boolean {
+            if (player.skullManager.isSkulled)
                 return false
-            }
-            if (player.skullManager.isWilderness) {
+            if (player.skullManager.isWilderness)
                 return false
-            }
-            if (WildernessZone.isInZone(player)) {
+            if (WildernessZone.isInZone(player))
                 return false
-            }
-            if (player.zoneMonitor.isRestricted(ZoneRestriction.GRAVES)) {
+            if (player.zoneMonitor.isRestricted(ZoneRestriction.GRAVES))
                 return false
-            }
             return true
         }
 
-        @JvmStatic
-        fun getGraveType(player: Player): GraveType = GraveType.values()[getAttribute(player, ATTR_GTYPE, 0)]
+        @JvmStatic fun getGraveType(player: Player) : GraveType {
+            return GraveType.values()[getAttribute(player, ATTR_GTYPE, 0)]
+        }
 
-        @JvmStatic
-        fun updateGraveType(
-            player: Player,
-            type: GraveType,
-        ) {
+        @JvmStatic fun updateGraveType(player: Player, type: GraveType) {
             setAttribute(player, ATTR_GTYPE, type.ordinal)
         }
 
-        @JvmStatic
-        fun hasGraveAt(loc: Location): Boolean = activeGraves.values.toTypedArray().any { it.location == loc }
+        @JvmStatic fun hasGraveAt(loc: Location) : Boolean {
+            return activeGraves.values.toTypedArray().any { it.location == loc }
+        }
 
         fun serializeToServerStore() {
             val archive = ServerStore.getArchive("active-graves") as JsonObject

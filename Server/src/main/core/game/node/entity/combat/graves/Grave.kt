@@ -9,12 +9,12 @@ import core.game.node.entity.player.Player
 import core.game.node.item.GroundItem
 import core.game.node.item.GroundItemManager
 import core.game.node.item.Item
-import core.game.world.GameWorld
 import core.game.world.map.Location
-import core.game.world.repository.Repository
 import core.plugin.Initializable
-import core.tools.colorize
+import core.game.world.GameWorld
+import core.game.world.repository.Repository
 import core.tools.secondsToTicks
+import core.tools.colorize
 import core.tools.ticksToSeconds
 import shared.consts.NPCs
 
@@ -27,16 +27,16 @@ class Grave : AbstractNPC {
 
     var ticksRemaining = -1
 
-    constructor() : super(NPCs.GRAVESTONE_6571, Location.create(0, 0, 0), false)
+    constructor() : super(NPCs.GRAVESTONE_6571, Location.create(0,0,0), false)
     private constructor(id: Int, location: Location) : super(id, location)
 
-    override fun construct(
-        id: Int,
-        location: Location,
-        vararg objects: Any,
-    ): AbstractNPC = Grave(id, location)
+    override fun construct(id: Int, location: Location, vararg objects: Any): AbstractNPC {
+        return Grave(id, location)
+    }
 
-    override fun getIds(): IntArray = GraveType.ids
+    override fun getIds(): IntArray {
+        return GraveType.ids
+    }
 
     fun configureType(type: GraveType) {
         this.type = type
@@ -44,18 +44,13 @@ class Grave : AbstractNPC {
         this.ticksRemaining = secondsToTicks(type.durationMinutes * 60)
     }
 
-    fun initialize(
-        player: Player,
-        location: Location,
-        inventory: Array<Item>,
-    ) {
-        if (!GraveController.allowGenerate(player)) {
+    fun initialize(player: Player, location: Location, inventory: Array<Item>) {
+        if (!GraveController.allowGenerate(player))
             return
-        }
 
         this.ownerUid = player.details.uid
         this.ownerUsername = player.username
-        this.location = player.getAttribute("/save:original-loc", location)
+        this.location = player.getAttribute("/save:original-loc",location)
         this.isRespawn = false
         this.isWalks = false
         this.isNeverWalks = true
@@ -119,22 +114,33 @@ class Grave : AbstractNPC {
     }
 
     override fun tick() {
+        //Grave should not do anything else on tick, that is all handled by GraveController.
         if (Repository.uid_map[ownerUid] != null) {
             val p = Repository.uid_map[ownerUid] ?: return
             registerHintIcon(p, this)
         }
     }
 
-    fun addTime(ticks: Int) {
+    fun addTime(ticks: Int)
+    {
         ticksRemaining += ticks
         for (gi in items) {
             gi.decayTime = ticksRemaining
         }
-        if (ticksRemaining < 30) {
+
+        if (ticksRemaining < 30)
+        {
+            core.api.animate(this, 7490)
             transform(type.npcId + 2)
-        } else if (ticksRemaining < 90) {
+        }
+        else if (ticksRemaining < 90)
+        {
+            core.api.animate(this, 7396)
             transform(type.npcId + 1)
-        } else {
+        }
+        else
+        {
+            core.api.animate(this, 7375)
             transform(type.npcId)
         }
     }
@@ -154,9 +160,8 @@ class Grave : AbstractNPC {
     fun demolish() {
         val owner = Repository.uid_map[ownerUid] ?: return
         for (item in items) {
-            if (!item.isRemoved) {
+            if (!item.isRemoved)
                 item.decayTime = secondsToTicks(45)
-            }
         }
         clear()
         sendMessage(owner, "It looks like it'll last another ${getFormattedTimeRemaining()}.")
@@ -165,14 +170,17 @@ class Grave : AbstractNPC {
         clearHintIcon(owner)
     }
 
-    fun getItems(): Array<GroundItem> = this.items.toTypedArray()
+    fun getItems() : Array<GroundItem> {
+        return this.items.toTypedArray()
+    }
 
-    fun getFormattedText(): String =
-        type.text
+    fun retrieveFormattedText(): String {
+        return type.text
             .replace("@name", ownerUsername)
             .replace("@mins", getFormattedTimeRemaining())
+    }
 
-    fun getFormattedTimeRemaining(): String {
+    fun getFormattedTimeRemaining() : String {
         val seconds = ticksToSeconds(ticksRemaining)
         val timeQty = if (seconds / 60 > 0) seconds / 60 else seconds
         val timeUnit = (if (seconds / 60 > 0) "minute" else "second") + if (timeQty > 1) "s" else ""
