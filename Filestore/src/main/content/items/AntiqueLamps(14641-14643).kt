@@ -1,6 +1,6 @@
 package content.items
 
-import com.alex.tools.ItemPacker
+import com.alex.tools.pack.ItemPacker
 
 object `AntiqueLamps(14641-14643)` {
 

@@ -1,4 +1,4 @@
-package com.alex.tools
+package com.alex.tools.pack
 
 import com.alex.Cache
 import com.alex.loaders.NpcDefinition

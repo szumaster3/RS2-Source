@@ -1,4 +1,4 @@
-package com.alex.loaders.sprites
+package com.alex.loaders
 
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer
  * @author Graham
  * @author Discardedx2
  */
-class SpriteArchive
+class SpriteDefinition
 @JvmOverloads
 constructor(
     width: Int,
@@ -133,7 +133,7 @@ constructor(
         const val FLAG_ALPHA: Int = 0x02
 
         @JvmStatic
-        fun decode(buffer: ByteBuffer): SpriteArchive? {
+        fun decode(buffer: ByteBuffer): SpriteDefinition? {
             try {
                 buffer.position(buffer.limit() - 2)
                 val size = buffer.getShort().toInt() and 0xFFFF
@@ -148,7 +148,7 @@ constructor(
                 val height = buffer.getShort().toInt() and 0xFFFF
                 val palette = IntArray((buffer.get().toInt() and 0xFF) + 1)
 
-                val set = SpriteArchive(width, height, size)
+                val set = SpriteDefinition(width, height, size)
 
                 for (i in 0 until size) {
                     offsetsX[i] = buffer.getShort().toInt() and 0xFFFF

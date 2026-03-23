@@ -1,7 +1,7 @@
-package com.alex.tools
+package com.alex.tools.pack
 
 import com.alex.Cache
-import com.alex.loaders.interfaces.ComponentDefinition
+import com.alex.loaders.ComponentDefinition
 import com.alex.util.crc32.CRC32HGenerator
 import java.util.*
 import kotlin.collections.ArrayList

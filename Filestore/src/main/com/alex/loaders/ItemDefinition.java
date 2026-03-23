@@ -1,4 +1,4 @@
-package com.alex.loaders.items;
+package com.alex.loaders;
 
 import com.alex.io.InputStream;
 import com.alex.store.Store;

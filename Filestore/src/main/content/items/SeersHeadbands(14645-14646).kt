@@ -1,6 +1,6 @@
 package content.items
 
-import com.alex.tools.ItemPacker
+import com.alex.tools.pack.ItemPacker
 
 object `SeersHeadbands(14645-14646)` {
 

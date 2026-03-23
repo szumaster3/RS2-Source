@@ -1,4 +1,4 @@
-package com.alex.loaders.interfaces
+package content.data
 
 object ComponentType {
     const val LAYER: Int = 0

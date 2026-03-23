@@ -1,6 +1,6 @@
 package content.items
 
-import com.alex.tools.ItemPacker
+import com.alex.tools.pack.ItemPacker
 
 object `Afro(14650-14699)` {
     fun add() {

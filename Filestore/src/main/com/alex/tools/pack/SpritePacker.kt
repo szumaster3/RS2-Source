@@ -1,8 +1,8 @@
-package com.alex.tools
+package com.alex.tools.pack
 
 import com.alex.Cache
-import com.alex.loaders.sprites.SpriteArchive
-import com.alex.loaders.sprites.SpriteArchive.Companion.decode
+import com.alex.loaders.SpriteDefinition
+import com.alex.loaders.SpriteDefinition.Companion.decode
 import com.alex.store.Index
 import java.awt.image.BufferedImage
 import java.io.File
@@ -10,12 +10,12 @@ import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 object SpritePacker {
-    private val spriteCache: HashMap<Int, SpriteArchive> = HashMap()
+    private val spriteCache: HashMap<Int, SpriteDefinition> = HashMap()
 
     private val numSprites: Int
         get() = spriteIndex.lastArchiveId + 1
 
-    private fun getArchive(archiveId: Int): SpriteArchive? {
+    private fun getArchive(archiveId: Int): SpriteDefinition? {
         spriteCache[archiveId]?.let { return it }
 
         val data = spriteIndex.getFile(archiveId, 0) ?: return null
@@ -57,7 +57,7 @@ object SpritePacker {
         files.forEach { file ->
             try {
                 val image: BufferedImage = ImageIO.read(file) ?: return@forEach
-                val archive = SpriteArchive(image.width, image.height)
+                val archive = SpriteDefinition(image.width, image.height)
                 archive.setFrame(0, image)
                 val encoded = archive.encode()
                 val success = put(archiveId, encoded.array())

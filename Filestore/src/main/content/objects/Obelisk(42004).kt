@@ -1,6 +1,6 @@
 package content.objects
 
-import com.alex.tools.LocPacker
+import com.alex.tools.pack.LocPacker
 import shared.consts.Scenery
 
 object `Obelisk(42004)` {

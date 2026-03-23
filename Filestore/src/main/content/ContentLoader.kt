@@ -4,8 +4,16 @@ import com.alex.Cache
 import com.alex.loaders.BasDefinition
 import com.alex.loaders.LocDefinition
 import com.alex.loaders.NpcDefinition
-import com.alex.loaders.items.ItemDefinition
+import com.alex.loaders.ItemDefinition
+import com.alex.loaders.worldmap.WorldMapLocDefinition
+import com.alex.loaders.worldmap.WorldMapOverlay2Definition
+import com.alex.loaders.worldmap.WorldMapOverlayDefinition
+import com.alex.loaders.worldmap.WorldMapUnderlayDefinition
 import com.alex.tools.*
+import com.alex.tools.dump.ModelDumper
+import com.alex.tools.dump.SpriteDumper
+import com.alex.tools.pack.ModelPacker
+import com.alex.tools.pack.SpritePacker
 import content.items.*
 import content.objects.`Obelisk(42004)`
 
@@ -14,8 +22,13 @@ object ContentLoader {
     fun main(args: Array<String>) {
         runCatching {
             Cache.init()
-            load()
-            print()
+            //load()
+            //print()
+            WorldMapLocDefinition.print(Cache.getStore(), "../Dumps/worldmap_loc.txt")
+            WorldMapOverlayDefinition.print(Cache.getStore(), "../Dumps/worldmap_overlay.txt")
+            WorldMapOverlay2Definition.print(Cache.getStore(), "../Dumps/worldmap_overlay2.txt")
+            WorldMapUnderlayDefinition.print(Cache.getStore(), "../Dumps/worldmap_underlay.txt")
+
         }.onFailure { e ->
             e.printStackTrace()
         }
@@ -72,7 +85,6 @@ object ContentLoader {
     }
 
     private fun dump() {
-        MapDumper.dump()
         SpriteDumper.dump()
         ModelDumper.dump()
     }

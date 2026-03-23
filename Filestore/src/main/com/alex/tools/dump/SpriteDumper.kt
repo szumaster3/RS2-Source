@@ -1,8 +1,8 @@
-package com.alex.tools
+package com.alex.tools.dump
 
 import com.alex.Cache
-import com.alex.loaders.sprites.SpriteArchive
-import com.alex.loaders.sprites.SpriteArchive.Companion.decode
+import com.alex.loaders.SpriteDefinition
+import com.alex.loaders.SpriteDefinition.Companion.decode
 import com.alex.store.Index
 import java.io.File
 import java.nio.ByteBuffer
@@ -10,10 +10,10 @@ import javax.imageio.ImageIO
 
 object SpriteDumper {
 
-    private val spriteCache: HashMap<Int, SpriteArchive> = HashMap()
+    private val spriteCache: HashMap<Int, SpriteDefinition> = HashMap()
     private val spriteIndex: Index
         get() = Cache.getStore()!!.indexes[8]
-    private fun getArchive(archiveId: Int): SpriteArchive? {
+    private fun getArchive(archiveId: Int): SpriteDefinition? {
         spriteCache[archiveId]?.let { return it }
 
         val data = spriteIndex.getFile(archiveId, 0) ?: return null

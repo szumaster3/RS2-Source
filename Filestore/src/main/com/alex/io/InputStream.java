@@ -282,4 +282,12 @@ public final class InputStream extends Stream {
         }
         return value;
     }
+
+    public int readSignedByte() {
+        int value = this.readUnsignedByte();
+        if (value > 127) {
+            value -= 256;
+        }
+        return value;
+    }
 }
