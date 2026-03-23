@@ -1,5 +1,6 @@
 package core.game.node.entity.combat
 
+import content.data.items.ChargedItem
 import content.global.skill.slayer.SlayerEquipmentFlags
 import content.global.skill.slayer.Tasks
 import core.api.*
@@ -12,11 +13,11 @@ import core.game.node.entity.combat.equipment.WeaponInterface
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.node.entity.skill.Skills
+import core.game.node.item.Item
 import core.game.world.map.path.Pathfinder
 import core.tools.RandomFunction
 import kotlin.math.floor
 import shared.consts.Items
-import shared.consts.NPCs
 
 /**
  * Handles a melee combat swing.
@@ -122,6 +123,42 @@ open class MeleeSwingHandler(vararg flags: SwingHandlerFlag) : CombatSwingHandle
                     applyPoison(victim, entity, damage)
                 }
             }
+
+            // Broodoo shields passive.
+            val shield = entity.equipment[EquipmentContainer.SLOT_SHIELD]
+            val charged = shield?.let { ChargedItem.forId(it.id) }
+
+            if (shield != null && charged != null) {
+                val (skillToReduce, requiredDistance) = when (shield.id) {
+                    in ChargedItem.BROODOO_SHIELDA.ids -> Skills.DEFENCE to 1
+                    in ChargedItem.BROODOO_SHIELDB.ids -> Skills.STRENGTH to 1
+                    in ChargedItem.BROODOO_SHIELDC.ids -> Skills.ATTACK to 1
+                    else -> null to 0
+                }
+
+                if (skillToReduce != null &&
+                    state.estimatedHit > 0 &&
+                    RandomFunction.random(10) == 0 &&
+                    canMelee(entity, victim, requiredDistance) &&
+                    victim.skills.lifepoints > victim.skills.maximumLifepoints / 2 &&
+                    victim.skills.getLevel(skillToReduce) >= victim.skills.getStaticLevel(skillToReduce)
+                ) {
+                    val currentLevel = victim.skills.getLevel(skillToReduce)
+                    val reduction = 1 + (currentLevel * 0.05).toInt()
+
+                    victim.skills.setLevel(
+                        skillToReduce,
+                        (currentLevel - reduction).coerceAtLeast(0)
+                    )
+
+                    val currentCharge = ChargedItem.getCharge(shield.id) ?: 0
+                    if (currentCharge > 0) {
+                        val newId = charged.forCharge(currentCharge - 1)
+                        entity.equipment.replace(Item(newId), EquipmentContainer.SLOT_SHIELD, true)
+                    }
+                }
+            }
+
         } else if (entity is NPC) {
             val poisonous = entity.isPoisonous
             val damage = entity.poisonSeverity()
