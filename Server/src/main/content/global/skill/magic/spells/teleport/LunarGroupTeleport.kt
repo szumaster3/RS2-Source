@@ -40,7 +40,7 @@ class LunarGroupTeleport : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.BARBARIAN_GROUP_TELEPORT, NONE) { player, _ ->
-            requires(player, 77, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.LAW_RUNE_563, 2), Item(Items.FIRE_RUNE_554, 6)))
+            requires(player, 76, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.LAW_RUNE_563, 2), Item(Items.FIRE_RUNE_554, 6)))
             if (!player.isTeleBlocked) playGlobalAudio(player.location, Sounds.TP_ALL_200)
             sendGroupTeleport(player, 77.0, "Barbarian Outpost", Location.create(2544, 3572, 0))
         }
@@ -87,7 +87,7 @@ class LunarGroupTeleport : SpellListener("lunar") {
     }
 
     private fun sendGroupTeleport(player: Player, xp: Double, destName: String, loc: Location) {
-        RegionManager.getLocalPlayers(player, 1).forEach {
+        RegionManager.getNearbyPlayers(player, 1).forEach {
             if (it == player) return@forEach
             if (it.isTeleBlocked) return@forEach
             if (!it.isActive) return@forEach

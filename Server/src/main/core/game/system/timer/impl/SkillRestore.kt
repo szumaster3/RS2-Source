@@ -25,7 +25,7 @@ class SkillRestore :
         var skills = entity.skills
 
         for (i in 0 until 24) {
-            if (i == Skills.PRAYER) continue
+            if (i == Skills.PRAYER || i == Skills.SUMMONING) continue
             if (ticksSinceLastRestore[i]++ >= restoreTicks[i]) {
                 if (i == Skills.HITPOINTS && entity.skills.lifepoints < entity.skills.maximumLifepoints) {
                     skills.heal(getHealAmount(entity))
@@ -33,9 +33,8 @@ class SkillRestore :
                     val max = getStatLevel(entity, i)
                     val current = getDynLevel(entity, i)
 
-                    if (current != max) {
+                    if (current != max)
                         skills.updateLevel(i, if (current < max) 1 else -1, max)
-                    }
                 }
                 ticksSinceLastRestore[i] = 0
             }
@@ -55,15 +54,14 @@ class SkillRestore :
         (entity as? Player)?.debug("Registered skill restoration timer.")
     }
 
-    private fun getHealAmount(entity: Entity): Int {
+    fun getHealAmount(entity: Entity): Int {
         if (entity !is Player) return 1
 
         val gloves = getItemFromEquipment(entity, EquipmentSlot.HANDS)
-        if (gloves == null || gloves.id != Items.REGEN_BRACELET_11133) {
+        if (gloves == null || gloves.id != Items.REGEN_BRACELET_11133)
             return 1
-        } else {
+        else
             return 2
-        }
     }
 
     object PrayerActivatedHook : EventHook<PrayerActivatedEvent> {

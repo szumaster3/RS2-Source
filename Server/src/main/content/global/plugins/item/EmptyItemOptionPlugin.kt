@@ -244,12 +244,12 @@ class EmptyItemOptionPlugin: InteractionListener {
         FISHBOWL(
             Items.FISHBOWL_6668,
             Items.FISHBOWL_6667,
-            "You empty the contents of the fishbowl onto the floor."
+            "You pour out the contents of your fishbowl."
         ),
         FISHBOWL_WITH_SEAWEED(
             Items.FISHBOWL_6669,
             Items.FISHBOWL_6667,
-            "You empty the contents of the fishbowl onto the floor."
+            "You pour out the contents of your fishbowl."
         ),
         FIREWORK(
             Items.FIREWORK_3006,

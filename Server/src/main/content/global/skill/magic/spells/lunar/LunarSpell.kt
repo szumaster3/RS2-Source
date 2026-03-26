@@ -18,14 +18,17 @@ import core.game.interaction.QueueStrength
 import core.game.node.entity.combat.DeathTask
 import core.game.node.entity.combat.ImpactHandler
 import core.game.node.entity.player.Player
+import core.game.node.entity.player.link.diary.DiaryType
 import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
 import core.game.system.config.NPCConfigParser
 import core.game.system.task.Pulse
+import core.game.system.timer.impl.SkillRestore
 import core.game.world.GameWorld
 import core.game.world.map.RegionManager
 import core.game.world.update.flag.context.Animation
 import core.tools.RandomFunction
+import core.tools.secondsToTicks
 import shared.consts.*
 import kotlin.math.floor
 
@@ -38,49 +41,50 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.BAKE_PIE, NONE) { player, _ ->
+            requires(player,65, arrayOf(Item(Items.ASTRAL_RUNE_9075), Item(Items.FIRE_RUNE_554,5), Item(Items.WATER_RUNE_555,4)))
             val playerPies = ArrayList<Item>()
-            requires(player, 65, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075),
-                Item(Items.FIRE_RUNE_554, 5),
-                Item(Items.WATER_RUNE_555, 4))
-            )
 
-            for (item in player.inventory.toArray()) {
-                if (item == null) continue
+            for(item in player.inventory.toArray()){
+                if(item == null) continue
                 val pie = CookableItems.forId(item.id) ?: continue
-                if (!pie.name.lowercase().contains("pie")) continue
-                if (player.skills.getLevel(Skills.COOKING) < pie.level) continue
+                if(!pie.name.lowercase().contains("pie")) continue
+                if(player.skills.getLevel(Skills.COOKING) < pie.level) continue
                 playerPies.add(item)
             }
 
-            if (playerPies.isEmpty()) {
+            if(playerPies.isEmpty()){
                 sendMessage(player, "You have no pies which you have the level to cook.")
-                return@onCast
+                throw IllegalStateException()
             }
 
-            player.pulseManager.run(
-                object : Pulse() {
-                    var counter = 0
-
-                    override fun pulse(): Boolean {
-                        if (playerPies.isEmpty()) return true
-                        if (counter == 0) {
-                            delay = Animation(Animations.FERTILE_SPELL_4413).definition.getDurationTicks() + 1
-                        }
-                        val item = playerPies[0]
-                        val pie = CookableItems.forId(item.id)
-                        visualizeSpell(player, Animations.FERTILE_SPELL_4413, 746, 75, Sounds.LUNAR_BAKE_PIE_2879)
-                        addXP(player, 60.0)
-                        rewardXP(player, Skills.COOKING, pie!!.experience)
-                        setDelay(player, false)
-                        player.inventory.remove(item)
-                        player.inventory.add(Item(pie.cooked))
-                        playerPies.remove(item)
-                        if (playerPies.isNotEmpty()) removeRunes(player, false) else removeRunes(player, true)
-                        return false
+            player.pulseManager.run(object : Pulse() {
+                var counter = 0
+                override fun pulse(): Boolean {
+                    if (playerPies.isEmpty()) return true
+                    if (counter == 0) {
+                        delay = animationDuration(Animation(4413)) + 1
+                        counter++
                     }
-                },
-            )
+                    val item = playerPies[0]
+                    val pie = CookableItems.forId(item.id) ?: return true
+                    visualizeSpell(player, 4413, 746, 75, Sounds.LUNAR_BAKE_PIE_2879)
+                    addXP(player, 60.0)
+                    rewardXP(player, Skills.COOKING, pie.experience)
+                    setDelay(player, false)
+                    player.inventory.remove(item)
+                    player.inventory.add(Item(pie.cooked))
+                    playerPies.remove(item)
+                    if (playerPies.isNotEmpty()) {
+                        removeRunes(player, false)
+                    } else {
+                        removeRunes(player, true)
+                    }
+                    if (!hasDiaryTaskComplete(player, DiaryType.FREMENNIK, 2, 6)) {
+                        finishDiaryTask(player, DiaryType.FREMENNIK, 2 , 6)
+                    }
+                    return false
+                }
+            })
         }
 
         /*
@@ -88,20 +92,13 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.CURE_GROUP, NONE) { player, _ ->
-
-            requires(player, 74, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.LAW_RUNE_563, 2),
-                Item(Items.COSMIC_RUNE_564, 2)
-            )
-            )
-
+            requires(player, 74, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.LAW_RUNE_563, 2), Item(Items.COSMIC_RUNE_564, 2)))
             removeRunes(player, true)
             visualizeSpell(player, Animations.HEAL_GROUP_4409, 744, 130, Sounds.LUNAR_CURE_GROUP_2882)
 
             curePoison(player)
 
-            for (acct in RegionManager.getLocalPlayers(player, 1)) {
+            for (acct in RegionManager.getNearbyPlayers(player, 1)) {
                 if (!acct.isActive || acct.locks.isInteractionLocked()) {
                     continue
                 }
@@ -122,23 +119,16 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.CURE_ME, NONE) { player, _ ->
+            requires(player, 71, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.LAW_RUNE_563, 1), Item(Items.COSMIC_RUNE_564, 2)))
 
             if (!isPoisoned(player)) {
                 sendMessage(player, "You are not poisoned.")
                 return@onCast
             }
 
-            requires(player, 71, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.LAW_RUNE_563, 1),
-                Item(Items.COSMIC_RUNE_564, 2)
-            )
-            )
-
             removeRunes(player, true)
             playAudio(player, Sounds.LUNAR_CURE_OTHER_INDIVIDUAL_2900)
             visualizeSpell(player, Animations.LUNAR_CURE_ME_4411, 742, 90, Sounds.LUNAR_CURE_2884)
-
             curePoison(player)
             addXP(player, 69.0)
             sendMessage(player, "You have been cured of poison.")
@@ -149,6 +139,7 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.CURE_OTHER, PLAYER) { player, node ->
+            requires(player, 68, arrayOf(Item(Items.ASTRAL_RUNE_9075, 1), Item(Items.LAW_RUNE_563), Item(Items.EARTH_RUNE_557, 10)))
             node?.let {
                 if (!isPlayer(node)) {
                     sendMessage(player, "You can only cast this spell on other players.")
@@ -167,14 +158,13 @@ class LunarSpell : SpellListener("lunar") {
                     sendMessage(player, "This player is not poisoned.")
                     return@onCast
                 }
-                requires(player, 68, arrayOf(Item(Items.ASTRAL_RUNE_9075, 1), Item(Items.LAW_RUNE_563), Item(Items.EARTH_RUNE_557, 10)))
                 player.face(p)
                 visualizeSpell(player, Animations.LUNAR_CURE_ME_4411, 736, 130, Sounds.LUNAR_CURE_OTHER_2886)
                 visualizeSpell(p, -1, 736, 130, Sounds.LUNAR_CURE_OTHER_INDIVIDUAL_2889)
                 removeRunes(player, true)
                 curePoison(p)
-                sendMessage(p, "You have been cured of poison.")
                 addXP(player, 65.0)
+                sendMessage(p, "You have been cured of poison.")
             }
         }
 
@@ -227,35 +217,33 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.DREAM, NONE) { player, _ ->
-            requires(player, 79, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.BODY_RUNE_559, 5), Item(Items.COSMIC_RUNE_564, 1)))
-            if (player.skills.lifepoints >= getStatLevel(player, Skills.HITPOINTS)) {
+            if(player.skills.lifepoints >= getStatLevel(player, Skills.HITPOINTS)) {
                 sendMessage(player, "You have no need to cast this spell since your hitpoints are already full.")
-                return@onCast
+                throw IllegalStateException()
             }
 
+            val timer = getOrStartTimer<SkillRestore>(player)
             animate(player, Animations.DREAM_SPELL_6295)
+            removeRunes(player, true)
+            addXP(player, 82.0)
             delayEntity(player, 4)
             queueScript(player, 4, QueueStrength.WEAK) { stage: Int ->
-                when (stage) {
-                    0 -> {
-                        animate(player, 6296)
-                        sendGraphics(Graphics.SLEEPING_ZZZ_1056, player.location)
-                        playAudio(player, Sounds.LUNAR_SLEEP_3619)
-                        return@queueScript delayScript(player, 5)
-                    }
-
-                    else -> {
-                        sendGraphics(Graphics.SLEEPING_ZZZ_1056, player.location)
-                        if (stage.mod(10) == 0) {
-                            heal(player, 1)
-                            if (player.skills.lifepoints >= getStatLevel(player, Skills.HITPOINTS)) {
-                                animate(player, Animations.GET_UP_FROM_SLEEPING_DREAM_SPELL_6297)
-                                return@queueScript stopExecuting(player)
-                            }
-                        }
-                        return@queueScript delayScript(player, 5)
+                if (stage == 0) {
+                    sendGraphics(Graphics.SLEEPING_ZZZ_1056, player.location)
+                    playAudio(player, Sounds.LUNAR_SLEEP_3619)
+                    return@queueScript delayScript(player, 5)
+                }
+                animate(player, Animations.LUNAR_DREAM_MID_6296)
+                sendGraphics(Graphics.SLEEPING_ZZZ_1056, player.location)
+                if (stage.mod(10) == 0) {
+                    val amt = timer.getHealAmount(player)
+                    heal(player, amt)
+                    if (player.skills.lifepoints >= getStatLevel(player, Skills.HITPOINTS)) {
+                        animate(player, Animations.GET_UP_FROM_SLEEPING_DREAM_SPELL_6297)
+                        return@queueScript stopExecuting(player)
                     }
                 }
+                return@queueScript delayScript(player, 5)
             }
         }
 
@@ -264,6 +252,7 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.ENERGY_TRANSFER, PLAYER) { player, node ->
+            requires(player, 91, arrayOf(Item(Items.ASTRAL_RUNE_9075, 3), Item(Items.LAW_RUNE_563, 2), Item(Items.NATURE_RUNE_561, 1)))
             node?.let {
                 if (!isPlayer(node)) {
                     sendMessage(player, "You can only cast this spell on other players.")
@@ -282,12 +271,6 @@ class LunarSpell : SpellListener("lunar") {
                     sendMessage(player, "You need more Hitpoints to cast this spell.")
                     return@onCast
                 }
-                requires(player, 91, arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 3),
-                    Item(Items.LAW_RUNE_563, 2),
-                    Item(Items.NATURE_RUNE_561, 1)
-                )
-                )
 
                 player.face(p)
 
@@ -325,6 +308,7 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.FERTILE_SOIL, OBJECT) { player, node ->
+            requires(player, 83, arrayOf(Item(Items.ASTRAL_RUNE_9075, 3), Item(Items.NATURE_RUNE_561, 2), Item(Items.EARTH_RUNE_557, 15)),)
             node?.let {
                 if (CompostBins.forObjectID(node.id) != null) {
                     sendMessage(player, "No, that would be silly.")
@@ -347,14 +331,13 @@ class LunarSpell : SpellListener("lunar") {
                     return@onCast
                 }
 
-                requires(player, 83, arrayOf(Item(Items.ASTRAL_RUNE_9075, 3), Item(Items.NATURE_RUNE_561, 2), Item(Items.EARTH_RUNE_557, 15)),)
                 removeRunes(player, true)
                 animate(player, Animations.FERTILE_SPELL_4413)
                 sendGraphics(724, node.location)
                 playGlobalAudio(node.location, Sounds.LUNAR_FERTILIZE_2891)
                 patch.compost = CompostType.SUPER_COMPOST
-                sendMessage(player, "You fertilize the soil.")
                 addXP(player, 87.0)
+                sendMessage(player, "You fertilize the soil.")
             }
         }
 
@@ -363,6 +346,7 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.HEAL_OTHER, PLAYER) { player, node ->
+            requires(player, 92, arrayOf(Item(Items.BLOOD_RUNE_565, 1), Item(Items.LAW_RUNE_563, 3), Item(Items.ASTRAL_RUNE_9075, 3)))
             node ?: return@onCast
             if (!isPlayer(node)) {
                 sendMessage(player, "You can only cast this spell on players.")
@@ -394,14 +378,6 @@ class LunarSpell : SpellListener("lunar") {
                 return@onCast
             }
 
-            requires(
-                player, 92, arrayOf(
-                    Item(Items.BLOOD_RUNE_565, 1),
-                    Item(Items.LAW_RUNE_563, 3),
-                    Item(Items.ASTRAL_RUNE_9075, 3)
-                )
-            )
-
             val transfer = floor(player.skills.lifepoints * 0.75).toInt()
 
             player.face(other)
@@ -416,72 +392,11 @@ class LunarSpell : SpellListener("lunar") {
         }
 
         /*
-         * Heal Group.
-         */
-
-        onCast(LunarSpells.HEAL_GROUP, NONE) { player, _ ->
-
-            val maxHp = getStatLevel(player, Skills.HITPOINTS)
-            val elevenPercent = (maxHp * 0.11).toInt()
-
-            if (player.skills.lifepoints < elevenPercent) {
-                sendMessage(player, "You need at least 11 percent of your original Hitpoints in order to do this.")
-                return@onCast
-            }
-
-            requires(
-                player, 92, arrayOf(
-                    Item(Items.BLOOD_RUNE_565, 3),
-                    Item(Items.LAW_RUNE_563, 6),
-                    Item(Items.ASTRAL_RUNE_9075, 4)
-                )
-            )
-
-            val healAmount = floor(player.skills.lifepoints * 0.75).toInt()
-            if (healAmount < 1) {
-                sendMessage(player, "You don't have enough hitpoints left to cast this spell.")
-                return@onCast
-            }
-
-            val players = RegionManager.getLocalPlayers(player, 1).filter {
-                it != player &&
-                        it.isActive &&
-                        it.settings.isAcceptAid &&
-                        it.skills.lifepoints < getStatLevel(it, Skills.HITPOINTS)
-            }
-
-            if (players.isEmpty()) {
-                sendMessage(player, "There are no players around to replenish.")
-                return@onCast
-            }
-
-            removeRunes(player, true)
-
-            player.animate(Animation(Animations.HEAL_GROUP_4409))
-            playGlobalAudio(player.location, Sounds.LUNAR_HEAL_GROUP_2894)
-
-            impact(player, healAmount, ImpactHandler.HitsplatType.NORMAL)
-
-            for (p in players) {
-                playGlobalAudio(p.location, Sounds.LUNAR_HEAL_OTHER_INDIVIDUAL_2892)
-                sendGraphics(734, p.location)
-                heal(p, healAmount)
-            }
-
-            addXP(player, 101.0)
-        }
-
-        /*
          * Humidify.
          */
 
         onCast(LunarSpells.HUMIDIFY, NONE) { player, _ ->
-            requires(player, 68,
-                arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 1),
-                    Item(Items.WATER_RUNE_555, 3),
-                    Item(Items.FIRE_RUNE_554, 1))
-            )
+            requires(player, 68, arrayOf(Item(Items.ASTRAL_RUNE_9075, 1), Item(Items.WATER_RUNE_555, 3), Item(Items.FIRE_RUNE_554, 1)))
 
             val playerEmpties = ArrayDeque<Item>()
 
@@ -492,7 +407,7 @@ class LunarSpell : SpellListener("lunar") {
             }
 
             if (playerEmpties.isEmpty()) {
-                sendMessage(player, "You have nothing in your inventory that this spell can humidify.")
+                sendMessage(player, "You have no vessels that this spell can fill with water.")
                 throw IllegalStateException()
             }
 
@@ -511,15 +426,11 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.HUNTER_KIT, NONE) { player, _ ->
+            requires(player, 71, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.EARTH_RUNE_557, 2)))
             if (freeSlots(player) == 0) {
                 sendMessage(player, "You need at least one free inventory space to cast this spell.")
                 return@onCast
             }
-
-            requires(player, 71, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.EARTH_RUNE_557, 2)
-            ))
 
             removeRunes(player, true)
 
@@ -527,10 +438,11 @@ class LunarSpell : SpellListener("lunar") {
                 sendMessage(player, "You don't have enough inventory space for the hunter kit.")
                 return@onCast
             }
-
-            visualizeSpell(player, Animations.LUNAR_HUNTER_KIT_6303, Graphics.MAKE_HUNTER_KIT_1074, Sounds.LUNAR_HUNTER_KIT_3615)
-            addXP(player, 70.0)
             setDelay(player, 2)
+            animate(player, Animations.LUNAR_HUNTER_KIT_6303)
+            sendGraphics(core.game.world.update.flag.context.Graphics(Graphics.MAKE_HUNTER_KIT_1074), player.location)
+            playAudio(player, Sounds.LUNAR_HUNTER_KIT_3615)
+            addXP(player, 70.0)
         }
 
         /*
@@ -538,27 +450,34 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.MAGIC_IMBUE, NONE) { player, _ ->
+            requires(player, 82, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.FIRE_RUNE_554, 7), Item(Items.WATER_RUNE_555, 7)))
             val endTick = getAttribute(player, "spell:imbue", 0)
             if (endTick > GameWorld.ticks) {
-                sendMessage(player, "You already have this activated.")
+                sendMessage(player, "You are already imbued.")
                 return@onCast
             }
 
-            requires(player, 82, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.FIRE_RUNE_554, 7),
-                Item(Items.WATER_RUNE_555, 7)
-            )
-            )
-
             removeRunes(player, true)
-            setAttribute(player, "spell:imbue", GameWorld.ticks + 20)
-            player.lock(Animation(722).definition.duration + 1)
-
+            setAttribute(player, "spell:imbue", GameWorld.ticks + secondsToTicks(20))
             animate(player, 722)
             sendGraphics(core.game.world.update.flag.context.Graphics(141, 92), player.location)
             playAudio(player, Sounds.LUNAR_EMBUE_RUNES_2888)
+            addXP(player, 86.0)
             sendMessage(player, "You are charged to combine runes!")
+            player.pulseManager.run(object : Pulse() {
+                override fun pulse(): Boolean {
+                    val remaining = getAttribute(player, "spell:imbue", 0) - GameWorld.ticks
+                    when (remaining) {
+                        10 -> sendMessage(player, "Magic Imbue charge running out...")
+                        5  -> sendMessage(player, "Magic Imbue charge running out...")
+                    }
+                    if (remaining <= 0) {
+                        sendMessage(player, "Your Magic Imbue charge has ended.")
+                        return true
+                    }
+                    return false
+                }
+            })
         }
 
         /*
@@ -566,16 +485,11 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.PLANK_MAKE, ITEM) { player, node ->
+            requires(player, 86, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.NATURE_RUNE_561, 1), Item(Items.EARTH_RUNE_557, 15)))
             if (node == null) {
                 sendMessage(player, "You need to use this spell on logs.")
                 return@onCast
             }
-
-            requires(player, 86, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.NATURE_RUNE_561, 1),
-                Item(Items.EARTH_RUNE_557, 15)
-            ))
 
             val planks = PlankType.getForLog(node.id)
             if (planks == null) {
@@ -623,37 +537,38 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.MONSTER_EXAMINE, NPC) { player, node ->
+            requires(player, 66, arrayOf(Item(Items.ASTRAL_RUNE_9075, 1), Item(Items.MIND_RUNE_558, 1), Item(Items.COSMIC_RUNE_564, 1)))
             val npc = node?.asNpc() ?: return@onCast
-
-            requires(player, 66, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 1),
-                Item(Items.MIND_RUNE_558, 1),
-                Item(Items.COSMIC_RUNE_564, 1)
-            ))
-
             if (!npc.location.withinDistance(player.location)) {
                 sendMessage(player, "You must get closer to use this spell.")
                 return@onCast
             }
 
+            setDelay(player, false)
             faceLocation(player, npc.location)
             visualizeSpell(player, Animations.HUMAN_SPY_STAT_6293, Graphics.STAT_SPY_GFX_1060, Sounds.LUNAR_STAT_SPY_3620)
             removeRunes(player)
-            addXP(player, 66.0)
-            setDelay(player, false)
-
+            addXP(player, 61.0)
             openSingleTab(player, Components.DREAM_MONSTER_STAT_522)
-            sendString(player, "Monster name: ${npc.definition.name}", Components.DREAM_MONSTER_STAT_522, 0)
-            sendString(player, "Combat Level: ${npc.definition.combatLevel}", Components.DREAM_MONSTER_STAT_522, 1)
-            sendString(player, "Hitpoints: ${(npc.definition.handlers[NPCConfigParser.LIFEPOINTS] as? Int) ?: 0}", Components.DREAM_MONSTER_STAT_522, 2)
-            sendString(player, "Max hit: ${npc.getSwingHandler(false)?.calculateHit(npc, player, 1.0) ?: 0}", Components.DREAM_MONSTER_STAT_522, 3)
 
-            val poisonStatus = if (npc.isPoisonImmune) {
-                "This creature is immune to poison."
-            } else {
-                "This creature is not immune to poison."
-            }
-            sendString(player, poisonStatus, Components.DREAM_MONSTER_STAT_522, 4)
+            val def = npc.definition
+            val hp = (def.handlers[NPCConfigParser.LIFEPOINTS] as? Int) ?: 0
+            val maxHit = npc.getSwingHandler(false)?.calculateHit(npc, player, 1.0) ?: 0
+
+            val poisonStatus =
+                if (npc.isPoisonImmune)
+                    "This creature is immune to poison."
+                else
+                    "This creature is not immune to poison."
+
+            fun line(index: Int, text: String) =
+                sendString(player, text, Components.DREAM_MONSTER_STAT_522, index)
+
+            line(0, "Monster name: ${def.name}")
+            line(1, "Combat Level: ${def.combatLevel}")
+            line(2, "Hitpoints: $hp")
+            line(3, "Max hit: $maxHit")
+            line(4, poisonStatus)
         }
 
         /*
@@ -661,60 +576,48 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.STRING_JEWELLERY, NONE) { player, _ ->
-            requires(player, 80, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.EARTH_RUNE_557, 10),
-                Item(Items.WATER_RUNE_555, 5)
-            ))
+            requires(player, 80, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.EARTH_RUNE_557, 10), Item(Items.WATER_RUNE_555, 5)))
+            val playerJewellery = ArrayDeque<Item>()
 
-            val playerJewellery = ArrayDeque(
-                player.inventory.toArray()
-                    .filterNotNull()
-                    .filter { StringJewelleryItems.unstrungContains(it.id) }
-            )
-
-            if (playerJewellery.isEmpty()) return@onCast
+            for(item in player.inventory.toArray()) {
+                if(item == null) continue
+                if(!StringJewelleryItems.unstrungContains(item.id)) continue
+                playerJewellery.add(item)
+            }
 
             player.pulseManager.run(object : Pulse() {
-                init {
-                    delay = animationDuration(Animation(4412)) + 1
-                }
-
+                var counter = 0
                 override fun pulse(): Boolean {
                     removeAttribute(player, "spell:runes")
-
-                    val item = playerJewellery.removeFirstOrNull() ?: return true
+                    if (playerJewellery.isEmpty())
+                        return true
+                    requires(player, 80, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.EARTH_RUNE_557, 10), Item(Items.WATER_RUNE_555, 5)))
+                    if(counter == 0) delay = animationDuration(Animation(Animations.LUNAR_STRING_JEWELLERY_4412)) + 1
+                    val item = playerJewellery[0]
                     val strung = StringJewelleryItems.forId(item.id)
-
-                    if (removeItem(player, item) && addItem(player, strung)) {
-                        removeRunes(player, false)
-                        visualizeSpell(
-                            player,
-                            Animations.LUNAR_STRING_JEWELLERY_4412,
-                            730,
-                            100,
-                            Sounds.LUNAR_STRING_AMULET_2903
-                        )
+                    setDelay(player,false)
+                    if(removeItem(player, item) && addItem(player, strung)) {
+                        removeRunes(player, true)
+                        visualizeSpell(player, Animations.LUNAR_STRING_JEWELLERY_4412, 730, 100, Sounds.LUNAR_STRING_AMULET_2903)
                         rewardXP(player, Skills.CRAFTING, 4.0)
                         addXP(player, 83.0)
+                        playerJewellery.remove(item)
+                        if(playerJewellery.isNotEmpty()) removeRunes(player,false) else removeRunes(player,true)
                     }
-
-                    if (playerJewellery.isEmpty()) {
-                        removeRunes(player, true)
-                        return true
-                    }
-
-                    return false
+                    counter++
+                    return playerJewellery.isEmpty()
                 }
             })
         }
 
         /*
-         * Stats boost share.
+         * Boost share potion.
          */
 
         onCast(LunarSpells.BOOST_POTION_SHARE, ITEM) { player, node ->
+            requires(player, 84, arrayOf(Item(Items.ASTRAL_RUNE_9075, 3), Item(Items.EARTH_RUNE_557, 12), Item(Items.WATER_RUNE_555, 10)))
             val item = node?.asItem() ?: return@onCast
+
             val consumable = Consumables.getConsumableById(item.id)
                 ?: return@onCast sendMessage(player, "You can only cast this spell on a potion.")
 
@@ -722,6 +625,7 @@ class LunarSpell : SpellListener("lunar") {
                 ?: return@onCast sendMessage(player, "You can only cast this spell on a valid potion.")
 
             val name = item.name.lowercase()
+
             if (!item.definition.isTradeable ||
                 name.contains("restore") ||
                 name.contains("zamorak") ||
@@ -732,20 +636,10 @@ class LunarSpell : SpellListener("lunar") {
                 return@onCast
             }
 
-            requires(
-                player, 84,
-                arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 3),
-                    Item(Items.EARTH_RUNE_557, 12),
-                    Item(Items.WATER_RUNE_555, 10)
-                )
-            )
-
             val doses = potion.getDose(item)
-            val nearby = RegionManager.getLocalPlayers(player, 1).filter {
+            val nearby = RegionManager.getNearbyPlayers(player, 1).filter {
                 it != player &&
                         it.isActive &&
-                        !it.locks.isInteractionLocked() &&
                         (it.settings.isAcceptAid || it is AIPlayer)
             }
 
@@ -758,7 +652,7 @@ class LunarSpell : SpellListener("lunar") {
 
             for (p in nearby) {
                 if (shared >= doses) break
-                p.graphics(core.game.world.update.flag.context.Graphics(733, 130))
+                sendGraphics(733, p.location)
                 playGlobalAudio(p.location, Sounds.LUNAR_STRENGTH_SHARE2_2902)
                 potion.effect.activate(p)
                 shared++
@@ -771,16 +665,17 @@ class LunarSpell : SpellListener("lunar") {
 
             removeRunes(player, true)
             potion.effect.activate(player)
-
             visualizeSpell(player, Animations.FERTILE_SPELL_4413, 733, 130, Sounds.LUNAR_STRENGTH_SHARE_2901)
-
             player.inventory.remove(item)
-
             val newIndex = (potion.ids.size - doses) + shared
-            if (newIndex > potion.ids.lastIndex)
+
+            if (newIndex > potion.ids.lastIndex) {
                 player.inventory.add(Item(Items.VIAL_229))
-            else
+            } else {
                 player.inventory.add(Item(potion.ids[newIndex]))
+            }
+
+            addXP(player, 88.0)
         }
 
         /*
@@ -788,7 +683,9 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.STAT_RESTORE_POT_SHARE, ITEM) { player, node ->
+            requires(player, 81, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.EARTH_RUNE_557, 10), Item(Items.WATER_RUNE_555, 10)))
             val item = node?.asItem() ?: return@onCast
+
             val consumable = Consumables.getConsumableById(item.id)
                 ?: return@onCast sendMessage(player, "You can only cast this spell on a potion.")
 
@@ -796,26 +693,15 @@ class LunarSpell : SpellListener("lunar") {
                 ?: return@onCast sendMessage(player, "You can only cast this spell on a valid potion.")
 
             if (!item.definition.isTradeable() || potion !in accepted.map { it.consumable }) {
-                player.sendMessage("You can't cast this spell on that item.")
+                sendMessage(player, "You can't cast this spell on that item.")
                 return@onCast
             }
 
-            requires(
-                player, 81,
-                arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 2),
-                    Item(Items.EARTH_RUNE_557, 10),
-                    Item(Items.WATER_RUNE_555, 10)
-                )
-            )
-
             player.interfaceManager.setViewedTab(6)
-
             val doses = potion.getDose(item)
-            val nearby = RegionManager.getLocalPlayers(player, 1).filter {
+            val nearby = RegionManager.getNearbyPlayers(player, 1).filter {
                 it != player &&
                         it.isActive &&
-                        !it.locks.isInteractionLocked() &&
                         (it.settings.isAcceptAid || it is AIPlayer)
             }
 
@@ -828,29 +714,30 @@ class LunarSpell : SpellListener("lunar") {
 
             for (p in nearby) {
                 if (shared >= doses) break
-                p.graphics(core.game.world.update.flag.context.Graphics(733, 130))
+                sendGraphics(733, p.location)
                 playGlobalAudio(p.location, Sounds.LUNAR_STAT_SHARE_2899)
                 potion.effect.activate(p)
                 shared++
             }
 
             if (shared == 0) {
-                player.sendMessage("There is nobody around that has accept aid on to share the potion with you.")
+                sendMessage(player, "There is nobody around that has accept aid on to share the potion with you.")
                 return@onCast
             }
 
             removeRunes(player, true)
             potion.effect.activate(player)
-
             visualizeSpell(player, Animations.FERTILE_SPELL_4413, 733, 130, Sounds.LUNAR_STAT_SHARE_2899)
-
             player.inventory.remove(item)
-
             val newIndex = (potion.ids.size - doses) + shared
-            if (newIndex > potion.ids.lastIndex)
+
+            if (newIndex > potion.ids.lastIndex) {
                 player.inventory.add(Item(Items.VIAL_229))
-            else
+            } else {
                 player.inventory.add(Item(potion.ids[newIndex]))
+            }
+
+            addXP(player, 84.0)
         }
 
         /*
@@ -858,42 +745,41 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.SUPERGLASS_MAKE, NONE) { player, _ ->
-            requires(player, 77, arrayOf(
-                Item(Items.ASTRAL_RUNE_9075, 2),
-                Item(Items.FIRE_RUNE_554, 6),
-                Item(Items.AIR_RUNE_556, 10)
-            ))
+            requires(player, 77, arrayOf(Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.FIRE_RUNE_554, 6), Item(Items.AIR_RUNE_556, 10)))
+            val sandCount = SAND_SOURCES.sumOf { amountInInventory(player, it) }
+            val weedCount = GLASS_WEEDS.sumOf { amountInInventory(player, it) }
 
-            val playerWeed = GLASS_WEEDS.sumOf { amountInInventory(player, it) }
-            val playerSand = SAND_SOURCES.sumOf { amountInInventory(player, it) }
-            val craftAmount = minOf(playerWeed, playerSand)
+            val amount = minOf(sandCount, weedCount)
 
-            if (craftAmount == 0) {
-                sendMessage(player, "You lack the required ingredients.")
+            if (amount == 0) {
+                sendMessage(player, "you don't have any soda ash, seaweed or swamp weed.")
                 return@onCast
             }
 
-            var crafted = 0
-
-            fun addMolten(): Boolean {
-                return addItem(player, Items.MOLTEN_GLASS_1775, if (RandomFunction.randomDouble(1.0) < 0.3) 2 else 1)
-            }
-
-            GLASS_WEEDS.forEach { weedId ->
-                while (amountInInventory(player, weedId) > 0 && crafted < craftAmount) {
-                    val sandId = SAND_SOURCES.firstOrNull { amountInInventory(player, it) > 0 } ?: break
-                    if (removeItem(player, Item(weedId)) && removeItem(player, Item(sandId)) && addMolten()) {
-                        crafted++
-                    } else break
+            var remainingSand = amount
+            for (sand in SAND_SOURCES) {
+                while (remainingSand > 0 && amountInInventory(player, sand) > 0) {
+                    removeItem(player, Item(sand))
+                    remainingSand--
                 }
             }
 
-            if (crafted > 0) {
-                removeRunes(player, true)
-                visualizeSpell(player, Animations.FERTILE_SPELL_4413, 729, 120, Sounds.LUNAR_HEATGLASS_2896)
-                rewardXP(player, Skills.CRAFTING, 10.0)
-                addXP(player, 78.0)
+            var remainingWeed = amount
+            for (weed in GLASS_WEEDS) {
+                while (remainingWeed > 0 && amountInInventory(player, weed) > 0) {
+                    removeItem(player, Item(weed))
+                    remainingWeed--
+                }
             }
+
+            val bonus = RandomFunction.random(0, amount / 2)
+            val output = amount + bonus
+            lock(player, secondsToTicks(3))
+            addItem(player, Items.MOLTEN_GLASS_1775, output)
+            removeRunes(player, true)
+            visualizeSpell(player, Animations.FERTILE_SPELL_4413, 729, 120, Sounds.LUNAR_HEATGLASS_2896)
+            addXP(player, 78.0)
+            rewardXP(player, Skills.CRAFTING, output * 10.0)
         }
 
         /*
@@ -901,25 +787,11 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.STAT_SPY, PLAYER) { player, target ->
+            requires(player, 75, arrayOf(Item(Items.COSMIC_RUNE_564, 2), Item(Items.ASTRAL_RUNE_9075, 2), Item(Items.BODY_RUNE_559, 5)))
             val other = target as? Player
                 ?: return@onCast sendMessage(player, "You can only cast this spell on players.")
 
-            requires(
-                player, 75,
-                arrayOf(
-                    Item(Items.COSMIC_RUNE_564, 2),
-                    Item(Items.ASTRAL_RUNE_9075, 2),
-                    Item(Items.BODY_RUNE_559, 5)
-                )
-            )
-
-            visualizeSpell(
-                player,
-                Animations.HUMAN_SPY_STAT_6293,
-                Graphics.STAT_SPY_GFX_1059,
-                Sounds.LUNAR_STAT_SPY_3620
-            )
-
+            visualizeSpell(player, Animations.HUMAN_SPY_STAT_6293, Graphics.STAT_SPY_GFX_1059, Sounds.LUNAR_STAT_SPY_3620)
             other.graphics(core.game.world.update.flag.context.Graphics(Graphics.GRAPHIC_734, 120))
             playGlobalAudio(other.location, Sounds.LUNAR_STAT_SPY_IMPACT_3621)
 
@@ -936,41 +808,10 @@ class LunarSpell : SpellListener("lunar") {
                 player.packetDispatch.sendString("${other.skills.getLevel(skill)}", Components.DREAM_PLAYER_STATS_523, currString)
                 player.packetDispatch.sendString("${other.skills.getStaticLevel(skill)}", Components.DREAM_PLAYER_STATS_523, baseString)
             }
-
             player.packetDispatch.sendString(other.username, Components.DREAM_PLAYER_STATS_523, 99)
             player.interfaceManager.openSingleTab(Component(Components.DREAM_PLAYER_STATS_523))
-
             removeRunes(player, true)
-        }
-
-        /*
-         * Vengeance self.
-         */
-
-        onCast(LunarSpells.VENGEANCE, NONE) { player, _ ->
-            val ticks = GameWorld.ticks
-            val endTick = getAttribute(player, "vengeance_delay", 0)
-
-            if (endTick > ticks) {
-                sendMessage(player, "You can only cast vengeance spells once every 30 seconds.")
-                return@onCast
-            }
-
-            requires(
-                player, 94, arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 4),
-                    Item(Items.DEATH_RUNE_560, 2),
-                    Item(Items.EARTH_RUNE_557, 10)
-                )
-            )
-
-            removeRunes(player, true)
-            setAttribute(player, "vengeance_delay", ticks + 50)
-            setAttribute(player, "vengeance", true)
-
-            lock(player, Animation(4410).definition.duration + 1)
-            visualizeSpell(player, Animation.create(4410), core.game.world.update.flag.context.Graphics(726, 92), 100, Sounds.LUNAR_VENGENCE_2907)
-            sendMessage(player, "You cast vengeance on yourself!")
+            addXP(player, 76.0)
         }
 
         /*
@@ -978,6 +819,7 @@ class LunarSpell : SpellListener("lunar") {
          */
 
         onCast(LunarSpells.VENGEANCE_OTHER, PLAYER) { player, node ->
+            requires(player, 93, arrayOf(Item(Items.ASTRAL_RUNE_9075, 3), Item(Items.DEATH_RUNE_560, 2), Item(Items.EARTH_RUNE_557, 10)))
             val target = node?.asPlayer() ?: return@onCast
             val ticks = GameWorld.ticks
             val endTick = getAttribute(player, "vengeance_delay", 0)
@@ -992,23 +834,84 @@ class LunarSpell : SpellListener("lunar") {
                 return@onCast
             }
 
-            requires(
-                player, 93, arrayOf(
-                    Item(Items.ASTRAL_RUNE_9075, 3),
-                    Item(Items.DEATH_RUNE_560, 2),
-                    Item(Items.EARTH_RUNE_557, 10)
-                )
-            )
-
             removeRunes(player, true)
             setAttribute(player, "vengeance_delay", ticks + 50)
             setAttribute(target, "vengeance", true)
 
-            lock(player, Animation(4411).definition.duration + 1)
+            lock(player, 3)
             visualizeSpell(player, Animation.create(4411), core.game.world.update.flag.context.Graphics(725, 96), 100, Sounds.LUNAR_VENGENCE_OTHER_2908)
+            addXP(player, 108.0)
             sendMessage(player, "You cast vengeance on ${target.username}!")
         }
 
+        /*
+         * Vengeance self.
+         */
+
+        onCast(LunarSpells.VENGEANCE, NONE) { player, _ ->
+            requires(player, 94, arrayOf(Item(Items.ASTRAL_RUNE_9075, 4), Item(Items.DEATH_RUNE_560, 2), Item(Items.EARTH_RUNE_557, 10)))
+
+            val ticks = GameWorld.ticks
+            val endTick = getAttribute(player, "vengeance_delay", 0)
+
+            if (endTick > ticks) {
+                sendMessage(player, "You can only cast vengeance spells once every 30 seconds.")
+                return@onCast
+            }
+
+            removeRunes(player, true)
+            setAttribute(player, "vengeance_delay", ticks + 50)
+            setAttribute(player, "vengeance", true)
+            lock(player, 3)
+            visualizeSpell(player, Animation.create(4410), core.game.world.update.flag.context.Graphics(726, 92), 100, Sounds.LUNAR_VENGENCE_2907)
+            addXP(player, 112.0)
+            sendMessage(player, "You cast vengeance on yourself!")
+        }
+
+        /*
+         * Heal Group.
+         */
+
+        onCast(LunarSpells.HEAL_GROUP, NONE) { player, _ ->
+            requires(player, 95, arrayOf(Item(Items.BLOOD_RUNE_565, 3), Item(Items.LAW_RUNE_563, 6), Item(Items.ASTRAL_RUNE_9075, 4)))
+            val maxHp = getStatLevel(player, Skills.HITPOINTS)
+            val elevenPercent = (maxHp * 0.11).toInt()
+
+            if (player.skills.lifepoints < elevenPercent) {
+                sendMessage(player, "You need at least 11 percent of your original Hitpoints in order to do this.")
+                return@onCast
+            }
+
+            val healAmount = floor(player.skills.lifepoints * 0.75).toInt()
+            if (healAmount < 1) {
+                sendMessage(player, "You don't have enough hitpoints left to cast this spell.")
+                return@onCast
+            }
+
+            val players = RegionManager.getNearbyPlayers(player, 1).filter {
+                it != player &&
+                        it.isActive &&
+                        it.settings.isAcceptAid &&
+                        it.skills.lifepoints < getStatLevel(it, Skills.HITPOINTS)
+            }
+
+            if (players.isEmpty()) {
+                sendMessage(player, "There are no players around to replenish.")
+                return@onCast
+            }
+
+            removeRunes(player, true)
+            player.animate(Animation(Animations.HEAL_GROUP_4409))
+            playGlobalAudio(player.location, Sounds.LUNAR_HEAL_GROUP_2894)
+            impact(player, healAmount, ImpactHandler.HitsplatType.NORMAL)
+            for (p in players) {
+                playGlobalAudio(p.location, Sounds.LUNAR_HEAL_OTHER_INDIVIDUAL_2892)
+                sendGraphics(734, p.location)
+                heal(p, healAmount)
+            }
+
+            addXP(player, 124.0)
+        }
     }
 
     companion object {
@@ -1064,11 +967,15 @@ class LunarSpell : SpellListener("lunar") {
         private val SAND_SOURCES = intArrayOf(Items.BUCKET_OF_SAND_1783, Items.SANDBAG_9943)
 
         private val accepted = setOf(
-            Consumables.RESTORE,
-            Consumables.SUPER_RESTO,
             Consumables.PRAYER,
+            Consumables.PRAYERMIX,
+            Consumables.RESTORE,
+            Consumables.RESTO_MIX,
+            Consumables.SUPER_RESTO,
+            Consumables.SUPER_RESTO_MIX,
             Consumables.ENERGY,
-            Consumables.SUPER_ENERGY
+            Consumables.SUPER_ENERGY,
+            Consumables.SC_PRAYER
         )
 
         //{skill, currentStringId, realStringId}

@@ -74,7 +74,7 @@ class FremennikAchievementDiary : DiaryEventHookBase(DiaryType.FREMENNIK) {
             const val LUNAR_ISLE_MINE_PURE_ESSENCE = 3
             const val MAKE_BARBARIAN_PYRE_SHIP_ARCTIC_PINE = 4
             const val CATCH_TUNA_WITHOUT_HARPOON = 5
-            const val BAKE_PIE_WITH_MAGIC = 6
+            const val BAKE_PIE_WITH_MAGIC = 6 // Outside
             const val KILL_MITHRIL_DRAGON = 7
             const val GET_MAHOGANY_FROM_ETCETERIA = 8
         }
@@ -347,19 +347,6 @@ class FremennikAchievementDiary : DiaryEventHookBase(DiaryType.FREMENNIK) {
                 player,
                 DiaryLevel.MEDIUM,
                 MediumTasks.INTERACT_WITH_PET_ROCK,
-            )
-        }
-    }
-
-    override fun onSpellCast(
-        player: Player,
-        event: SpellCastEvent,
-    ) {
-        if (event.spellBook == SpellBookManager.SpellBook.LUNAR && event.spellId == 15) {
-            finishTask(
-                player,
-                DiaryLevel.HARD,
-                HardTasks.BAKE_PIE_WITH_MAGIC,
             )
         }
     }
