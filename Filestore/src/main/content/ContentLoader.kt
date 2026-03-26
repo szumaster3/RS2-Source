@@ -10,6 +10,8 @@ import com.alex.tools.dump.ModelDumper
 import com.alex.tools.dump.SpriteDumper
 import com.alex.tools.pack.ModelPacker
 import com.alex.tools.pack.SpritePacker
+import content.interfaces.`AreaTask(259)`
+import content.interfaces.`GuildHallOverlay(834)`
 import content.items.*
 import content.npcs.`GuildHallOfficer(8591)`
 import content.objects.`Obelisk(42004)`
@@ -36,7 +38,8 @@ object ContentLoader {
     }
 
     private fun interfaces() {
-        content.interfaces.`AreaTask(259)`.add()
+        `AreaTask(259)`.add()
+        `GuildHallOverlay(834)`.add()
     }
 
     private fun items() {
