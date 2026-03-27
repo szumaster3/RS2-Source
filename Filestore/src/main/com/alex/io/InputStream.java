@@ -290,4 +290,10 @@ public final class InputStream extends Stream {
         }
         return value;
     }
+
+    public int readTriByte() {
+        return (readUnsignedByte() << 16)
+                | (readUnsignedByte() << 8)
+                | readUnsignedByte();
+    }
 }

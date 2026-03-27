@@ -7,6 +7,8 @@ _This step is required only once (or whenever cache content changes)._
 
 ## Setup
 
+1. Run script `\Scripts\backup_cache.sh` just in case.
+
 ### Install
 
 ```bash

@@ -1,10 +1,8 @@
 package content
 
 import com.alex.Cache
-import com.alex.loaders.BasDefinition
-import com.alex.loaders.ItemDefinition
-import com.alex.loaders.LocDefinition
-import com.alex.loaders.NpcDefinition
+import com.alex.loaders.*
+import com.alex.store.Store
 import com.alex.tools.dump.MapDumper
 import com.alex.tools.dump.ModelDumper
 import com.alex.tools.dump.SpriteDumper
@@ -72,11 +70,26 @@ object ContentLoader {
 
     private fun print() {
         val store = Cache.getStore()
-        LocDefinition.print(store, "../Dumps/object_dumps.txt")
-        ItemDefinition.print(store, "../Dumps/item_dumps.txt")
-        ItemDefinition.printParams(store, "../Dumps/item_params.txt")
-        BasDefinition.print(store, "../Dumps/bas_dumps.txt")
-        NpcDefinition.print(store, "../Dumps/npc_dumps.txt")
+
+        val dumps = listOf<Pair<String, (Store, String) -> Unit>>(
+            "object_dumps.txt"    to LocDefinition::print,
+            "item_dumps.txt"      to ItemDefinition::print,
+            "bas_dumps.txt"       to BasDefinition::print,
+            "npc_dumps.txt"       to NpcDefinition::print,
+            "enum_dumps.txt"      to EnumDefinition::print,
+            "flo_dumps.txt"       to FloDefinition::print,
+            "flu_dumps.txt"       to FluDefinition::print,
+            "idk_dumps.txt"       to IdkDefinition::print,
+            "param_dumps.txt"     to ParamDefinition::print,
+            "seq_dumps.txt"       to SeqDefinition::print,
+            "spot_anim_dumps.txt" to SpotAnimDefinition::print,
+            "struct_dumps.txt"    to StructDefinition::print
+        )
+
+        dumps.forEach { (def, printer) ->
+            println("Print $def")
+            printer(store, "../Dumps/$def")
+        }
     }
 
     private fun dump() {

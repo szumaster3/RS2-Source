@@ -1008,51 +1008,6 @@ public class ItemDefinition implements Cloneable {
         }
     }
 
-    public static void printParams(Store cache, String outputFile) {
-        try {
-            File file = new File(outputFile);
-            File parent = file.getParentFile();
-
-            if (parent != null && !parent.exists()) {
-                parent.mkdirs();
-            }
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))) {
-
-                int size = Utils.getItemDefinitionsSize(cache);
-
-                for (int id = 0; id < size; id++) {
-                    ItemDefinition item = new ItemDefinition(cache, id, false);
-                    item.loadItemDefinition(cache);
-
-                    if (!item.loaded) {
-                        continue;
-                    }
-
-                    if (item.params == null || item.params.isEmpty()) {
-                        continue;
-                    }
-
-                    writer.println("===== ITEM ID: " + id + " =====");
-
-                    for (Object entryObj : item.params.entrySet()) {
-                        Map.Entry<Integer, Object> entry = (Map.Entry<Integer, Object>) entryObj;
-                        writer.println("KEY: " + entry.getKey() + ", VALUE: " + entry.getValue());
-                    }
-
-                    writer.println();
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void setDefaultOptions() {
         this.ops = new String[]{null, null, "Take", null, null};
         this.iops = new String[]{null, null, null, null, "Drop"};
@@ -1062,9 +1017,11 @@ public class ItemDefinition implements Cloneable {
         try {
             File file = new File(outputFile);
             File parent = file.getParentFile();
+
             if (parent != null && !parent.exists()) {
                 parent.mkdirs();
             }
+
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -1090,9 +1047,9 @@ public class ItemDefinition implements Cloneable {
                     buffer.append("========== ITEM ").append(item.id).append(" ==========\n");
 
                     for (Field field : fields) {
-                        if (Modifier.isStatic(field.getModifiers())) {
-                            continue;
-                        }
+
+                        if (Modifier.isStatic(field.getModifiers())) continue;
+                        if (field.getName().equals("params")) continue;
 
                         field.setAccessible(true);
 
@@ -1111,7 +1068,6 @@ public class ItemDefinition implements Cloneable {
                         if (value instanceof int[] && ((int[]) value).length == 0) continue;
                         if (value instanceof byte[] && ((byte[]) value).length == 0) continue;
                         if (value instanceof Object[] && ((Object[]) value).length == 0) continue;
-                        if (value instanceof Map && ((Map<?, ?>) value).isEmpty()) continue;
 
                         String valueString;
 
@@ -1121,22 +1077,39 @@ public class ItemDefinition implements Cloneable {
                             valueString = Arrays.toString((byte[]) value);
                         } else if (value instanceof Object[]) {
                             valueString = Arrays.toString((Object[]) value);
-                        } else if (value instanceof Map) {
-                            Map<?, ?> map = (Map<?, ?>) value;
-                            StringBuilder mapStr = new StringBuilder("{");
-                            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                                mapStr.append(entry.getKey()).append("=").append(entry.getValue()).append(", ");
-                            }
-                            if (!map.isEmpty()) {
-                                mapStr.setLength(mapStr.length() - 2);
-                            }
-                            mapStr.append("}");
-                            valueString = mapStr.toString();
                         } else {
                             valueString = value.toString();
                         }
 
-                        buffer.append(field.getName()).append(" = ").append(valueString).append("\n");
+                        buffer.append(field.getName())
+                                .append(" = ")
+                                .append(valueString)
+                                .append("\n");
+
+                        wroteSomething = true;
+                    }
+
+                    if (item.params != null && !item.params.isEmpty()) {
+                        buffer.append("===== PARAMS =====\n");
+
+                        for (Object entryObj : item.params.entrySet()) {
+                            Map.Entry<Integer, Object> entry = (Map.Entry<Integer, Object>) entryObj;
+
+                            Object v = entry.getValue();
+
+                            if (v instanceof String) {
+                                buffer.append(entry.getKey())
+                                        .append(" (string) = \"")
+                                        .append(v)
+                                        .append("\"\n");
+                            } else {
+                                buffer.append(entry.getKey())
+                                        .append(" (int) = ")
+                                        .append(v)
+                                        .append("\n");
+                            }
+                        }
+
                         wroteSomething = true;
                     }
 

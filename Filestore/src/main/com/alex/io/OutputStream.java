@@ -348,4 +348,10 @@ public final class OutputStream extends Stream {
         this.offset = 0;
         this.writeBytes(out, 0, out.length);
     }
+
+    public void writeTriByte(int value) {
+        writeByte((value >> 16) & 0xFF);
+        writeByte((value >> 8) & 0xFF);
+        writeByte(value & 0xFF);
+    }
 }
