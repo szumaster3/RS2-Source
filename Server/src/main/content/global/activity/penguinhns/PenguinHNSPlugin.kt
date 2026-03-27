@@ -2,6 +2,7 @@ package content.global.activity.penguinhns
 
 import content.data.GameAttributes
 import core.api.*
+import core.cache.def.impl.NPCDefinition
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.node.entity.npc.NPC
@@ -45,7 +46,22 @@ class PenguinHNSPlugin : InteractionListener {
 
         on(Items.SPY_NOTEBOOK_13732, IntType.ITEM, "read") { player, _ ->
             val total = getAttribute(player, GameAttributes.ACTIVITY_PENGUINS_HNS_SCORE, 0)
-            sendDialogue(player, "Total points: $BLUE$total</col>.")
+            val username = player.username.lowercase()
+            val tagged = PenguinLocation.values().filter { loc ->
+                PenguinManager.tagMapping[loc.ordinal]
+                    ?.any { it.asString == username } == true
+            }
+            val count = tagged.size
+            val details = tagged.joinToString(", ") { loc ->
+                val name = NPCDefinition.forId(loc.npcId)?.name ?: "Unknown"
+                "$name ${loc.hint}"
+            }
+            sendDialogueLines(
+                player,
+                "You have recently spotted $count penguins.",
+                if (details.isNotEmpty()) "You have recently spotted $details" else "You haven't spotted any penguins.",
+                "You have $BLUE$total</col> Penguin Points to spend with Larry."
+            )
             return@on true
         }
     }

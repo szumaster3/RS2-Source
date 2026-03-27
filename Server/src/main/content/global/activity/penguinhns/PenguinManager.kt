@@ -3,6 +3,7 @@ package content.global.activity.penguinhns
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import core.api.log
+import core.cache.def.impl.NPCDefinition
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.world.map.Location
@@ -77,4 +78,17 @@ class PenguinManager {
             penguins = spawnedOrdinals
         }
     }
+
+    /*
+     * fun hasFoundAgent(player: Player): Boolean {
+     *     val username = player.username.lowercase()
+     *
+     *     return PenguinLocation.values()
+     *         .filter { it.isAgent }
+     *         .any { loc ->
+     *             val ordinal = loc.ordinal
+     *             tagMapping[ordinal]?.any { it.asString == username } == true
+     *         }
+     * }
+     */
 }
