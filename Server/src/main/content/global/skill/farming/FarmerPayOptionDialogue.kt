@@ -30,7 +30,9 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
     private val OLD_FACE_NPCS = setOf(
         NPCs.PRISSY_SCILLA_1037,
         NPCs.BOLONGO_2343,
-        NPCs.FRIZZY_SKERNIP_4560
+        NPCs.FRIZZY_SKERNIP_4560,
+        NPCs.YULF_SQUECKS_4561,
+        NPCs.PRAISTAN_EBOLA_4562
     )
 
     override fun handle(componentID: Int, buttonID: Int) {
