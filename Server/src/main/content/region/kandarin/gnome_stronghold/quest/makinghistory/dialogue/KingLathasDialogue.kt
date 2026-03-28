@@ -32,18 +32,15 @@ class KingLathasDialogue(player: Player? = null) : Dialogue(player) {
             inInventory(player, Items.LETTER_6757) -> {
                 npcl(FaceAnim.FRIENDLY, "Have you taken that letter to Jorral yet?")
                 stage = 9
-                true
             }
 
             !inInventory(player, Items.LETTER_6757) && progress >= 3 -> {
                 playerl(FaceAnim.FRIENDLY, "Excuse me sire, but I seem to have lost that letter you gave me.")
                 stage = 10
-                true
             }
 
             progress == 3 && inInventory(player, Items.LETTER_6756) -> {
                 npcl(FaceAnim.FRIENDLY, "What would you like to talk about?")
-                true
             }
 
             else -> {
@@ -52,7 +49,6 @@ class KingLathasDialogue(player: Player? = null) : Dialogue(player) {
                 sendMessage(player, "King Lathas is not interested in talking.")
             }
         }
-
         return true
     }
 

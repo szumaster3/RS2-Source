@@ -12,9 +12,8 @@ import shared.consts.NPCs
 import shared.consts.Quests
 import shared.consts.Vars
 
-class ObservatoryCutscene(
-    player: Player,
-) : Cutscene(player) {
+class ObservatoryCutscene(player: Player) : Cutscene(player) {
+
     override fun setup() {
         setExit(END_LOCATION)
         if (player.settings.isRunToggled) {

@@ -17,6 +17,12 @@ import shared.consts.Items
 import shared.consts.NPCs
 import shared.consts.Quests
 
+/**
+ * Represents the Professor dialogue.
+ *
+ * # Relations:
+ * - [Observatory quest][content.region.kandarin.gnome_stronghold.quest.itgronigen.Observatory]
+ */
 @Initializable
 class ProfessorDialogue(player: Player? = null) : Dialogue(player) {
 
@@ -24,12 +30,7 @@ class ProfessorDialogue(player: Player? = null) : Dialogue(player) {
         npc = args[0] as NPC
         if (!isQuestComplete(player, Quests.OBSERVATORY_QUEST)) {
             setTitle(player, 2)
-            sendOptions(
-                player,
-                "What would you like to talk about?",
-                "Talk about the Observatory Quest.",
-                "Talk about Treasure Trails."
-            ).also { stage = 4 }
+            sendOptions(player, "What would you like to talk about?", "Talk about the Observatory Quest.", "Talk about Treasure Trails.").also { stage = 4 }
         } else {
             npc("What would you like to talk about?").also { stage = -1 }
         }

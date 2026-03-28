@@ -10,15 +10,10 @@ import core.game.world.map.Location
 import core.tools.RandomFunction
 import shared.consts.NPCs
 
-class PoisonSpiderNPC(
-    id: Int = 0,
-    location: Location? = null,
-) : AbstractNPC(id, location) {
-    override fun construct(
-        id: Int,
-        location: Location,
-        vararg objects: Any,
-    ): AbstractNPC = PoisonSpiderNPC(id, location)
+class PoisonSpiderNPC(id: Int = 0, location: Location? = null) : AbstractNPC(id, location) {
+
+    override fun construct(id: Int, location: Location, vararg objects: Any): AbstractNPC =
+        PoisonSpiderNPC(id, location)
 
     override fun getIds(): IntArray = intArrayOf(NPCs.POISON_SPIDER_1009)
 

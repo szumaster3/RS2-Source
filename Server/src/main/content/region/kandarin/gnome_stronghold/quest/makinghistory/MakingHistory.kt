@@ -49,7 +49,7 @@ class MakingHistory : Quest(Quests.MAKING_HISTORY, 86, 85, 3, Vars.VARBIT_QUEST_
         if (stage == 100) {
             line(player, "The outpost is saved!", line++, true)
             line++
-            line(player, "<col=FF0000>QUEST COMPLETE!", line, false)
+            line(player, "<col=FF0000>QUEST COMPLETE!</col>", line, false)
             line++
             if (getAttribute(player, EnchantedKeyTreasures.ENCHANTED_KEY_ATTR, -1) >= 0) {
                 line(player, "I Should see what else I can find with the help of the key.", line, getAttribute(player, EnchantedKeyTreasures.ENCHANTED_KEY_ATTR, -1) >= 10)
@@ -69,7 +69,7 @@ class MakingHistory : Quest(Quests.MAKING_HISTORY, 86, 85, 3, Vars.VARBIT_QUEST_
         rewardXP(player, Skills.CRAFTING, 1000.0)
         rewardXP(player, Skills.PRAYER, 1000.0)
         addItemOrDrop(player, Items.COINS_995, 750)
-        setVarbit(player, 1390, 1, true)
+        setVarbit(player, Vars.VARBIT_MAKING_HISTORY_MUSEUM_BUILT_1390, 1, true)
         removeAttributes(player, MHUtils.ATTRIBUTE_ERIN_PROGRESS, MHUtils.ATTRIBUTE_DROALAK_PROGRESS, MHUtils.ATTRIBUTE_DRON_PROGRESS)
     }
 

@@ -10,6 +10,8 @@ import core.api.utils.PlayerCamera
 import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
+import core.game.node.entity.player.link.warning.WarningManager
+import core.game.node.entity.player.link.warning.WarningType
 import core.game.system.task.Pulse
 import core.game.world.map.Location
 import core.game.world.update.flag.context.Animation
@@ -33,9 +35,22 @@ class ObservatoryPlugin : InteractionListener {
         private val OBSERVATORY_GATES = intArrayOf(Scenery.DOOR_25526, Scenery.DOOR_25527)
         private const val OBSERVATORY_STAIRS = Scenery.STAIRS_25434
         private val STAR_CHART = intArrayOf(Scenery.STAR_CHART_25578, Scenery.STAR_CHART_25579, Scenery.STAR_CHART_25580, Scenery.STAR_CHART_25581, Scenery.STAR_CHART_25582, Scenery.STAR_CHART_25583)
+        private const val DUNGEON_STAIRS = Scenery.STAIRS_25432
     }
 
     override fun defineListeners() {
+
+        /*
+         * Handles stairs into dungeon.
+         */
+
+        on(DUNGEON_STAIRS, IntType.SCENERY, "climb-down") { player, _ ->
+            WarningManager.trigger(player, WarningType.OBSERVATORY_STAIRS) {
+                teleport(player, Location(2355, 9394, 0))
+            }
+            return@on true
+        }
+
         on(OBSERVATORY_ASSISTANT, IntType.NPC, "Talk-to") { player, _ ->
             openDialogue(player, ObservatoryAssistantDialogue())
             return@on true
@@ -80,18 +95,34 @@ class ObservatoryPlugin : InteractionListener {
                 return@on true
             }
 
-            val keyIndex = (0..3).random()
+            val chestIndex = KEY_CHEST.indexOf(node.id)
+
+            val correctChest: Int =
+                getAttribute(player, GameAttributes.OBSERVATORY_CHEST_FAIL_COUNTER, -1)
+
+            if (correctChest == -1) {
+                setAttribute(player, GameAttributes.OBSERVATORY_CHEST_FAIL_COUNTER, (0..3).random())
+            }
+
+            val finalCorrectChest: Int =
+                getAttribute(player, GameAttributes.OBSERVATORY_CHEST_FAIL_COUNTER, -1)
+
+            val result: Int =
+                if (chestIndex == finalCorrectChest) {
+                    2
+                } else {
+                    when ((1..100).random()) {
+                        in 1..50 -> 0
+                        in 51..80 -> 1
+                        else -> 3
+                    }
+                }
+
+            setAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY, result)
 
             animate(player, Animations.CLOSE_CHEST_539)
             replaceScenery(node.asScenery(), node.id + 1, 80)
             sendMessage(player, "You open the chest.")
-
-            setAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY, keyIndex)
-            player.incrementAttribute(GameAttributes.OBSERVATORY_CHEST_FAIL_COUNTER)
-
-            if (getAttribute(player, GameAttributes.OBSERVATORY_CHEST_FAIL_COUNTER, -1) == 10) {
-                removeAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY)
-            }
 
             return@on true
         }
@@ -106,7 +137,9 @@ class ObservatoryPlugin : InteractionListener {
                 }
 
                 1 -> {
-                    sendMessage(player, "The chest is empty.")
+                    sendMessage(player, "You find a dose of antipoison.")
+                    addItem(player, Items.ANTIPOISON1_179)
+                    removeAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY)
                 }
 
                 2 -> {
@@ -115,20 +148,18 @@ class ObservatoryPlugin : InteractionListener {
                     removeAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY)
                 }
 
-                else -> sendMessage(player, "The chest is empty.")
+                else -> {
+                    sendMessage(player, "The chest is empty.")
+                }
             }
+
             return@on true
         }
 
         on(KEY_CHEST_OPEN, IntType.SCENERY, "close") { player, node ->
-            val attribute = getAttribute(player, GameAttributes.OBSERVATORY_GOBLIN_KEY, -1)
-            if (attribute != 2 || isQuestComplete(player, Quests.OBSERVATORY_QUEST)) {
-                sendMessage(player, "You can't do that right now.")
-            } else {
-                animate(player, Animations.HUMAN_CLOSE_CHEST_538)
-                replaceScenery(node.asScenery(), node.id.dec(), -1)
-                sendMessage(player, "You close the chest.")
-            }
+            animate(player, Animations.HUMAN_CLOSE_CHEST_538)
+            replaceScenery(node.asScenery(), node.id - 1, -1)
+            sendMessage(player, "You close the chest.")
             return@on true
         }
 
@@ -183,8 +214,6 @@ class ObservatoryPlugin : InteractionListener {
                 sendMessage(player, "You pour the molten glass into the mould.")
                 sendMessage(player, "You clasp it together.")
                 sendItemDialogue(player, OBSERVATORY_LENS, "It has produced a small, convex glass dist.")
-            } else {
-                sendMessage(player, "Nothing interesting happens.")
             }
             return@onUseWith true
         }

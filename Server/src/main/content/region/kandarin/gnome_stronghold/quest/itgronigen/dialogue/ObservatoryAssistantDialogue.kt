@@ -10,6 +10,12 @@ import shared.consts.Items
 import shared.consts.NPCs
 import shared.consts.Quests
 
+/**
+ * Represents the Observatory assistant dialogue file.
+ *
+ * # Relations:
+ * - [Observatory quest][content.region.kandarin.gnome_stronghold.quest.itgronigen.Observatory]
+ */
 class ObservatoryAssistantDialogue : DialogueFile() {
 
     override fun handle(componentID: Int, buttonID: Int) {
