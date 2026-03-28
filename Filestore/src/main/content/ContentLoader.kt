@@ -101,15 +101,6 @@ object ContentLoader {
     }
 
     private fun maps(){
-        // Adds one minimap icon for each ardougne achievement diaries.
-        // Sources: https://runescape.wiki/images/Rs_world_map_2010_april_29.png?f7ae7
-
-        // Ardougne church.
-        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10291,808,809)
-        // Yanille hunter shop.
-        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10288,796,797)
-        // Ardougne market.
-        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10547,468,469)
     }
 
     private fun worldmap() {}
