@@ -6,6 +6,7 @@ import com.alex.store.Store
 import com.alex.tools.dump.MapDumper
 import com.alex.tools.dump.ModelDumper
 import com.alex.tools.dump.SpriteDumper
+import com.alex.tools.pack.MapPacker
 import com.alex.tools.pack.ModelPacker
 import com.alex.tools.pack.SpritePacker
 import content.interfaces.`AreaTask(259)`
@@ -27,12 +28,14 @@ object ContentLoader {
     }
 
     private fun load() {
+        maps()
         models()
         sprites()
         interfaces()
         objects()
         items()
         npcs()
+        worldmap()
     }
 
     private fun interfaces() {
@@ -96,6 +99,20 @@ object ContentLoader {
         SpriteDumper.dump()
         ModelDumper.dump()
     }
+
+    private fun maps(){
+        // Adds one minimap icon for each ardougne achievement diaries.
+        // Sources: https://runescape.wiki/images/Rs_world_map_2010_april_29.png?f7ae7
+
+        // Ardougne church.
+        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10291,808,809)
+        // Yanille hunter shop.
+        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10288,796,797)
+        // Ardougne market.
+        MapPacker.pack(Cache.getStore(),"../Assets/maps/", 10547,468,469)
+    }
+
+    private fun worldmap() {}
 
     private fun dumpMaps() {
         MapDumper.dump(Cache.getStore(), "../Dumps/maps/", Paths.get("../Server/data/configs/xteas.json"))
