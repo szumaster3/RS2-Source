@@ -21,6 +21,7 @@ enum class FishingSpots(vararg val locations: Location) {
     PISCATORIS(Location(2341, 3702, 0), Location(2342, 3702, 0), Location(2343, 3702, 0), Location(2344, 3702, 0), Location(2345, 3702, 0), Location(2346, 3702, 0), Location(2347, 3702, 0), Location(2349, 3702, 0), Location(2352, 3703, 0)),
     TUTORIAL_ISLAND(Location(3101, 3092, 0)),
     WILDERNESS_AREA(Location(3187, 3927, 0), Location(3185, 3926, 0), Location(3183, 3926, 0), Location(3181, 3926, 0), Location(3346, 3830, 0), Location(3349, 3793, 0), Location(3350, 3817, 0), Location(3050, 3704, 0)),
+    FISHER_REALM(Location(2679, 4701, 0),Location(2673, 4708, 0), Location(2667, 4710, 0))
     ;
 
     companion object {

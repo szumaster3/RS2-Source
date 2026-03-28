@@ -168,7 +168,8 @@
     "examine": "A small tin whistle.",
     "durability": null,
     "name": "Magic whistle",
-    "weight": "0.2",
+    "weight": "0.5",
+    "tradeable": "false",
     "archery_ticket_price": "0",
     "id": "16"
   },
@@ -59696,11 +59697,11 @@
   },
   {
     "shop_price": "25",
-    "examine": "Use this on plants to cure disease.",
+    "examine": "This plant cure emits potency.",
     "grand_exchange_price": "199",
     "durability": null,
     "name": "Plant cure",
-    "tradeable": "true",
+    "tradeable": "false",
     "archery_ticket_price": "0",
     "id": "6468"
   },

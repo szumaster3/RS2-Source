@@ -2,6 +2,7 @@ package content.region.kandarin.gnome_stronghold.plugin
 
 import content.global.travel.EssenceTeleport
 import core.api.sendDialogue
+import core.api.sendMessage
 import core.api.sendNPCDialogue
 import core.api.teleport
 import core.game.dialogue.FaceAnim
@@ -33,11 +34,13 @@ class BrimstailCavePlugin : InteractionListener {
 
         on(CAVE_ENTER, IntType.SCENERY, "enter") { player, _ ->
             teleport(player, Location.create(2408, 9812, 0))
+            sendMessage(player, "You duck down as you enter this small door.")
             return@on true
         }
 
         on(CAVE_EXIT, IntType.SCENERY, "exit") { player, _ ->
             teleport(player, Location(2402, 3419, 0))
+            sendMessage(player, "You crouch your way through a cramped tunnel.")
             return@on true
         }
 

@@ -93,7 +93,7 @@ class GrindItemPlugin : InteractionListener {
         KEBBIT_TEETH(setOf(Items.KEBBIT_TEETH_10109), Items.KEBBIT_TEETH_DUST_10111, "You grind the Kebbit teeth to dust."),
         BIRDS_NEST(setOf(Items.BIRDS_NEST_5070, Items.BIRDS_NEST_5071, Items.BIRDS_NEST_5072, Items.BIRDS_NEST_5073, Items.BIRDS_NEST_5074, Items.BIRDS_NEST_5075), Items.CRUSHED_NEST_6693, "You grind the Bird's nest down."),
         GOAT_HORN(setOf(Items.DESERT_GOAT_HORN_9735), Items.GOAT_HORN_DUST_9736, "You grind the goat's horn to dust."),
-        MUD_RUNE(setOf(Items.MUD_RUNE_4698), Items.GROUND_MUD_RUNES_9594, "You grind the Mud rune down."),
+        MUD_RUNE(setOf(Items.MUD_RUNE_4698), Items.GROUND_MUD_RUNES_9594, "You grind the mud runes into a powder."),
         ASHES(setOf(Items.ASHES_592), Items.GROUND_ASHES_8865, "You grind down the ashes."),
         RAW_KARAMBWAN(setOf(Items.RAW_KARAMBWAN_3142), Items.KARAMBWAN_PASTE_3152, "You grind the raw Karambwan to form a sticky paste."),
         POISON_KARAMBWAN(setOf(Items.POISON_KARAMBWAN_3146), Items.KARAMBWAN_PASTE_3153, "You grind the cooked Karambwan to form a sticky paste."),
@@ -108,6 +108,7 @@ class GrindItemPlugin : InteractionListener {
         CHOCOLATE_BAR(setOf(Items.CHOCOLATE_BAR_1973), Items.CHOCOLATE_DUST_1975, "You grind the chocolate into dust."),
         SULPHUR(setOf(Items.SULPHUR_3209), Items.GROUND_SULPHUR_3215, "You grind down the sulphur."),
         SUQAH_TOOTH(setOf(Items.SUQAH_TOOTH_9079), Items.GROUND_TOOTH_9082, "You grind the suqah tooth to dust."),
+        RUNE_SHARDS(setOf(Items.RUNE_SHARDS_6466), Items.RUNE_DUST_6467, "You grind the runes shards into dust."),
         GUAM_LEAF(setOf(Items.CLEAN_GUAM_249), Items.GROUND_GUAM_6681, "You grind down the guam.");
 
         companion object {
