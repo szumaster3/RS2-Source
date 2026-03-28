@@ -95,8 +95,4 @@
 
     <!-- Mystery statue - Leon d'Cour throne. -->
     <ObjectAction mode="add" id="10561" x="3168" y="9766" z="0" type="10" direction="e"/>
-
-    <!-- Bench - Right side of Anna Jones bench. -->
-    <ObjectAction mode="add" id="42005" x="3285" y="3469" z="0" type="10" direction="e"/>
-
 </parsing>
