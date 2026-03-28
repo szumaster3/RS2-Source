@@ -87,6 +87,8 @@ class IfacePacker private constructor(val targetInterfaceId: Int) {
         copiedComponents.clear()
         val store = Cache.getStore() ?: return copiedComponents
 
+        val log = StringBuilder()
+
         for (task in tasks) {
             val comp = if (task.sourceId >= 0)
                 ComponentDefinition.getInterfaceComponent(src, task.sourceId)
@@ -99,7 +101,7 @@ class IfacePacker private constructor(val targetInterfaceId: Int) {
             task.modifier?.let { it(comp) }
 
             val status = if (task.sourceId >= 0) "Modified" else "Packed"
-            println("$status component $targetInterfaceId:${task.targetId}:${comp.name ?: "unnamed"}")
+            log.append("$status component $targetInterfaceId:${task.targetId}:${comp.name ?: "unnamed"}\n")
 
             val fileNameHash: Int? = comp.name?.takeIf { it.isNotBlank() }?.let {
                 CRC32HGenerator.getHash(it.uppercase(Locale.getDefault()).toByteArray(Charsets.UTF_8))
@@ -115,6 +117,7 @@ class IfacePacker private constructor(val targetInterfaceId: Int) {
         }
 
         init(targetInterfaceId)
+        print(log.toString())
         return copiedComponents
     }
 
