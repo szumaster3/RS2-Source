@@ -110,7 +110,7 @@ object NPCRenderer {
      * @param npc The NPC to update.
      * @param sync If called upon synchronization.
      */
-    fun writeMaskUpdates(player: Player?, maskBuffer: IoBuffer?, npc: NPC, sync: Boolean) {
+    private fun writeMaskUpdates(player: Player?, maskBuffer: IoBuffer?, npc: NPC, sync: Boolean) {
         if (sync) {
             npc.updateMasks.writeSynced(player, npc, maskBuffer!!, true)
         } else {

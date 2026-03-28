@@ -6,6 +6,7 @@ import core.game.system.SystemState
 import core.game.system.config.ServerConfigParser
 import core.game.world.GameWorld
 import core.net.NioReactor
+import core.net.amsc.WorldCommunicator
 import core.tools.Log
 import core.tools.NetworkReachability
 import core.tools.TimeStamp
@@ -34,7 +35,7 @@ object Server {
     /**
      * Timestamp of the last server heartbeat.
      */
-    var lastHeartbeat = System.currentTimeMillis()
+    private var lastHeartbeat = System.currentTimeMillis()
 
     /**
      * Indicates whether the server is running.
@@ -106,11 +107,10 @@ object Server {
                 delay(20000)
                 while (running) {
                     val timeStart = System.currentTimeMillis()
-                    networkReachability = if (!checkConnectivity()) {
+                    networkReachability = if (!checkConnectivity())
                         NetworkReachability.UNREACHABLE
-                    } else {
+                    else
                         NetworkReachability.REACHABLE
-                    }
                     if (System.currentTimeMillis() - lastHeartbeat > 7200 && running) {
                         log(this::class.java, Log.ERR, "Triggering reboot due to heartbeat timeout")
                         log(this::class.java, Log.ERR, "Creating thread dump...")
@@ -118,14 +118,18 @@ object Server {
 
                         withContext(Dispatchers.IO) {
                             FileWriter("latest_dump.txt").use {
-                                dump?.let(it::write)
+
+                                if (dump != null) {
+                                    it.write(dump)
+                                }
+
                                 it.flush()
+                                it.close()
                             }
                         }
 
-                        if (!SystemManager.isTerminated) {
+                        if (!SystemManager.isTerminated)
                             exitProcess(0)
-                        }
                     }
                     val timeNow = System.currentTimeMillis()
                     delay(max(0L, 625 - (timeNow - timeStart)))
@@ -142,9 +146,8 @@ object Server {
     private fun checkConnectivity(): Boolean {
         val urls = ServerConstants.CONNECTIVITY_CHECK_URL.split(",")
         var timeout = ServerConstants.CONNECTIVITY_TIMEOUT
-        if (timeout * urls.size > 5000) {
+        if (timeout * urls.size > 5000)
             timeout = 5000 / urls.size
-        }
         for (targetUrl in urls) {
             try {
                 val url = URL(targetUrl)
@@ -154,7 +157,8 @@ object Server {
                 conn.getInputStream().close()
                 return true
             } catch (e: Exception) {
-                log(this::class.java, Log.WARN, "$targetUrl failed to respond. Are we offline?")
+                log(this::class.java, Log.WARN, "${targetUrl} failed to respond. Are we offline?")
+                continue
             }
         }
         return false
@@ -171,7 +175,7 @@ object Server {
     /**
      * Prints available server commands.
      */
-    fun printCommands() {
+    private fun printCommands() {
         println("stop - stop the server (saves all accounts and such)")
         println("players - show online player count")
         println("update - initiate an update with a countdown visible to players")
@@ -182,7 +186,9 @@ object Server {
     /**
      * Handles automatic reconnection logic (currently unimplemented).
      */
-    fun autoReconnect() {}
+    fun autoReconnect() {
+        WorldCommunicator.connect()
+    }
 
     /**
      * Returns the server's start time.

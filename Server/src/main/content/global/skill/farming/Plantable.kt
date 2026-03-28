@@ -3,8 +3,7 @@ package content.global.skill.farming
 import core.game.node.item.Item
 import shared.consts.Items
 
-enum class Plantable(val itemID: Int, val displayName: String, val value: Int, val stages: Int, val plantingXP: Double, val harvestXP: Double, val checkHealthXP: Double, val requiredLevel: Int, val applicablePatch: PatchType, val harvestItem: Int, val protectionItem: Item? = null, val protectionFlower: Plantable? = null) {
-    MARIGOLD_SEED(Items.MARIGOLD_SEED_5096, "marigold seed", 8, 4, 8.5, 47.0, 0.0, 2, PatchType.FLOWER_PATCH, Items.MARIGOLDS_6010),
+enum class Plantable(val itemID: Int, val displayName: String, val value: Int, val stages: Int, val plantingXP: Double, val harvestXP: Double, val checkHealthXP: Double, val requiredLevel: Int, val applicablePatch: PatchType, val harvestItem: Int, val protectionItem: Item? = null, val protectionFlower: Plantable? = null, val protectionItemSecondary: Item? = null, val protectionItemTertiary: Item? = null) {    MARIGOLD_SEED(Items.MARIGOLD_SEED_5096, "marigold seed", 8, 4, 8.5, 47.0, 0.0, 2, PatchType.FLOWER_PATCH, Items.MARIGOLDS_6010),
     ROSEMARY_SEED(Items.ROSEMARY_SEED_5097, "rosemary seed", 13, 4, 12.0, 66.5, 0.0, 11, PatchType.FLOWER_PATCH, Items.ROSEMARY_6014),
     NASTURTIUM_SEED(Items.NASTURTIUM_SEED_5098, "nasturtium seed", 18, 4, 19.5, 111.0, 0.0, 24, PatchType.FLOWER_PATCH, Items.NASTURTIUMS_6012),
     WOAD_SEED(Items.WOAD_SEED_5099, "woad seed", 23, 4, 20.5, 115.5, 0.0, 25, PatchType.FLOWER_PATCH, Items.WOAD_LEAF_1793),
@@ -66,37 +65,13 @@ enum class Plantable(val itemID: Int, val displayName: String, val value: Int, v
     EVIL_TURNIP_SEED(Items.EVIL_TURNIP_SEED_12148, "evil turnip seed", 4, 1, 41.0, 46.0, 0.0, 42, PatchType.EVIL_TURNIP_PATCH, Items.EVIL_TURNIP_12134),
     ENRICHED_SEED(Items.ENRICHED_SNAPDRAGON_SEED_14506, "enriched snapdragon seed", 12, 4, 0.0, 0.0, 0.0, 65, PatchType.SPECIAL_PATCH, Items.ENRICHED_SNAPDRAGON_14487),
     AUGUSTE_SAPLING(Items.AUGUSTES_SAPLING_9932, "auguste's sapling", 15, 6, 25.0, 0.0, 1456.5, 30, PatchType.TREE_PATCH, Items.WILLOW_ROOTS_6045, Item(Items.APPLES5_5386)),
+    SPIRIT_SAPLING(Items.SPIRIT_SAPLING_5375, "spirit tree sapling", 8, 12, 199.5, 0.0, 19301.0, 83, PatchType.SPIRIT_TREE_PATCH, 0, Item(Items.MONKEY_NUTS_4012, 5), null, Item(Items.MONKEY_BAR_4014, 1), Item(Items.GROUND_TOOTH_9082, 1))
     ;
-    constructor(
-        itemID: Int,
-        displayName: String,
-        value: Int,
-        stages: Int,
-        plantingXP: Double,
-        harvestXP: Double,
-        checkHealthXP: Double,
-        requiredLevel: Int,
-        applicablePatch: PatchType,
-        harvestItem: Int,
-        protectionFlower: Plantable,
-    ) :
-            this(
-                itemID,
-                displayName,
-                value,
-                stages,
-                plantingXP,
-                harvestXP,
-                checkHealthXP,
-                requiredLevel,
-                applicablePatch,
-                harvestItem,
-                null,
-                protectionFlower,
-            )
+    constructor(itemID: Int, displayName: String, value: Int, stages: Int, plantingXP: Double, harvestXP: Double, checkHealthXP: Double, requiredLevel: Int, applicablePatch: PatchType, harvestItem: Int, protectionFlower: Plantable, ) :
+            this(itemID, displayName, value, stages, plantingXP, harvestXP, checkHealthXP, requiredLevel, applicablePatch, harvestItem, null, protectionFlower)
 
     companion object {
-        val plantables = values().associateBy { it.itemID }
+        private val plantables = values().associateBy { it.itemID }
         @JvmStatic
         fun forItemID(id: Int): Plantable? = plantables[id]
         @JvmStatic

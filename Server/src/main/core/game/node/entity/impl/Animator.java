@@ -61,7 +61,7 @@ public final class Animator {
     /**
      * Enum representing the priority of an animation or graphic.
      */
-    public static enum Priority {
+    public enum Priority {
 
         /**
          * Low priority.

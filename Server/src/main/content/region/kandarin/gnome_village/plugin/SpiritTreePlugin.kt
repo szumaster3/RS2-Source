@@ -15,7 +15,7 @@ import shared.consts.Scenery
  */
 class SpiritTreePlugin : InteractionListener {
 
-    private val spiritTrees = intArrayOf(Scenery.SPIRIT_TREE_1317, Scenery.SPIRIT_TREE_1293, Scenery.SPIRIT_TREE_1294)
+    private val spiritTrees = intArrayOf(Scenery.SPIRIT_TREE_1317, Scenery.SPIRIT_TREE_1293, Scenery.SPIRIT_TREE_1294, Scenery.SPIRIT_TREE_8355)
 
     override fun defineListeners() {
 

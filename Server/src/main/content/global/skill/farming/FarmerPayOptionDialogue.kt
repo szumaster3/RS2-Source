@@ -18,9 +18,26 @@ import shared.consts.NPCs
  */
 class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = false) : DialogueFile() {
     var item: Item? = null
+    var itemSecondary: Item? = null
+    var itemTertiary: Item? = null
+
+    fun hasAllItems(): Boolean {
+        return (inInventory(player!!, item!!.id, item!!.amount) || inInventory(player!!, note(item!!).id, note(item!!).amount))
+                && (inInventory(player!!, itemSecondary!!.id, itemSecondary!!.amount) || inInventory(player!!, note(itemSecondary!!).id, note(itemSecondary!!).amount))
+                && (inInventory(player!!, itemTertiary!!.id, itemTertiary!!.amount) || inInventory(player!!, note(itemTertiary!!).id, note(itemTertiary!!).amount))
+    }
+
+    private val OLD_FACE_NPCS = setOf(
+        NPCs.PRISSY_SCILLA_1037,
+        NPCs.BOLONGO_2343,
+        NPCs.FRIZZY_SKERNIP_4560
+    )
 
     override fun handle(componentID: Int, buttonID: Int) {
-        val faceAnim = if (npc!!.id in intArrayOf(NPCs.PRISSY_SCILLA_1037, NPCs.BOLONGO_2343)) FaceAnim.OLD_NORMAL else FaceAnim.HALF_GUILTY
+        val faceAnim = if (npc?.id in OLD_FACE_NPCS)
+            FaceAnim.OLD_NORMAL
+        else
+            FaceAnim.HALF_GUILTY
         when (stage) {
             START_DIALOGUE -> {
                 if (patch.patch.type == PatchType.TREE_PATCH && patch.plantable != null && patch.isGrown()) {
@@ -41,6 +58,8 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
                     npc(faceAnim, "That patch is already fully grown!", "I don't know what you want me to do with it!").also { stage = END_DIALOGUE }
                 } else {
                     item = patch.plantable?.protectionItem
+                    itemSecondary = patch.plantable?.protectionItemSecondary
+                    itemTertiary = patch.plantable?.protectionItemTertiary
                     val protectionText: String? = when (item?.id) {
                         Items.COMPOST_6032        -> pluralize("bucket of compost", item)
                         Items.POTATOES10_5438     -> pluralize("sack of potatoes", item)
@@ -70,6 +89,10 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
                         val amount = if (item?.amount == 1) "one" else item?.amount
                         npc(faceAnim, "I want $amount $protectionText for that.")
                         stage = 200
+                    } else if (patch.patch.type == PatchType.SPIRIT_TREE_PATCH && quickPay && !hasAllItems()) {
+                        val amount = if (item?.amount == 1) "one" else item?.amount
+                        npc(FaceAnim.HAPPY, "I want $amount $protectionText, one monkey bar,", "and one ground tooth for that.")
+                        stage = 200
                     } else if (quickPay) {
                         val amount = if (item?.amount == 1) "one" else item?.amount
                         showTopics(
@@ -77,6 +100,10 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
                             Topic("No", END_DIALOGUE, true),
                             title = "Pay $amount $protectionText?",
                         )
+                    } else if (patch.patch.type == PatchType.SPIRIT_TREE_PATCH) {
+                        val amount = if (item?.amount == 1) "one" else item?.amount
+                        npc(faceAnim,"If you like, but I want $amount $protectionText,", "one monkey bar, and one ground tooth for that.")
+                        stage++
                     } else {
                         val amount = if (item?.amount == 1) "one" else item?.amount
                         npc(faceAnim, "If you like, but I want $amount $protectionText for that.")
@@ -86,7 +113,9 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
             }
 
             1 -> {
-                if (!(inInventory(player!!, item!!.id, item!!.amount) || inInventory(player!!, note(item!!).id, note(item!!).amount))) {
+                if (patch.patch.type == PatchType.SPIRIT_TREE_PATCH && !hasAllItems()) {
+                    player("I'm afraid I don't have any of those at the moment.").also { stage = 10 }
+                } else if (!(inInventory(player!!, item!!.id, item!!.amount) || inInventory(player!!, note(item!!).id, note(item!!).amount))) {
                     player("I'm afraid I don't have any of those at the moment.").also { stage = 10 }
                 } else {
                     showTopics(
@@ -99,7 +128,13 @@ class FarmerPayOptionDialogue(val patch: Patch, private val quickPay: Boolean = 
             10 -> npc(faceAnim, "Well, I'm not wasting my time for free.").also { stage = END_DIALOGUE }
 
             20 -> {
-                if (removeItem(player!!, item) || removeItem(player!!, note(item!!))) {
+                if (patch.patch.type == PatchType.SPIRIT_TREE_PATCH
+                    && (removeItem(player!!, item) || removeItem(player!!, note(item!!)))
+                    && (removeItem(player!!, itemSecondary) || removeItem(player!!, note(itemSecondary!!)))
+                    && (removeItem(player!!, itemTertiary) || removeItem(player!!, note(itemTertiary!!)))) {
+                    patch.protectionPaid = true
+                    npc("That'll do nicely, ${if (player!!.isMale) "sir" else "madam"}. Leave it with me - I'll make sure", "that tree grows up good and strong.").also { stage = END_DIALOGUE }
+                } else if (patch.patch.type != PatchType.SPIRIT_TREE_PATCH && removeItem(player!!, item) || removeItem(player!!, note(item!!))) {
                     patch.protectionPaid = true
                     npc(faceAnim, "That'll do nicely, ${if (player!!.isMale) "sir" else "madam"}. Leave it with me - I'll make sure", "those crops grow for you.").also { stage = END_DIALOGUE }
                 } else {

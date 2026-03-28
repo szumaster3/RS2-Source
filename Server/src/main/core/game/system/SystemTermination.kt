@@ -13,7 +13,6 @@ import core.game.world.repository.Repository.disconnectionQueue
 import core.game.world.repository.Repository.players
 import core.tools.Log
 import java.io.File
-import java.util.function.Consumer
 
 /**
  * Manages server termination and data saving.
@@ -23,15 +22,16 @@ class SystemTermination {
      * Runs the termination sequence: stops networking, bots, saves players and world data.
      */
     fun terminate() {
-        log(this.javaClass, Log.INFO, "Initializing termination sequence - do not shutdown!")
+        log(javaClass, Log.INFO, "Initializing termination sequence - do not shutdown!")
         try {
-            log(this.javaClass, Log.INFO, "Shutting down networking...")
+            log(javaClass, Log.INFO, "Shutting down networking...")
             Server.running = false
-            log(this.javaClass, Log.INFO, "Stopping all bots...")
+            log(javaClass, Log.INFO, "Stopping all bots...")
             clearAllBots()
-            Server.reactor!!.terminate()
-            log(this.javaClass, Log.INFO, "Stopping all pulses...")
+            Server.reactor?.terminate()
+            log(javaClass, Log.INFO, "Stopping all pulses...")
             majorUpdateWorker.stop()
+            // Save players
             for (p in players) {
                 try {
                     if (p != null && !p.isArtificial) {
@@ -42,8 +42,10 @@ class SystemTermination {
                     e.printStackTrace()
                 }
             }
-            shutdownListeners.forEach(Consumer { it.shutdown() })
+            // Shutdown listeners
+            shutdownListeners.forEach { it.shutdown() }
             flushRemainingEventsImmediately()
+            // Save world data
             var serverStore: ServerStore? = null
             for (wld in worldPersists) {
                 if (wld is ServerStore) {
@@ -52,13 +54,13 @@ class SystemTermination {
                     wld.save()
                 }
             }
-            // Save ServerStore last
             serverStore?.save()
-            if (ServerConstants.DATA_PATH != null) save(ServerConstants.DATA_PATH!!)
+            // Save to disk
+            ServerConstants.DATA_PATH?.let { save(it) }
         } catch (e: Throwable) {
             e.printStackTrace()
         }
-        log(this.javaClass, Log.INFO, "Server successfully terminated!")
+        log(javaClass, Log.INFO, "Server successfully terminated!")
     }
 
     /**
@@ -67,17 +69,20 @@ class SystemTermination {
      */
     fun save(directory: String) {
         val file = File(directory)
-        log(this.javaClass, Log.INFO, "Saving data [dir=${file.absolutePath}]...")
+        log(javaClass, Log.INFO, "Saving data [dir=${file.absolutePath}]...")
+
         if (!file.isDirectory) {
             file.mkdirs()
         }
-        Server.reactor!!.terminate()
+        Server.reactor?.terminate()
         val start = System.currentTimeMillis()
-        while (!disconnectionQueue.isEmpty() && System.currentTimeMillis() - start < 5000L) {
+        while (!disconnectionQueue.isEmpty() &&
+            System.currentTimeMillis() - start < 5000L)
+        {
             disconnectionQueue.update()
             try {
                 Thread.sleep(100)
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
         }
         disconnectionQueue.update()

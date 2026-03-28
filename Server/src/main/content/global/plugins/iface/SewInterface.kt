@@ -13,39 +13,45 @@ import shared.consts.Items
  */
 class SewInterface : InterfaceListener {
 
+    private val cost = 500
+
     override fun defineInterfaceListeners() {
         on(Components.SEW_INTERFACE_419) { player, _, opcode, button, _, _ ->
-            val pirateStock = PirateClothes.fromButtonId(button) ?: return@on false
-            if (opcode == 155) create(player, pirateStock)
+            val stock = PirateClothes.fromButtonId(button) ?: return@on false
+
+            if (opcode == 155) {
+                create(player, stock)
+            }
             return@on true
         }
     }
 
     private fun create(player: Player, stock: PirateClothes) {
-        val cost = 500
-
-        when {
-            freeSlots(player) < 1 ->
-                sendMessage(player, "You don't have enough inventory space for this.")
-
-            amountInInventory(player, Items.COINS_995) < cost ->
-                sendMessage(player, "You can't afford that.")
-
-            !inInventory(player, stock.firstItem) || !inInventory(player, stock.secondItem) ->
-                sendMessage(player, "You don't have required items in your inventory.")
-
-            else -> {
-                removeItem(player, stock.firstItem, Container.INVENTORY)
-                removeItem(player, stock.secondItem, Container.INVENTORY)
-                removeItem(player, Item(Items.COINS_995, cost), Container.INVENTORY)
-                addItem(player, stock.product, 1)
-                sendMessage(player, "Your items have been combined.")
-            }
+        if (freeSlots(player) < 1) {
+            sendMessage(player, "You don't have enough inventory space for this.")
+            return
         }
+
+        if (amountInInventory(player, Items.COINS_995) < cost) {
+            sendMessage(player, "You can't afford that.")
+            return
+        }
+
+        if (!inInventory(player, stock.firstItem) || !inInventory(player, stock.secondItem)) {
+            sendMessage(player, "You don't have required items in your inventory.")
+            return
+        }
+
+        removeItem(player, stock.firstItem, Container.INVENTORY)
+        removeItem(player, stock.secondItem, Container.INVENTORY)
+        removeItem(player, Item(Items.COINS_995, cost), Container.INVENTORY)
+
+        addItem(player, stock.product, 1)
+        sendMessage(player, "Your items have been combined.")
     }
 }
 
-enum class PirateClothes(val firstItem: Int, val secondItem: Int, val product: Int, val buttonId: Int) {
+private enum class PirateClothes(val firstItem: Int, val secondItem: Int, val product: Int, val buttonId: Int) {
     WHITE_RIGHT_EYE(Items.PIRATE_BANDANA_7112, Items.EYE_PATCH_1025, Items.BANDANA_AND_EYEPATCH_8924, 38),
     WHITE_DOUBLE_EYE(Items.PIRATE_BANDANA_7112, Items.DOUBLE_EYEPATCHES_13353, Items.BANDANA_AND_EYEPATCHES_13340, 66),
     WHITE_LEFT_EYE(Items.PIRATE_BANDANA_7112, Items.LEFT_EYEPATCH_13355, Items.BANDANA_AND_EYEPATCH_13339, 68),

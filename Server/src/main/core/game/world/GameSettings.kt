@@ -14,7 +14,6 @@ class GameSettings internal constructor(
     var name: String,
     var isBeta: Boolean,
     var isDevMode: Boolean,
-    var isGui: Boolean,
     var worldId: Int,
     var countryIndex: Int,
     var activity: String,
@@ -28,7 +27,6 @@ class GameSettings internal constructor(
     var enable_bots: Boolean,
     var autostock_ge: Boolean,
     var allow_token_purchase: Boolean,
-    var increased_door_time: Boolean,
     var enabled_botting: Boolean,
     var max_adv_bots: Int,
     var enable_doubling_money_scammers: Boolean,
@@ -44,14 +42,13 @@ class GameSettings internal constructor(
         get() = !isDevMode
 
     override fun toString(): String =
-        "GameSettings [name=$name, debug=$isBeta, devMode=$isDevMode, gui=$isGui, worldId=$worldId]"
+        "GameSettings [name=$name, debug=$isBeta, devMode=$isDevMode, worldId=$worldId]"
 
     companion object {
         fun parse(data: JsonObject): GameSettings {
             val name = ServerConstants.SERVER_NAME
             val debug = data.get("debug")?.asBoolean ?: false
             val dev = data.get("dev")?.asBoolean ?: false
-            val startGui = data.get("startGui")?.asBoolean ?: false
             val worldId = data.get("worldID")?.asInt ?: 0
             val countryId = data.get("countryID")?.asInt ?: 0
             val activity = data.get("activity")?.asString ?: ""
@@ -61,7 +58,6 @@ class GameSettings internal constructor(
             val enable_default_clan = data.get("enable_default_clan")?.asBoolean ?: false
             val enable_bots = data.get("enable_bots")?.asBoolean ?: false
             val autostock_ge = data.get("autostock_ge")?.asBoolean ?: false
-            val increased_door_time = data.get("increased_door_time")?.asBoolean ?: false
             val enable_botting = data.get("botting_enabled")?.asBoolean ?: false
             val max_adv_bots = data.get("max_adv_bots")?.asInt ?: 100
             val enable_doubling_money_scammers = data.get("enable_doubling_money_scammers")?.asBoolean ?: false
@@ -78,7 +74,6 @@ class GameSettings internal constructor(
                 name,
                 debug,
                 dev,
-                startGui,
                 worldId,
                 countryId,
                 activity,
@@ -92,7 +87,6 @@ class GameSettings internal constructor(
                 enable_bots,
                 autostock_ge,
                 allow_token_purchase,
-                increased_door_time,
                 enable_botting,
                 max_adv_bots,
                 enable_doubling_money_scammers,

@@ -13,12 +13,23 @@ import core.game.world.update.flag.context.Graphics
 import core.tools.END_DIALOGUE
 import shared.consts.Animations
 import shared.consts.NPCs
+import shared.consts.Quests
 import shared.consts.Graphics as Gfx
 
 /**
- * Spirit Tree Dialogue (Travel System)
+ * Spirit Tree Dialogue (Travel System).
  */
 class SpiritTreeDialogue(private val showIntro: Boolean) : DialogueFile() {
+
+    private val LOCATIONS = arrayOf(
+        Location(2542, 3170, 0), // Village
+        Location(2461, 3444, 0), // Stronghold
+        Location(2556, 3259, 0), // Khazard
+        Location(3184, 3508, 0), // GE
+        Location(3060, 3256, 0), // Port Sarim
+        Location(2613, 3856, 0), // Etceteria
+        Location(2800, 3203, 0)  // Brimhaven
+    )
 
     override fun handle(componentID: Int, buttonID: Int) {
         npc = NPC(NPCs.SPIRIT_TREE_3636)
@@ -34,21 +45,51 @@ class SpiritTreeDialogue(private val showIntro: Boolean) : DialogueFile() {
                 }
             }
             1 -> options()
-            2 -> teleport(Location(2542, 3170, 0))
-            3 -> teleport(Location(2461, 3444, 0))
-            4 -> teleport(Location(2556, 3259, 0))
-            5 -> teleport(Location(3184, 3508, 0))
+            2 -> teleport(LOCATIONS[0])
+            3 -> teleport(LOCATIONS[1])
+            4 -> teleport(LOCATIONS[2])
+            5 -> teleport(LOCATIONS[3])
+            6 -> handlePlantedTree()
+        }
+    }
+
+    private fun getPlantedTree(): String? {
+        return when {
+            getVarbit(player!!, 720) == 20 -> "Port Sarim"
+            getVarbit(player!!, 722) == 20 -> "Etceteria"
+            getVarbit(player!!, 724) == 20 -> "Brimhaven"
+            else -> null
         }
     }
 
     private fun options() {
-        showTopics(
-            Topic("Tree Gnome Village", 2, true),
-            Topic("Tree Gnome Stronghold", 3, true),
-            Topic("Battlefield of Khazard", 4, true),
-            Topic("Grand Exchange", 5, true),
-            Topic("Nevermind.", END_DIALOGUE, true)
-        )
+        val planted = getPlantedTree()
+        if (planted == null) {
+            showTopics(
+                Topic("Tree Gnome Village", 2, true),
+                Topic("Tree Gnome Stronghold", 3, true),
+                Topic("Battlefield of Khazard", 4, true),
+                Topic("Grand Exchange", 5, true),
+                Topic("Nevermind.", END_DIALOGUE, true)
+            )
+        } else {
+            showTopics(
+                Topic("Tree Gnome Village", 2, true),
+                Topic("Tree Gnome Stronghold", 3, true),
+                Topic("Battlefield of Khazard", 4, true),
+                Topic("Grand Exchange", 5, true),
+                Topic(planted, 6, true),
+            )
+        }
+    }
+
+    private fun handlePlantedTree() {
+        when (getPlantedTree()) {
+            "Port Sarim" -> teleport(LOCATIONS[4])
+            "Etceteria"  -> teleport(LOCATIONS[5])
+            "Brimhaven"  -> teleport(LOCATIONS[6])
+            else -> stage = END_DIALOGUE
+        }
     }
 
     private fun teleport(location: Location) {

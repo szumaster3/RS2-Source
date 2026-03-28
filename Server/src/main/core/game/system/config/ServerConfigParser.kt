@@ -16,6 +16,7 @@ import kotlin.system.exitProcess
 
 /**
  * Singleton object responsible for parsing the server configuration.
+ * @author Ceikry
  */
 object ServerConfigParser {
     /**
@@ -96,7 +97,6 @@ object ServerConfigParser {
                 name = ServerConstants.SERVER_NAME,
                 isBeta = data.getBoolean("world.debug"),
                 isDevMode = data.getBoolean("world.dev"),
-                isGui = data.getBoolean("world.start_gui"),
                 worldId = data.getString("world.world_id").toInt(),
                 countryIndex = data.getString("world.country_id").toInt(),
                 activity = data.getString("world.activity"),
@@ -110,7 +110,6 @@ object ServerConfigParser {
                 enable_bots = data.getBoolean("world.enable_bots"),
                 autostock_ge = data.getBoolean("world.autostock_ge"),
                 allow_token_purchase = data.getBoolean("world.allow_token_purchase"),
-                increased_door_time = data.getBoolean("world.increased_door_time"),
                 enabled_botting = data.getBoolean("world.enable_botting"),
                 max_adv_bots = data.getLong("world.max_adv_bots").toInt(),
                 enable_doubling_money_scammers = data.getBoolean("world.enable_doubling_money_scammers", false),
@@ -222,7 +221,6 @@ object ServerConfigParser {
 
     /**
      * Parses a location from the format "x,y,z"
-     * @author Ceikry
      * @param locString The string to parse
      * @return Location
      */
@@ -234,7 +232,6 @@ object ServerConfigParser {
 
     /**
      * Parses a location string of the form "x,y,z" into a [Location] object.
-     * @author Ceikry
      * @param pathString The string to parse
      * @return a String with the proper file separators for the current OS.
      */

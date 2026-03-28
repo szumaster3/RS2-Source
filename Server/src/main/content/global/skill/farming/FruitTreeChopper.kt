@@ -33,6 +33,11 @@ class FruitTreeChopper : OptionHandler() {
         val plantable = patch.plantable
         plantable ?: return false
 
+        if (SkillingTool.getAxe(player) == null) {
+            sendMessage(player, "You do not have an axe to use.")
+            return true
+        }
+
         val animation = SkillingTool.getAxe(player)?.animation
         val animDuration = animationDuration(Animation(animation!!))
 

@@ -132,7 +132,7 @@ class UpdateMasks(val owner: Entity) {
     }
 
     /**
-     * Registers the hit update for the given [Impact].
+     * Registers the hit update for the given [ImpactHandler.Impact].
      * @param e The entity.
      * @param impact The impact to update.
      * @param secondary If the hit update is secondary.

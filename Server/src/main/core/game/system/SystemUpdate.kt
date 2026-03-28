@@ -22,7 +22,7 @@ class SystemUpdate : Pulse(DEFAULT_COUNTDOWN) {
     override fun pulse(): Boolean {
         if (delay >= BACKUP_TICK && isCreateBackup) {
             try {
-                terminator.save(ServerConstants.DATA_PATH!!)
+                ServerConstants.DATA_PATH?.let { terminator.save(it) }
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -36,7 +36,7 @@ class SystemUpdate : Pulse(DEFAULT_COUNTDOWN) {
     /**
      * Sends system update notifications to all players.
      */
-    fun notifyPlayers() {
+    private fun notifyPlayers() {
         try {
             val time = delay + if (isCreateBackup) BACKUP_TICK else 0
             for (p in players) {
