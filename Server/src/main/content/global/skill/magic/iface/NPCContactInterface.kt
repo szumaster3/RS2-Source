@@ -123,9 +123,9 @@ class NPCContactInterface : InterfaceListener {
             when (stage) {
                 0 -> player(FaceAnim.HALF_ASKING, "Hello?").also { stage++ }
                 1 -> npcl(FaceAnim.OLD_NORMAL, "Blurberry here! Can I help?").also { stage++ }
-                2 -> player("He He. Yes you can. I'm looking for", "a Gnome. Gnome Mates.").also { stage++ }
+                2 -> player(FaceAnim.FRIENDLY, "He He. Yes you can. I'm looking for", "a Gnome. Gnome Mates.").also { stage++ }
                 3 -> npcl(FaceAnim.OLD_NORMAL, "Okay, I'll ask. Everybody shush! Is there a Gnome Mates here? Did anyone come in with Gnome Mates?").also { stage++ }
-                4 -> player("You hear laughter in the background.").also { stage++ }
+                4 -> sendDialogue(player!!, "You hear laughter in the background.").also { stage++ }
                 5 -> npcl(FaceAnim.OLD_NORMAL, "Ooooh, who is this? I'll get you!").also { stage++ }
                 6 -> player(FaceAnim.LAUGH, "Hahaha.").also { stage = END_DIALOGUE }
             }
@@ -139,17 +139,17 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.AL_THE_CAMEL_2809)
             when (stage) {
-                0 -> player("Hi there!").also { stage++ }
+                0 -> player(FaceAnim.FRIENDLY, "Hi there!").also { stage++ }
                 1 -> npcl(FaceAnim.CHILD_NORMAL, "Why, helloooo!").also { stage++ }
-                2 -> player("A camel?").also { stage++ }
+                2 -> player(FaceAnim.HALF_ASKING, "A camel?").also { stage++ }
                 3 -> npcl(FaceAnim.CHILD_NORMAL, "Well this is grand darling. How nice it is to make your acquaintance!").also { stage++ }
-                4 -> player("Thank you. Nice to meet you too.").also { stage++ }
-                5 -> player("Wait a minute. How am I talking to you without", "a Camulet?").also { stage++ }
+                4 -> player(FaceAnim.FRIENDLY, "Thank you. Nice to meet you too.").also { stage++ }
+                5 -> player(FaceAnim.HALF_THINKING, "Wait a minute. How am I talking to you without", "a Camulet?").also { stage++ }
                 6 -> npcl(FaceAnim.CHILD_NORMAL, "My dear, I'm a camel, how should I know?").also { stage++ }
-                7 -> player("Hmmm. I suppose this spell must tap directly into", "your mind. So, there's no need for language to get", "in the way.").also { stage++ }
+                7 -> player(FaceAnim.THINKING, "Hmmm. I suppose this spell must tap directly into", "your mind. So, there's no need for language to get", "in the way.").also { stage++ }
                 8 -> npcl(FaceAnim.CHILD_NORMAL, "I think I am somewhat confused.").also { stage++ }
                 9 -> npcl(FaceAnim.CHILD_NORMAL, "May one ask how you contacted me?").also { stage++ }
-                10 -> player("I'm just using one of the Lunar spells.").also { stage++ }
+                10 -> player(FaceAnim.NEUTRAL, "I'm just using one of the Lunar spells.").also { stage++ }
                 11 -> npcl(FaceAnim.CHILD_NORMAL, "Oh my, oh my. These youngsters today and their new-fangled gadgets!").also { stage = END_DIALOGUE }
             }
         }
@@ -291,17 +291,17 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.DRUNKEN_DWARF_956)
             when (stage) {
-                0 -> player("Howdy.").also { stage++ }
+                0 -> player(FaceAnim.FRIENDLY, "Howdy.").also { stage++ }
                 1 -> npcl(FaceAnim.OLD_DRUNK_LEFT, "Waaahaaay! It's ${player!!.username}! *hic* Maate!").also { stage++ }
-                2 -> player("How's things?").also { stage++ }
+                2 -> player(FaceAnim.HALF_ASKING,"How's things?").also { stage++ }
                 3 -> npcl(FaceAnim.OLD_DRUNK_LEFT, "I tink oiv drunk a bit toooo much.").also { stage++ }
-                4 -> player("So, same as always.").also { stage++ }
+                4 -> player(FaceAnim.FRIENDLY, "So, same as always.").also { stage++ }
                 5 -> npcl(FaceAnim.OLD_DRUNK_LEFT, "Wont a kebab?").also { stage++ }
-                6 -> player("Uh, no, I'm good thanks.").also { stage++ }
+                6 -> player(FaceAnim.FRIENDLY, "Uh, no, I'm good thanks.").also { stage++ }
                 7 -> npcl(FaceAnim.OLD_DRUNK_LEFT, "Well, oym goona pass owt now. Have one on me!").also { stage++ }
-                8 -> player("Oh, okay.").also { stage++ }
+                8 -> player(FaceAnim.NEUTRAL, "Oh, okay.").also { stage++ }
                 9 -> npcl(FaceAnim.OLD_DRUNK_LEFT, ".....*").also { stage++ }
-                10 -> player("Erm, bye.").also { stage = END_DIALOGUE }
+                10 -> player(FaceAnim.THINKING, "Erm, bye.").also { stage = END_DIALOGUE }
             }
         }
     }
@@ -342,11 +342,11 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.EVIL_DAVE_2909)
             when (stage) {
-                0 -> player("Hallo!").also { stage++ }
+                0 -> player(FaceAnim.FRIENDLY,"Hallo!").also { stage++ }
                 1 -> npcl(FaceAnim.FRIENDLY, "Whoa! A voice in my head! What do you want?").also { stage++ }
-                2 -> player("I am your evil master!").also { stage++ }
+                2 -> player(FaceAnim.FRIENDLY,"I am your evil master!").also { stage++ }
                 3 -> npcl(FaceAnim.FRIENDLY, "You're using dark magic to contact me! That is SO evil! What is thy bidding, O Master?").also { stage++ }
-                4 -> player("Build me an army worthy of Zamorak!").also { stage++ }
+                4 -> player(FaceAnim.FRIENDLY,"Build me an army worthy of Zamorak!").also { stage++ }
                 5 -> npcl(FaceAnim.FRIENDLY, "Yes, O master! As soon as I get this summoning thing to work").also { stage++ }
                 6 -> npcl(FaceAnim.EVIL_LAUGH, "my army of evil").also { stage++ }
                 7 -> npc(FaceAnim.EVIL_LAUGH, "UNDEAD CHAOS ZOMBIE DEMON ASSASSINS", "OF DARKNESS will overrun the world!", " *Mwuhahahahaaa!").also { stage = END_DIALOGUE }
@@ -365,7 +365,7 @@ class NPCContactInterface : InterfaceListener {
                 1 -> npcl(FaceAnim.FRIENDLY, "At last! The voice of Saradomin! My years of meditation have paid off!").also { stage++ }
                 2 -> player(FaceAnim.STRUGGLE, "Um...").also { stage++ }
                 3 -> npcl(FaceAnim.FRIENDLY, "O mighty Saradomin! What is your message to me?").also { stage++ }
-                4 -> player("Stop sitting around in a house in a swamp", "and go and do something useful!").also { stage++ }
+                4 -> player(FaceAnim.ANNOYED,"Stop sitting around in a house in a swamp", "and go and do something useful!").also { stage++ }
                 5 -> npcl(FaceAnim.FRIENDLY, "Oh, thank you Saradomin! I will meditate on what this message means!").also { stage = END_DIALOGUE }
             }
         }
@@ -378,11 +378,11 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.GENERAL_WARTFACE_3391)
             when (stage) {
-                0 -> player("Hello!").also { stage++ }
+                0 -> player(FaceAnim.FRIENDLY,"Hello!").also { stage++ }
                 1 -> npcl(FaceAnim.CHILD_NORMAL, "What you want Bentnoze?").also { stage++ }
                 2 -> npcl(FaceAnim.CHILD_NORMAL, "....").also { stage++ }
                 3 -> npcl(FaceAnim.CHILD_NORMAL, "Then who did say something? Who that?").also { stage++ }
-                4 -> player("It's ${player!!.username}! I'm talking to you", "by magic!").also { stage++ }
+                4 -> player(FaceAnim.FRIENDLY,"It's ${player!!.username}! I'm talking to you", "by magic!").also { stage++ }
                 5 -> npcl(FaceAnim.CHILD_NORMAL, "Hello, ${player!!.username}!").also { stage++ }
                 6 -> npcl(FaceAnim.CHILD_NORMAL, "...").also { stage++ }
                 7 -> npcl(FaceAnim.CHILD_NORMAL, "Bentnoze, " + (if (player!!.isMale) "he" else "she") + " is here! I hear " + (if (player!!.isMale) "him" else "her") + " in head!").also { stage++ }
@@ -404,15 +404,15 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.GYPSY_ARIS_882)
             when (stage) {
-                0 -> player("Hello.").also { stage++ }
+                0 -> player(FaceAnim.FRIENDLY,"Hello.").also { stage++ }
                 1 -> npcl(FaceAnim.FRIENDLY, "Because I can tell the future.").also { stage++ }
-                2 -> player("Um?").also { stage++ }
+                2 -> player(FaceAnim.HALF_ASKING, "Um?").also { stage++ }
                 3 -> npcl(FaceAnim.FRIENDLY, "That is the answer to your next question.").also { stage++ }
-                4 -> player("But how did you know what I would ask?").also { stage++ }
+                4 -> player(FaceAnim.HALF_ASKING, "But how did you know what I would ask?").also { stage++ }
                 5 -> npcl(FaceAnim.FRIENDLY, "Because I can tell the future.").also { stage++ }
-                6 -> player("Ah, that's very clever.").also { stage++ }
+                6 -> player(FaceAnim.NEUTRAL, "Ah, that's very clever.").also { stage++ }
                 7 -> npcl(FaceAnim.FRIENDLY, "Thanks. Oh and be careful in the Wilderness. Tonight is not your night.").also { stage++ }
-                8 -> player("Cheers!").also { stage = END_DIALOGUE }
+                8 -> player(FaceAnim.FRIENDLY, "Cheers!").also { stage = END_DIALOGUE }
             }
         }
     }
@@ -426,7 +426,7 @@ class NPCContactInterface : InterfaceListener {
             when (stage) {
                 0 -> player("Hiya.").also { stage++ }
                 1 -> npcl(FaceAnim.STRUGGLE, "Oooh! Who are you?").also { stage++ }
-                2 -> player("I'm a brave knight! I am coming to kill anyone", "in the vicinity of Lumbridge Castle!").also { stage++ }
+                2 -> player(FaceAnim.JOLLY, "I'm a brave knight! I am coming to kill anyone", "in the vicinity of Lumbridge Castle!").also { stage++ }
                 3 -> npcl(FaceAnim.PANICKED, "Aaaaargh! Run away, run away!").also { stage++ }
                 4 -> player(FaceAnim.LAUGH, "Hehe. Fool!").also { stage = END_DIALOGUE }
             }
@@ -485,15 +485,15 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.COW_3309)
             when (stage) {
-                0 -> player("Hello?").also { stage++ }
+                0 -> player(FaceAnim.ASKING,"Hello?").also { stage++ }
                 1 -> npcl(FaceAnim.OLD_DEFAULT, "Moooooo.").also { stage++ }
                 2 -> player("Hey, I know you can talk!").also { stage++ }
                 3 -> npcl(FaceAnim.OLD_DEFAULT, "Moooo.").also { stage++ }
-                4 -> player("Stop ignoring me!").also { stage++ }
+                4 -> player(FaceAnim.ANNOYED, "Stop ignoring me!").also { stage++ }
                 5 -> npcl(FaceAnim.OLD_DEFAULT, "Look, mate. Leave me alone!").also { stage++ }
                 6 -> playerl(FaceAnim.FRIENDLY, "You talked! You talked!").also { stage++ }
                 7 -> npcl(FaceAnim.OLD_DEFAULT, "Moooo.").also { stage++ }
-                8 -> player("I think I'll have some beef tonight.").also { stage = END_DIALOGUE }
+                8 -> player(FaceAnim.THINKING, "I think I'll have some beef tonight.").also { stage = END_DIALOGUE }
             }
         }
     }
@@ -506,13 +506,13 @@ class NPCContactInterface : InterfaceListener {
             npc = NPC(NPCs.LUMBRIDGE_GUIDE_2244)
             when (stage) {
                 0 -> player("Hello!").also { stage++ }
-                1 -> npcl(FaceAnim.FRIENDLY, "What, who's that?").also { stage++ }
-                2 -> player("Hehe... ahem...").also { stage++ }
-                3 -> player("This is the voice of your conscience! You've", "been a very naughty boy haven't you?").also { stage++ }
-                4 -> npcl(FaceAnim.STRUGGLE, "What? No I haven't!").also { stage++ }
-                5 -> player("You know what I'm talking about! Don't lie!").also { stage++ }
+                1 -> npcl(FaceAnim.HALF_ASKING, "What, who's that?").also { stage++ }
+                2 -> player(FaceAnim.NEUTRAL, "Hehe... ahem...").also { stage++ }
+                3 -> player(FaceAnim.FRIENDLY, "This is the voice of your conscience! You've", "been a very naughty boy haven't you?").also { stage++ }
+                4 -> npcl(FaceAnim.THINKING, "What? No I haven't!").also { stage++ }
+                5 -> player(FaceAnim.NEUTRAL,"You know what I'm talking about! Don't lie!").also { stage++ }
                 6 -> npcl(FaceAnim.GUILTY, "Okay, okay! I'm sorry, I'll never do it again!").also { stage++ }
-                7 -> player("If you do it again, you'll be in deep", "trouble.").also { stage = END_DIALOGUE }
+                7 -> player(FaceAnim.NEUTRAL,"If you do it again, you'll be in deep", "trouble.").also { stage = END_DIALOGUE }
             }
         }
     }
@@ -526,7 +526,7 @@ class NPCContactInterface : InterfaceListener {
             when (stage) {
                 0 -> player(FaceAnim.HALF_ASKING, "Hello?").also { stage++ }
                 1 -> npcl(FaceAnim.OLD_DEFAULT, "Baaaa.").also { stage++ }
-                2 -> player("Huh? Okay.").also { stage++ }
+                2 -> player(FaceAnim.STRUGGLE,"Huh? Okay.").also { stage++ }
                 3 -> player(FaceAnim.HALF_ASKING, "Baa, baaa. BAA!").also { stage++ }
                 4 -> npcl(FaceAnim.OLD_DEFAULT, "Baaa?").also { stage = END_DIALOGUE }
             }
@@ -540,11 +540,11 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.MAN_1)
             when (stage) {
-                0 -> player("Hello.").also { stage++ }
+                0 -> player(FaceAnim.NEUTRAL,"Hello.").also { stage++ }
                 1 -> npcl(FaceAnim.ANGRY, "Excuse me!").also { stage++ }
-                2 -> player("Oh sorry, what did I do?").also { stage++ }
+                2 -> player(FaceAnim.THINKING, "Oh sorry, what did I do?").also { stage++ }
                 3 -> npcl(FaceAnim.ANGRY_WITH_SMILE, "Can't you see I'm on the toilet?").also { stage++ }
-                4 -> player("Wait a minute... a toilet?").also { stage++ }
+                4 -> player(FaceAnim.HALF_THINKING,"Wait a minute... a toilet?").also { stage++ }
                 5 -> npcl(FaceAnim.ANNOYED, "Yeah. A toilet.").also { stage++ }
                 6 -> player("Riiiight. Oh, man, you didn't wipe your hands?").also { stage++ }
                 7 -> npcl(FaceAnim.ANNOYED, "Get over it.").also { stage = END_DIALOGUE }
@@ -597,13 +597,13 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.PARTY_PETE_659)
             when (stage) {
-                0 -> player("Hello?").also { stage++ }
+                0 -> player(FaceAnim.HALF_ASKING,"Hello?").also { stage++ }
                 1 -> npcl(FaceAnim.HAPPY, "Yo! Party, party, party!").also { stage++ }
-                2 -> player("Um, Party Pete?").also { stage++ }
+                2 -> player(FaceAnim.HALF_ASKING,"Um, Party Pete?").also { stage++ }
                 3 -> npcl(FaceAnim.HAPPY, "Yeah! Party's the name, and partying is the game! Actually it's a full-time profession. You can't stop the party.").also { stage++ }
-                4 -> player("Party Pete. Do you ever want to just", "relax?").also { stage++ }
+                4 -> player(FaceAnim.HALF_ASKING,"Party Pete. Do you ever want to just", "relax?").also { stage++ }
                 5 -> npcl(FaceAnim.HAPPY, "Relax, don't do it! Yeah! Party mania! Yeah!").also { stage++ }
-                6 -> player("Bye, Party.").also { stage++ }
+                6 -> player(FaceAnim.NEUTRAL,"Bye, Party.").also { stage++ }
                 7 -> npcl(FaceAnim.HAPPY, "You may leave the party, but the party never leaves you! Party!").also { stage = END_DIALOGUE }
             }
         }
@@ -616,13 +616,13 @@ class NPCContactInterface : InterfaceListener {
         ) {
             npc = NPC(NPCs.ROMEO_639)
             when (stage) {
-                0 -> player("Hello?").also { stage++ }
+                0 -> player(FaceAnim.HALF_ASKING,"Hello?").also { stage++ }
                 1 -> npcl(FaceAnim.FRIENDLY, "Oh, hello. You sound lovely.").also { stage++ }
-                2 -> player("Sorry?").also { stage++ }
+                2 -> player(FaceAnim.HALF_ASKING,"Sorry?").also { stage++ }
                 3 -> npcl(FaceAnim.FRIENDLY, "You sound lovely. You have a beautiful...twang to your voice.").also { stage++ }
-                4 -> player("Twang? It's Romeo, isn't it?").also { stage++ }
+                4 -> player(FaceAnim.HALF_ASKING,"Twang? It's Romeo, isn't it?").also { stage++ }
                 5 -> npcl(FaceAnim.FRIENDLY, "May I compare thee to some pineapple chunks?").also { stage++ }
-                6 -> player("No, Romeo. Goodbye.").also { stage = END_DIALOGUE }
+                6 -> player(FaceAnim.NEUTRAL,"No, Romeo. Goodbye.").also { stage = END_DIALOGUE }
             }
         }
     }
