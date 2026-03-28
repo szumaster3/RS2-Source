@@ -1,6 +1,6 @@
 package content.global.plugins.item
 
-import content.global.travel.GnomeGlider
+import content.global.travel.glider.GnomeGlider
 import core.api.*
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener

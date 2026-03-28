@@ -2,7 +2,7 @@ package core.game.event
 
 import content.global.activity.jobs.JobType
 import content.global.skill.magic.TeleportMethod
-import content.global.travel.FairyRing
+import content.global.travel.fairyring.FairyRing
 import core.game.component.Component
 import core.game.dialogue.Dialogue
 import core.game.node.Node

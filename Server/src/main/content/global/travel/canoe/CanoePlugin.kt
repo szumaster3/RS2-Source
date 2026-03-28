@@ -1,4 +1,4 @@
-package content.global.travel
+package content.global.travel.canoe
 
 import content.data.skill.SkillingTool
 import core.api.*
@@ -135,10 +135,30 @@ class CanoePlugin : InteractionListener, InterfaceListener {
     }
 
     enum class CanoeType(val level: Int, val xp: Double, val maxDist: Int, val baseLow: Double, val baseHigh: Double, val tierModLow: Double, val tierModHigh: Double, val treeShaped: Station, val pushing: Station, val floating: Station, val sinking: Station) {
-        LOG(12, 30.0, 1, 32.0, 100.0, 16.0, 50.0, Station.TREE_SHAPED_LOG, Station.CANOE_PUSHING_LOG, Station.CANOE_FLOATING_LOG, Station.CANOE_SINKING_LOG),
-        DUGOUT(27, 60.0, 2, 16.0, 50.0, 8.0, 25.0, Station.TREE_SHAPED_DUGOUT, Station.CANOE_PUSHING_DUGOUT, Station.CANOE_FLOATING_DUGOUT, Station.CANOE_SINKING_DUGOUT),
-        STABLE_DUGOUT(42, 90.0, 3, 8.0, 25.0, 4.0, 12.5, Station.TREE_SHAPED_STABLE_DUGOUT, Station.CANOE_PUSHING_STABLE_DUGOUT, Station.CANOE_FLOATING_STABLE_DUGOUT, Station.CANOE_SINKING_STABLE_DUGOUT),
-        WAKA(57, 150.0, 4, 4.0, 12.5, 2.0, 6.25, Station.TREE_SHAPED_WAKA, Station.CANOE_PUSHING_WAKA, Station.CANOE_FLOATING_WAKA, Station.CANOE_SINKING_WAKA);
+        LOG(12, 30.0, 1, 32.0, 100.0, 16.0, 50.0,
+            Station.TREE_SHAPED_LOG,
+            Station.CANOE_PUSHING_LOG,
+            Station.CANOE_FLOATING_LOG,
+            Station.CANOE_SINKING_LOG
+        ),
+        DUGOUT(27, 60.0, 2, 16.0, 50.0, 8.0, 25.0,
+            Station.TREE_SHAPED_DUGOUT,
+            Station.CANOE_PUSHING_DUGOUT,
+            Station.CANOE_FLOATING_DUGOUT,
+            Station.CANOE_SINKING_DUGOUT
+        ),
+        STABLE_DUGOUT(42, 90.0, 3, 8.0, 25.0, 4.0, 12.5,
+            Station.TREE_SHAPED_STABLE_DUGOUT,
+            Station.CANOE_PUSHING_STABLE_DUGOUT,
+            Station.CANOE_FLOATING_STABLE_DUGOUT,
+            Station.CANOE_SINKING_STABLE_DUGOUT
+        ),
+        WAKA(57, 150.0, 4, 4.0, 12.5, 2.0, 6.25,
+            Station.TREE_SHAPED_WAKA,
+            Station.CANOE_PUSHING_WAKA,
+            Station.CANOE_FLOATING_WAKA,
+            Station.CANOE_SINKING_WAKA
+        );
 
         companion object {
             val map = values().associateBy { it.ordinal }

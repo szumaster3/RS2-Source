@@ -1,4 +1,4 @@
-package content.global.travel
+package content.global.travel.glider
 
 import core.api.*
 import core.api.utils.PlayerCamera

@@ -2,7 +2,7 @@ package content.region.kandarin.west_ardougne.diary
 
 import content.global.skill.gather.fishing.Fish
 import content.global.skill.magic.TeleportMethod
-import content.global.travel.FairyRing
+import content.global.travel.fairyring.FairyRing
 import content.region.kandarin.port_khazard.dialogue.TindelMerchantDialogue
 import content.region.kandarin.west_ardougne.dialogue.ChiefServantDialogue
 import content.region.kandarin.west_ardougne.dialogue.CivilianDialogue

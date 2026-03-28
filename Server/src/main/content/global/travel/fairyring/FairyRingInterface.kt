@@ -1,4 +1,4 @@
-package content.global.travel
+package content.global.travel.fairyring
 
 import core.api.*
 import core.game.event.FairyRingDialEvent

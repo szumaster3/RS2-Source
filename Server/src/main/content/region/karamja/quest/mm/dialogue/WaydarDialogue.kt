@@ -1,7 +1,7 @@
 package content.region.karamja.quest.mm.dialogue
 
-import content.global.travel.GnomeGlider
-import content.global.travel.GliderPulse
+import content.global.travel.glider.GnomeGlider
+import content.global.travel.glider.GliderPulse
 import content.region.karamja.quest.mm.cutscene.ShipyardCutscene
 import core.api.getQuestStage
 import core.api.sendNPCDialogue

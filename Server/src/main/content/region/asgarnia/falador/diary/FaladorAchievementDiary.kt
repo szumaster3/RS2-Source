@@ -2,7 +2,7 @@ package content.region.asgarnia.falador.diary
 
 import content.data.LightSources
 import content.global.skill.farming.FarmingPatch
-import content.global.travel.FairyRing
+import content.global.travel.fairyring.FairyRing
 import content.region.asgarnia.falador.dialogue.RisingSunInnBartenderDialogue
 import core.api.*
 import core.game.diary.DiaryAreaTask

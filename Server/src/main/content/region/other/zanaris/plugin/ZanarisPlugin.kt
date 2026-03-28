@@ -1,6 +1,6 @@
 package content.region.other.zanaris.plugin
 
-import content.global.travel.FairyRingInterface
+import content.global.travel.fairyring.FairyRingInterface
 import content.region.other.zanaris.dialogue.FairyShopkeeperDialogue
 import content.region.other.zanaris.dialogue.MagicDoorDialogue
 import core.api.*

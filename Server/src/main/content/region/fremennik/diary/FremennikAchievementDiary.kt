@@ -1,6 +1,6 @@
 package content.region.fremennik.diary
 
-import content.global.travel.FairyRing
+import content.global.travel.fairyring.FairyRing
 import content.minigame.barbassault.dialogue.CaptainCainDialogue
 import content.region.fremennik.rellekka.dialogue.RellekkaHuntingExpertDialogue
 import content.region.fremennik.rellekka.quest.viking.dialogue.ChieftanBrundtDialogue
@@ -12,7 +12,6 @@ import core.game.diary.DiaryEventHookBase
 import core.game.diary.DiaryLevel
 import core.game.event.*
 import core.game.node.entity.player.Player
-import core.game.node.entity.player.link.SpellBookManager
 import core.game.node.entity.player.link.diary.DiaryType
 import core.game.node.entity.skill.Skills
 import core.game.world.map.zone.ZoneBorders

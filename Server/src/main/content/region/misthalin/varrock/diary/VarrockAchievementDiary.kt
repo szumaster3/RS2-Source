@@ -3,8 +3,8 @@ package content.region.misthalin.varrock.diary
 import content.data.GameAttributes
 import content.global.skill.magic.TeleportMethod
 import content.global.skill.prayer.Bones
-import content.global.travel.CanoePlugin
-import content.global.travel.FairyRing
+import content.global.travel.canoe.CanoePlugin
+import content.global.travel.fairyring.FairyRing
 import content.region.misthalin.varrock.dialogue.BennyDialogue
 import content.region.misthalin.varrock.dialogue.ElsieDialogue
 import content.region.misthalin.varrock.museum.dialogue.OrlandoSmithDialogue

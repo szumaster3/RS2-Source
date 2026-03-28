@@ -1,11 +1,8 @@
 package content.region.kandarin.seers_village.diary
 
 import content.data.GameAttributes
-import content.global.travel.FairyRing
+import content.global.travel.fairyring.FairyRing
 import content.region.kandarin.camelot.quest.grail.dialogue.GalahadDialogue
-import content.region.kandarin.seers_village.dialogue.ThormacDialogue
-import content.region.misthalin.lumbridge.diary.LumbridgeAchievementDiary.Companion.BeginnerTasks
-import content.region.misthalin.lumbridge.diary.LumbridgeAchievementDiary.Companion.EasyTasks
 import core.api.*
 import core.game.diary.DiaryEventHookBase
 import core.game.diary.DiaryLevel
