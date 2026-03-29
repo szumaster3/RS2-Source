@@ -116,7 +116,6 @@ enum class GodType(val capeId: Int, val staffId: Int, val statueId: Int, val npc
          * @param id The NPC id.
          * @return The matching [GodType] or null if none found.
          */
-        @JvmStatic
         fun forId(id: Int): GodType? = values().find { it.npcId == id }
 
         /**

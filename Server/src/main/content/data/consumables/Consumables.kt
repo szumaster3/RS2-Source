@@ -390,9 +390,7 @@ enum class Consumables {
     }
 
     companion object {
-        @JvmStatic
         val consumables: Map<Int, Consumables>
-        @JvmStatic
         val potions: List<Int>
 
         init {
@@ -411,8 +409,6 @@ enum class Consumables {
             consumables = consumablesMap
             potions = potionsList
         }
-
-        @JvmStatic
         fun getConsumableById(itemId: Int): Consumables? = consumables[itemId]
     }
 }

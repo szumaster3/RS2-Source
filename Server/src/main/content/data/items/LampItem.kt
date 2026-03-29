@@ -70,7 +70,6 @@ enum class LampItem(val item: Int, val experience: Int, val requiredLevel: Int =
         /**
          * Get lamp for give item id.
          */
-        @JvmStatic
         fun forItem(item: Item): LampItem? {
             for (lamp in values()) {
                 if (lamp.item == item.id) {

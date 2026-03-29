@@ -61,7 +61,6 @@ object RustyItem {
     /**
      * Returns a repaired item for the given equipment type, or null if none found.
      */
-    @JvmStatic
     fun getRepair(type: EquipmentType): Item? {
         val table = repairTables[type] ?: return null
         return RandomFunction.rollWeightedChanceTable(table)

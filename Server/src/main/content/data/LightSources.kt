@@ -47,7 +47,6 @@ enum class LightSources(val level: Int, val emptyId: Int, val fullId: Int = -1, 
          * @param id The raw item id.
          * @return The corresponding LightSource, or null if none.
          */
-        @JvmStatic
         fun forId(id: Int): LightSources? = byRaw[id]
 
         /**
@@ -55,13 +54,11 @@ enum class LightSources(val level: Int, val emptyId: Int, val fullId: Int = -1, 
          * @param id The lit item id.
          * @return The corresponding LightSource, or null if none.
          */
-        @JvmStatic
         fun forLitId(id: Int): LightSources? = byLit[id]
 
         /**
          * Checks if the light source is active.
          */
-        @JvmStatic
         fun isActive(player: Player, src: LightSources): Boolean = when (src) {
             GLOWING_FUNGUS -> inInventory(player, src.litId)
             HEADBAND_1, HEADBAND_2, HEADBAND_3 -> inEquipment(player, src.litId)
@@ -71,7 +68,6 @@ enum class LightSources(val level: Int, val emptyId: Int, val fullId: Int = -1, 
         /**
          * Returns any active light source.
          */
-        @JvmStatic
         fun getActiveLightSource(player: Player): LightSources? =
             values().firstOrNull { isActive(player, it) }
 
@@ -79,7 +75,6 @@ enum class LightSources(val level: Int, val emptyId: Int, val fullId: Int = -1, 
          * Checks if the player has any active light source.
          * @param player The player to check.
          */
-        @JvmStatic
         fun hasActiveLightSource(player: Player): Boolean =
             getActiveLightSource(player) != null
     }

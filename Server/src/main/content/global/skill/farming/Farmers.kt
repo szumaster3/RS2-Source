@@ -31,10 +31,7 @@ enum class Farmers(val id: Int, val patches: Array<FarmingPatch>){
     IMIAGO(NPCs.IMIAGO_8041, arrayOf(FarmingPatch.CALQUAT_TREE)), ;
 
     companion object {
-        @JvmField
         val farmers = values().associateBy { it.id }
-
-        @JvmStatic
         fun forId(id: Int): Farmers? = farmers[id]
     }
 }

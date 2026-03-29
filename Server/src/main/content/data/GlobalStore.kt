@@ -13,7 +13,6 @@ object GlobalStore {
 
     private const val RING_ARCHIVE = "daily-explorer-ring"
 
-    @JvmStatic
     fun check(player: Player) {
         val archive = ServerStore.getArchive(RING_ARCHIVE)
         val username = player.username.lowercase()

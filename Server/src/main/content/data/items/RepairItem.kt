@@ -7,11 +7,7 @@ import shared.consts.Items
  * Represents a repairable item, its repaired product, and the repair cost.
  * @author szu
  */
-enum class RepairItem(
-    @JvmField val item: Item,
-    @JvmField val product: Item,
-    @JvmField val cost: Int,
-) {
+enum class RepairItem(val item: Item, val product: Item, val cost: Int) {
     // Bronze items.
     BRONZE_HATCHET(Item(Items.BROKEN_AXE_494, 1), Item(Items.BRONZE_AXE_1351, 1), 0),
     BRONZE_PICKAXE(Item(Items.BROKEN_PICKAXE_468, 1), Item(Items.BRONZE_PICKAXE_1265, 1), 0),
@@ -44,13 +40,11 @@ enum class RepairItem(
     ;
 
     companion object {
-        @JvmStatic
         val repairableItemIds: List<Int> = values().map { it.item.id }
 
         /**
          * Gets the repair item by the broken items ID.
          */
-        @JvmStatic
         fun forId(id: Int): RepairItem? = values().firstOrNull { it.item.id == id }
     }
 }
