@@ -3,7 +3,7 @@ package core.game.system.command.sets
 import content.data.GameAttributes
 import content.data.RespawnPoint
 import content.global.activity.jobs.JobManager
-import content.global.activity.phoenix.SpawnPhoenix
+import content.global.activity.phoenix.PhoenixSpawnCutscene
 import content.global.skill.summoning.SummoningPouch
 import content.region.kandarin.baxtorian.BarbarianTraining
 import content.region.kandarin.piscatoris.quest.phoenix.custcene.FuneralPyreCutscene
@@ -50,7 +50,7 @@ class DevelopmentCommandSet : CommandSet(Privilege.ADMIN) {
             FuneralPyreCutscene(player).start()
         }
         define("phoenix3",privilege = Privilege.ADMIN)  { player, args ->
-            SpawnPhoenix(player).start()
+            PhoenixSpawnCutscene(player).start()
         }
 
         /*

@@ -2,7 +2,7 @@ package content.region.kandarin.piscatoris.quest.phoenix.plugin
 
 import com.google.gson.JsonObject
 import content.data.GameAttributes
-import content.global.activity.phoenix.SpawnPhoenix
+import content.global.activity.phoenix.PhoenixSpawnCutscene
 import content.region.kandarin.piscatoris.quest.phoenix.InPyreNeed
 import content.region.kandarin.piscatoris.quest.phoenix.custcene.FuneralPyreCutscene
 import content.region.kandarin.piscatoris.quest.phoenix.custcene.LostCutscene
@@ -216,7 +216,7 @@ class InPyreNeedPlugin : InteractionListener {
 
             if (isQuestComplete(player, Quests.IN_PYRE_NEED) && !getAttribute(player, "phoenix-spawned", false)) {
                 setAttribute(player, "phoenix-spawned", true)
-                SpawnPhoenix(player).start(true)
+                PhoenixSpawnCutscene(player).start(true)
             } else {
                 setVarbit(player, 5774, 1, true)
                 WoundedPhoenixCutscene(player).start(true)

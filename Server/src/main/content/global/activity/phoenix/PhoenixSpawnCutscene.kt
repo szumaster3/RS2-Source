@@ -11,7 +11,7 @@ import core.game.world.map.Location
 import shared.consts.NPCs
 import shared.consts.Regions
 
-class SpawnPhoenix (player: Player) : Cutscene(player) {
+class PhoenixSpawnCutscene (player: Player) : Cutscene(player) {
 
     override fun setup() {
         setExit(Location.create(3533, 5204, 0))
