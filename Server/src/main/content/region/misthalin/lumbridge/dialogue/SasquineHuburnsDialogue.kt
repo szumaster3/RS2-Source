@@ -46,7 +46,7 @@ class SasquineHuburnsDialogue(player: Player? = null) : Dialogue(player) {
             12 -> npc(FaceAnim.OLD_HAPPY, "Oh you humans have no sense of humour.", "Anyway, where would you like to go first?").also { stage++ }
             13 -> {
                 setTitle(player, 5)
-                sendOptions(player, "Pick a destination:", "LLetya", "Castle Wars", "Trollweiss and Rellekka Hunter area", "- NEXT -", "Nowhere.").also { stage++ }
+                sendOptions(player, "Pick a destination:", "Lletya", "Castle Wars", "Trollweiss and Rellekka Hunter area", "- NEXT -", "Nowhere.").also { stage++ }
             }
             14 -> when (buttonId) {
                 1 -> end().also { sendMessage(player, "Not implemented.") }
@@ -70,7 +70,7 @@ class SasquineHuburnsDialogue(player: Player? = null) : Dialogue(player) {
                 3 -> end().also { sendMessage(player, "Not implemented.") }
                 4 -> {
                     setTitle(player, 5)
-                    sendOptions(player, "Pick a destination:", "LLetya", "Castle Wars", "Trollweiss and Rellekka Hunter area", "- NEXT -", "Nowhere.").also { stage = 14 }
+                    sendOptions(player, "Pick a destination:", "Lletya", "Castle Wars", "Trollweiss and Rellekka Hunter area", "- NEXT -", "Nowhere.").also { stage = 14 }
                 }
 
                 5 -> end().also { sendMessage(player, "Not implemented.") }
