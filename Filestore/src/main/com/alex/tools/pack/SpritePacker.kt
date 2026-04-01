@@ -75,6 +75,21 @@ object SpritePacker {
         }
     }
 
+    fun packLogo() {
+        val folder = File("../Assets/sprites/logo/")
+        if (!folder.exists()) return
+        val image = folder.listFiles()
+            ?.firstOrNull { it.extension.equals("png", true) }
+            ?.let { ImageIO.read(it) }
+            ?: return
+        val archiveId = spriteIndex.getArchiveId("logo")
+        val sprite = SpriteDefinition(image.width, image.height)
+        sprite.setFrame(0, image)
+        val data = sprite.encode()
+        spriteIndex.putFile(archiveId, 0, data.array())
+        println("Packed logo $archiveId")
+    }
+
     private val spriteIndex: Index
         get() = Cache.getStore()!!.indexes[8]
 }

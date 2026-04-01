@@ -1322,6 +1322,12 @@
   {
     "id": "723",
     "interfaceType": "3",
+    "walkable": "false",
+    "tabIndex": "-1"
+  },
+  {
+    "id": "728",
+    "interfaceType": "3",
     "walkable": "true",
     "tabIndex": "-1"
   },
@@ -1377,6 +1383,12 @@
     "id": "809",
     "interfaceType": "1",
     "walkable": "true",
+    "tabIndex": "-1"
+  },
+  {
+    "id": "835",
+    "interfaceType": "3",
+    "walkable": "false",
     "tabIndex": "-1"
   }
 ]
