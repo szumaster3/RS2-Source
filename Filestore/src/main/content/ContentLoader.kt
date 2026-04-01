@@ -6,10 +6,10 @@ import com.alex.store.Store
 import com.alex.tools.dump.MapDumper
 import com.alex.tools.dump.ModelDumper
 import com.alex.tools.dump.SpriteDumper
-import com.alex.tools.pack.MapPacker
 import com.alex.tools.pack.ModelPacker
 import com.alex.tools.pack.SpritePacker
 import content.interfaces.`AreaTask(259)`
+import content.interfaces.`CarpetInfo(835)`
 import content.interfaces.`GuildHallOverlay(834)`
 import content.items.*
 import content.npcs.`GuildHallOfficer(8591)`
@@ -22,7 +22,7 @@ object ContentLoader {
         runCatching {
             Cache.init()
             load()
-            print()
+            // print()
             // dumpMaps()
         }.onFailure { e -> e.printStackTrace() }
     }
@@ -41,6 +41,7 @@ object ContentLoader {
     private fun interfaces() {
         `AreaTask(259)`.add()
         `GuildHallOverlay(834)`.add()
+        `CarpetInfo(835)`.add()
     }
 
     private fun items() {
@@ -65,6 +66,7 @@ object ContentLoader {
 
     private fun sprites() {
         SpritePacker.add()
+        // SpritePacker.packLogo()
     }
 
     private fun npcs() {
@@ -100,13 +102,13 @@ object ContentLoader {
         ModelDumper.dump()
     }
 
-    private fun maps(){
+    private fun maps() {
     }
 
     private fun worldmap() {}
 
     private fun dumpMaps() {
-        MapDumper.dump(Cache.getStore(), "../Dumps/maps/", Paths.get("../Server/data/configs/xteas.json"))
-        MapDumper.verify(Cache.getStore(), "../Dumps/maps/")
+        MapDumper.init(Paths.get("../Server/data/configs/xteas.json"));
+        MapDumper.verify(Cache.getStore())
     }
 }

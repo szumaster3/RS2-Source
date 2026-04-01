@@ -47,30 +47,60 @@ public final class XTEAManager {
      */
     public static boolean load(Path jsonPath) {
         regionKeys.clear();
+
         try {
             String content = Files.readString(jsonPath);
             JsonObject root = JsonParser.parseString(content).getAsJsonObject();
             JsonArray xteas = root.getAsJsonArray("xteas");
 
+            if (xteas == null) {
+                logger.severe("Missing 'xteas' array in JSON.");
+                return false;
+            }
+
             for (JsonElement elem : xteas) {
                 JsonObject entry = elem.getAsJsonObject();
-                int regionId = entry.get("regionId").getAsInt();
-                String[] keyParts = entry.get("keys").getAsString().split(",");
-                if (keyParts.length != 4) {
-                    logger.warning("Invalid keys count for region " + regionId);
+
+                String regionStr = entry.get("regionId").getAsString().trim();
+                int regionId;
+
+                try {
+                    regionId = Integer.parseInt(regionStr);
+                } catch (NumberFormatException e) {
+                    logger.warning("Invalid regionId: " + regionStr);
                     continue;
                 }
-                int[] keys = new int[4];
-                for (int i = 0; i < 4; i++) {
-                    keys[i] = Integer.parseInt(keyParts[i].trim());
+
+                String keysRaw = entry.get("keys").getAsString().trim();
+                String[] split = keysRaw.split(",");
+
+                if (split.length != 4) {
+                    logger.warning("Invalid key length for region " + regionId + ": " + keysRaw);
+                    continue;
                 }
+
+                int[] keys = new int[4];
+                boolean valid = true;
+
+                for (int i = 0; i < 4; i++) {
+                    try {
+                        keys[i] = Integer.parseInt(split[i].trim());
+                    } catch (NumberFormatException e) {
+                        logger.warning("Invalid key value in region " + regionId + ": " + keysRaw);
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (!valid) continue;
+
                 regionKeys.put(regionId, keys);
             }
 
-            logger.info(() -> "Loaded " + regionKeys.size() + " XTEA keys from JSON.");
+            logger.info("Loaded " + regionKeys.size() + " XTEA keys.");
             return !regionKeys.isEmpty();
 
-        } catch (IOException | JsonParseException | NumberFormatException e) {
+        } catch (IOException | JsonParseException e) {
             logger.log(Level.SEVERE, "Failed to load XTEA keys", e);
             return false;
         }

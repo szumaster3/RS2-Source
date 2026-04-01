@@ -4,6 +4,7 @@ package content.data
  * @see <a href="References/interface_font_examples.png">References/interface_font_examples.png</a>
  */
 object InterfaceFont {
+    const val TUTORIAL_FONT = 307
     const val P11_FULL = 494
     const val P12_FULL = 495
     const val B12_FULL = 496
