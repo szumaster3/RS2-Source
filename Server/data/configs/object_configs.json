@@ -15530,5 +15530,13 @@
   {
     "examine": "A magical catching box.",
     "ids": "19223"
+  },
+  {
+    "examine": "Like his father's machine, but different.",
+    "ids": "26788"
+  },
+  {
+    "examine": "Why can't it just have an ON switch?",
+    "ids": "26791"
   }
 ]

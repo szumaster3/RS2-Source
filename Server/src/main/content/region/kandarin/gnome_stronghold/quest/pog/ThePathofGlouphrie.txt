@@ -30,10 +30,11 @@ class ThePathofGlouphrie : Quest("The Path of Glouphrie", 142, 141, 1, Vars.VARB
         player.packetDispatch.sendItemZoomOnInterface(Items.ACHEY_TREE_LOGS_2862, 230, 277, 5)
 
         drawReward(player, "1 Quest Point", ln++)
+        drawReward(player, "Access to a Slayer dungeon.", ln++)
+        drawReward(player, "5,000 Magic XP", ln++)
         drawReward(player, "30,000 Strength XP", ln++)
         drawReward(player, "20,000 Slayer XP", ln++)
-        drawReward(player, "5,000 Thieving XP", ln++)
-        drawReward(player, "5,000 Magic XP", ln++)
+        drawReward(player, "and 5,000 Thieving XP", ln++)
         rewardXP(player, Skills.STRENGTH, 30000.0)
         rewardXP(player, Skills.SLAYER, 20000.0)
         rewardXP(player, Skills.THIEVING, 5000.0)

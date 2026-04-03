@@ -614,11 +614,11 @@ object Components {
     const val COMPONENT_610 = 610
     const val COMPONENT_611 = 611
     const val COMPONENT_612 = 612
-    const val COMPONENT_613 = 613
+    const val YEWNOCK_MACHINE_613 = 613
     const val COMPONENT_614 = 614
     const val COMPONENT_615 = 615
     const val COMPONENT_616 = 616
-    const val COMPONENT_617 = 617
+    const val BOLRIES_DIARY_617 = 617
     const val COMPONENT_618 = 618
     const val BANK_CHARGE_ZMI_619 = 619
     const val SHOP_TEMPLATE_620 = 620
