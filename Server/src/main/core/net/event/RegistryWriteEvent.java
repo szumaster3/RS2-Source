@@ -1,8 +1,8 @@
 package core.net.event;
 
+import core.ServerConstants;
 import core.cache.misc.buffer.ByteBufferUtils;
 import core.game.world.GameWorld;
-import core.net.Constants;
 import core.net.IoSession;
 import core.net.IoWriteEvent;
 
@@ -34,7 +34,7 @@ public final class RegistryWriteEvent extends IoWriteEvent {
     public void write(IoSession session, Object context) {
         ByteBuffer buffer = ByteBuffer.allocate(128);
         buffer.put((byte) GameWorld.getSettings().getWorldId());
-        buffer.putInt(Constants.REVISION);
+        buffer.putInt(ServerConstants.REVISION);
         buffer.put((byte) GameWorld.getSettings().getCountryIndex());
         buffer.put((byte) (GameWorld.getSettings().isMembers() ? 1 : 0));
         buffer.put((byte) (GameWorld.getSettings().isPvp() ? 1 : 0));

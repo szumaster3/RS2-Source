@@ -44,7 +44,7 @@ class AudioPacket : OutgoingPacket<DefaultContext> {
             UpdateAreaPosition.getBuffer(context.player, loc.chunkBase)
         }
         write(buffer, audio, loc)
-        buffer.cypherOpcode(context.player.session.getIsaacPair()!!.output)
+        buffer.cypherOpcode(context.player.session.isaacPair.output)
         context.player.session.write(buffer)
     }
 }
