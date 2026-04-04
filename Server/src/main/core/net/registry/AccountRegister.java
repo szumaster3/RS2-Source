@@ -5,7 +5,6 @@ import core.auth.UserAccountInfo;
 import core.cache.misc.buffer.ByteBufferUtils;
 import core.game.system.task.Pulse;
 import core.game.world.GameWorld;
-import core.net.Constants;
 import core.net.IoSession;
 import core.net.packet.in.Login;
 import core.tools.Log;
@@ -74,7 +73,7 @@ public class AccountRegister {
                 }
                 buffer.getShort(); // random data
                 int revision = buffer.getShort();//revision?
-                if (revision != Constants.REVISION) {
+                if (revision != ServerConstants.REVISION) {
                     response(session, RegistryResponse.CANNOT_CREATE);
                     break;
                 }

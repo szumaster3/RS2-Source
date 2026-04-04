@@ -16,7 +16,6 @@ import core.game.node.entity.player.info.login.LoginParser
 import core.game.world.GameWorld
 import core.game.world.repository.Repository
 import core.integration.discord.Discord
-import core.net.Constants
 import core.net.IoSession
 import core.tools.Log
 import core.tools.StringUtils
@@ -47,7 +46,7 @@ object Login {
                 return Pair(AuthResponse.BadSessionID, null)
             }
             val revision = buffer.int
-            if (revision != Constants.REVISION) {
+            if (revision != ServerConstants.REVISION) {
                 return Pair(AuthResponse.Updated, null)
             }
             if (info.opcode != NORMAL_LOGIN_OP && info.opcode != RECONNECT_LOGIN_OP) {

@@ -705,10 +705,10 @@ class InterfaceManager(
      */
     val isResizable: Boolean
         get() {
-            if (player.session.getClientInfo() == null) {
+            if (player.session.clientInfo == null) {
                 return false
             }
-            return player.session.getClientInfo()!!.isResizable
+            return player.session.clientInfo.isResizable
         }
 
     /**

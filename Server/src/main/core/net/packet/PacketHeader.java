@@ -20,6 +20,6 @@ public enum PacketHeader {
     /**
      * The short packet header.
      */
-    SHORT;
+    SHORT
 
 }
